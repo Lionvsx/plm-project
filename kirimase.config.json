@@ -1,0 +1,18 @@
+{
+  "hasSrc": false,
+  "packages": [
+    "drizzle",
+    "next-auth",
+    "shadcn-ui"
+  ],
+  "preferredPackageManager": "pnpm",
+  "t3": false,
+  "alias": "@",
+  "analytics": true,
+  "rootPath": "",
+  "orm": "drizzle",
+  "auth": "next-auth",
+  "componentLib": "shadcn-ui",
+  "provider": "vercel-pg",
+  "driver": "pg"
+}
