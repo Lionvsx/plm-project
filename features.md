@@ -73,6 +73,7 @@ ou don’t want another company benefiting from your team’s hard work, especia
 - [x] Role and Group Hierarchy
 - [x] Role-Based Access
 - [x] Administrative Controls
+- [x] Client , supplier and production views
 
 #### 9. Workflow and Change Management
 this suite of tools gives users insight into product activities. Users can determine phases for a project, as well as assign milestones to keep projects on track. Some systems allow users to see all pending and implemented changes, and all items that endure the subsequent effects. This visibility also extends to portfolio and resource management.
@@ -90,3 +91,59 @@ provide users with robust analytics tools that track the entire lifecycle of a p
 - [x] Dashboards
 - [x] Daily Updates
 - [x] Analytics
+
+
+#### 11. Production Management
+Efficiently manage and optimize the production process from start to finish.
+
+- [x] Production Scheduling
+- [x] Capacity Planning
+- [x] Work Order Management
+- [x] Quality Control Integration
+- [x] Production Cost Tracking
+- [x] Machine and Equipment Monitoring
+- [x] Production Performance Analytics
+
+#### 12. Supplier Management
+Streamline supplier relationships and enhance supply chain efficiency.
+
+- [x] Supplier Database
+- [x] Supplier Performance Tracking
+- [x] Contract Management
+- [x] Supplier Collaboration Portal
+- [x] Supplier Quality Management
+- [x] Supplier Risk Assessment
+- [x] Request for Quotation (RFQ) Management
+
+#### 13. Inventory and Stock Management
+Optimize inventory levels and improve stock control.
+
+- [x] Real-time Inventory Tracking
+- [x] Automated Reorder Points
+- [x] Multi-location Inventory Management
+- [x] Lot and Serial Number Tracking
+- [x] Inventory Forecasting
+- [x] Stock Valuation
+- [x] Inventory Reporting and Analytics
+
+#### 14. Client Relationship Management
+Integrate client management features to improve customer satisfaction and retention.
+
+- [x] Client Database Integration
+- [x] Client Portal
+- [x] Order History and Tracking
+- [x] Client-specific Product Configurations
+- [x] Service and Support Ticket Management
+- [x] Client Feedback and Survey Tools
+- [x] Client Analytics and Reporting
+
+
+#### 15. Mobile and Remote Access
+Enable seamless access to PLM features from anywhere, at any time.
+
+- [x] Responsive Web Design
+- [x] Offline Mode with Sync Capabilities
+- [x] Push Notifications
+- [x] Secure Remote Access
+- [x] Mobile Data Capture (e.g., Photos, Scans)
+- [x] Voice-activated Commands and Queries
