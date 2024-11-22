@@ -35,7 +35,7 @@ export default async function ProductPage({ params }: { params: { productId: str
           </Button>
         </div>
       </AppHeader>
-      <div className="p-4 pt-0">
+      <div className="p-4 pt-0 space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>{product.name}</CardTitle>
@@ -43,17 +43,21 @@ export default async function ProductPage({ params }: { params: { productId: str
               <CardDescription>{product.description}</CardDescription>
             )}
           </CardHeader>
-          <CardContent>
-            <div className="grid gap-4">
-              {product.variants?.map(variant => (
+        </Card>
+
+        {product.variants && product.variants.length > 0 && (
+          <div>
+            <h2 className="text-lg font-semibold mb-4">Product Variants</h2>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {product.variants.map(variant => (
                 <Card key={variant.id}>
                   <CardHeader>
-                    <CardTitle>{variant.size}</CardTitle>
+                    <CardTitle className="text-base">{variant.size}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex justify-between">
-                      <span>SKU: {variant.sku}</span>
-                      <span>${Number(variant.price).toFixed(2)}</span>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">SKU: {variant.sku}</span>
+                      <span className="font-medium">${Number(variant.price).toFixed(2)}</span>
                     </div>
                     <div className="mt-4">
                       <Button variant="outline" size="sm" asChild>
@@ -66,8 +70,8 @@ export default async function ProductPage({ params }: { params: { productId: str
                 </Card>
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        )}
       </div>
     </div>
   );

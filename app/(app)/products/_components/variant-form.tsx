@@ -21,9 +21,9 @@ interface VariantFormProps {
   productId: number;
   initialValues?: {
     id: number;
-    size: string;
-    sku: string;
-    price: string;
+    size: string | null;
+    sku: string | null;
+    price: string | null;
   };
 }
 
@@ -35,6 +35,9 @@ export function VariantForm({ productId, initialValues }: VariantFormProps) {
     defaultValues: initialValues
       ? {
         ...initialValues,
+        size: initialValues.size ?? "",
+        sku: initialValues.sku ?? "",
+        price: initialValues.price ?? "",
         productId,
       }
       : {

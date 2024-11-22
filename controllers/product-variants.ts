@@ -9,7 +9,7 @@ export async function getVariants() {
   const variants = await db.query.productVariant.findMany({
     with: {
       product: true,
-    }
+    },
   });
   return variants;
 }
