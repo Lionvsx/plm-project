@@ -1,9 +1,10 @@
 import { AppHeader } from "@/components/app-header";
-import { getProduct } from "@/controllers/products";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getProduct } from "@/controllers/products";
 import { Edit, Plus } from "lucide-react";
+import Link from "next/link";
+import { ProductCard } from "../_components/product-card";
 
 export default async function ProductPage({ params }: { params: { productId: string } }) {
   const product = await getProduct(Number(params.productId));
@@ -50,24 +51,11 @@ export default async function ProductPage({ params }: { params: { productId: str
             <h2 className="text-lg font-semibold mb-4">Product Variants</h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {product.variants.map(variant => (
-                <Card key={variant.id}>
-                  <CardHeader>
-                    <CardTitle className="text-base">{variant.size}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">SKU: {variant.sku}</span>
-                      <span className="font-medium">${Number(variant.price).toFixed(2)}</span>
-                    </div>
-                    <div className="mt-4">
-                      <Button variant="outline" size="sm" asChild>
-                        <Link href={`/products/${product.id}/variants/${variant.id}`}>
-                          Show
-                        </Link>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                <ProductCard
+                  key={variant.id}
+                  variant={variant}
+                  productId={product.id}
+                />
               ))}
             </div>
           </div>

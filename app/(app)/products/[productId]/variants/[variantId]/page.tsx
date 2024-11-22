@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { getVariant } from "@/controllers/product-variants";
 import { getProduct } from "@/controllers/products";
-import { Edit } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 import Link from "next/link";
 
 export default async function VariantPage({
@@ -40,7 +40,10 @@ export default async function VariantPage({
           <DeleteVariantButton
             variantId={variant.id}
             productId={product.id}
-          />
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete
+          </DeleteVariantButton>
         </div>
       </AppHeader>
       <div className="p-4 pt-0">
