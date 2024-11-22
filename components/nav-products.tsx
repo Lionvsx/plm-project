@@ -1,10 +1,11 @@
 "use client"
 
 import {
-  Folder,
   MoreHorizontal,
-  Share,
-  Trash2,
+  Package,
+  Plus,
+  Archive,
+  Tags,
   type LucideIcon,
 } from "lucide-react"
 
@@ -25,26 +26,29 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
-export function NavProjects({
-  projects,
+type Product = {
+  name: string
+  url: string
+  icon: LucideIcon
+  status?: 'active' | 'archived'
+}
+
+export function NavProducts({
+  products,
 }: {
-  projects: {
-    name: string
-    url: string
-    icon: LucideIcon
-  }[]
+  products: Product[]
 }) {
   const { isMobile } = useSidebar()
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Projects</SidebarGroupLabel>
+      <SidebarGroupLabel>Products</SidebarGroupLabel>
       <SidebarMenu>
-        {projects.map((item) => (
+        {products.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
               <a href={item.url}>
-                <item.icon />
+                <Package className={item.status === 'archived' ? 'opacity-50' : ''} />
                 <span>{item.name}</span>
               </a>
             </SidebarMenuButton>
@@ -61,17 +65,17 @@ export function NavProjects({
                 align={isMobile ? "end" : "start"}
               >
                 <DropdownMenuItem>
-                  <Folder className="text-muted-foreground" />
-                  <span>View Project</span>
+                  <Tags className="text-muted-foreground" />
+                  <span>Manage Variants</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Share className="text-muted-foreground" />
-                  <span>Share Project</span>
+                  <Archive className="text-muted-foreground" />
+                  <span>{item.status === 'archived' ? 'Unarchive' : 'Archive'} Product</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Trash2 className="text-muted-foreground" />
-                  <span>Delete Project</span>
+                <DropdownMenuItem className="text-destructive">
+                  <Archive className="text-destructive" />
+                  <span>Delete Product</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -79,8 +83,8 @@ export function NavProjects({
         ))}
         <SidebarMenuItem>
           <SidebarMenuButton>
-            <MoreHorizontal />
-            <span>More</span>
+            <Plus />
+            <span>Add Product</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>

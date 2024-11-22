@@ -7,18 +7,20 @@ interface AppHeaderProps {
     label: string;
     href: string;
   }[];
+  children?: React.ReactNode;
 }
 
-export function AppHeader({ items }: AppHeaderProps) {
+export function AppHeader({ items, children }: AppHeaderProps) {
   return (
-    <header className="flex h-16 shrink-0 items-center gap-2">
-      <div className="flex items-center gap-2 px-4">
+    <header className="flex h-16 shrink-0 items-center gap-2 justify-between px-4">
+      <div className="flex items-center gap-2">
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
         <AppBreadcrumb
           items={items}
         />
       </div>
+      {children}
     </header>
   )
 }

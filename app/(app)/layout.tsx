@@ -4,6 +4,7 @@ import {
   SidebarProvider
 } from "@/components/ui/sidebar";
 import { getServerSession } from "@/controllers/auth";
+import { getProducts } from "@/controllers/products";
 import { redirect } from "next/navigation";
 
 export default async function AppLayout({
@@ -12,6 +13,7 @@ export default async function AppLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession()
+  const products = await getProducts();
 
   if (!session) {
     redirect("/sign-in")
@@ -19,7 +21,7 @@ export default async function AppLayout({
 
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar products={products} />
       <SidebarInset>
         {children}
       </SidebarInset>

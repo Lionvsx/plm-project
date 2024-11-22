@@ -1,21 +1,17 @@
 "use client"
 
-import * as React from "react"
 import {
   BookOpen,
-  Bot,
   Command,
   Frame,
-  LifeBuoy,
-  Map,
+  Package,
   PieChart,
-  Send,
-  Settings2,
-  SquareTerminal,
+  Settings2
 } from "lucide-react"
+import * as React from "react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
+import { NavProducts } from "@/components/nav-products"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
 import {
@@ -27,127 +23,89 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { Product } from "@/db/schema"
 
 const data = {
   navMain: [
     {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
+      title: "Products",
+      url: "/products",
+      icon: Frame,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "All Products",
+          url: "/products",
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "Variants",
+          url: "/products/variants",
         },
         {
-          title: "Settings",
-          url: "#",
+          title: "Inventory",
+          url: "/products/inventory",
         },
       ],
     },
     {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
+      title: "Formulation",
+      url: "/formulation",
       icon: BookOpen,
       items: [
         {
-          title: "Introduction",
-          url: "#",
+          title: "Formulas",
+          url: "/formulation/formulas",
         },
         {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
+          title: "Ingredients",
+          url: "/formulation/ingredients",
         },
       ],
     },
     {
-      title: "Settings",
-      url: "#",
+      title: "Production",
+      url: "/production",
       icon: Settings2,
       items: [
         {
-          title: "General",
-          url: "#",
+          title: "Batches",
+          url: "/production/batches",
         },
         {
-          title: "Team",
-          url: "#",
+          title: "Quality Tests",
+          url: "/production/tests",
+        },
+      ],
+    },
+    {
+      title: "Marketing",
+      url: "/marketing",
+      icon: PieChart,
+      items: [
+        {
+          title: "Campaigns",
+          url: "/marketing/campaigns",
         },
         {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
+          title: "Sales Data",
+          url: "/marketing/sales",
         },
       ],
     },
   ],
   navSecondary: [
     {
-      title: "Support",
-      url: "#",
-      icon: LifeBuoy,
-    },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: Send,
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
+      title: "Settings",
+      url: "/settings",
+      icon: Settings2,
     },
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  products: Product[]
+}
+
+export function AppSidebar({ products, ...props }: AppSidebarProps) {
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -169,7 +127,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavProducts products={products.map(p => ({
+          ...p,
+          url: `/products/${p.id}`,
+          icon: Package,
+        }))} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
@@ -178,3 +140,4 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     </Sidebar>
   )
 }
+

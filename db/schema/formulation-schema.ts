@@ -8,6 +8,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { product } from "./product-schema";
 import { supplier } from "./supplier-schema";
+import { relations } from "drizzle-orm";
 
 export const ingredient = pgTable("ingredient", {
   id: serial("ingredient_id").primaryKey(),
@@ -33,3 +34,33 @@ export const formulaIngredient = pgTable("formula_ingredient", {
     .notNull(),
   percentage: decimal("percentage", { precision: 5, scale: 2 }),
 });
+
+export const ingredientRelations = relations(ingredient, ({ one, many }) => ({
+  supplier: one(supplier, {
+    fields: [ingredient.supplierId],
+    references: [supplier.id],
+  }),
+  formulas: many(formulaIngredient),
+}));
+
+export const formulaRelations = relations(formula, ({ one, many }) => ({
+  product: one(product, {
+    fields: [formula.productId],
+    references: [product.id],
+  }),
+  ingredients: many(formulaIngredient),
+}));
+
+export const formulaIngredientRelations = relations(
+  formulaIngredient,
+  ({ one }) => ({
+    formula: one(formula, {
+      fields: [formulaIngredient.formulaId],
+      references: [formula.id],
+    }),
+    ingredient: one(ingredient, {
+      fields: [formulaIngredient.ingredientId],
+      references: [ingredient.id],
+    }),
+  })
+);
