@@ -4,8 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getProduct } from "@/controllers/products";
 
 
-export default async function EditProductPage({ params }: { params: { id: string } }) {
-  const product = await getProduct(Number(params.id));
+export default async function EditProductPage({ params }: { params: { productId: string } }) {
+  const product = await getProduct(Number(params.productId));
 
   if (!product) {
     return <div>Product not found</div>;

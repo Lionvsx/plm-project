@@ -19,8 +19,10 @@ export const product = pgTable("product", {
 export type Product = InferSelectModel<typeof product>;
 
 export const productVariant = pgTable("product_variant", {
+  // Internal IDs
   id: serial("variant_id").primaryKey(),
   productId: integer("product_id").references(() => product.id),
+  // PROPS
   size: text("size"),
   sku: text("sku").unique(),
   price: decimal("price", { precision: 10, scale: 2 }),

@@ -1,14 +1,15 @@
 import { AppHeader } from "@/components/app-header";
-import { getProductVariants } from "@/controllers/product-variants";
+import { getVariants } from "@/controllers/product-variants";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 
 export default async function ProductPage() {
-  const productVariants = await getProductVariants();
+  const productVariants = await getVariants();
 
   return (
     <div>
-      <AppHeader items={[{ label: "Products", href: "/products" }, { label: "Variants", href: `/products/variants` }]} />
+      <AppHeader items={[{ label: "Products", href: "/products" }, { label: "Variants", href: `/products/variants` }]} >
+      </AppHeader>
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {productVariants.map(variant => (
