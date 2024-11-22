@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Edit, Plus } from "lucide-react";
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
-  const product = await getProduct(Number(params.id));
+export default async function ProductPage({ params }: { params: { productId: string } }) {
+  const product = await getProduct(Number(params.productId));
 
   if (!product) {
     return <div>Product not found</div>;
@@ -54,6 +54,13 @@ export default async function ProductPage({ params }: { params: { id: string } }
                     <div className="flex justify-between">
                       <span>SKU: {variant.sku}</span>
                       <span>${Number(variant.price).toFixed(2)}</span>
+                    </div>
+                    <div className="mt-4">
+                      <Button variant="outline" size="sm" asChild>
+                        <Link href={`/products/${product.id}/variants/${variant.id}`}>
+                          Show
+                        </Link>
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>

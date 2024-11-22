@@ -1,53 +1,61 @@
 "use server";
 
 import { db } from "@/db";
-import { productVariant } from "@/db/schema";
+import { productVariant } from "@/db/schema/product-schema";
 import { eq } from "drizzle-orm";
+import { VariantFormValues } from "@/lib/validators/variant";
 
-export async function getProductVariants() {
-  return await db.query.productVariant.findMany({
+export async function getVariants() {
+  const variants = await db.query.productVariant.findMany({
     with: {
       product: true,
-    },
+    }
   });
+  return variants;
 }
 
-export async function getProductVariant(id: string) {
-  return await db.query.productVariant.findFirst({
-    where: eq(productVariant.id, Number(id)),
-    with: {
-      product: true,
-    },
+export async function getVariant(id: number) {
+  const variant = await db.query.productVariant.findFirst({
+    where: eq(productVariant.id, id),
   });
+  return variant;
 }
 
-export async function getVariantsByProductId(productId: string) {
-  return await db.query.productVariant.findMany({
-    where: eq(productVariant.productId, Number(productId)),
-    with: {
-      product: true,
-    },
+export async function getVariantsByProductId(productId: number) {
+  const variants = await db.query.productVariant.findMany({
+    where: eq(productVariant.productId, productId),
   });
+  return variants;
 }
 
-export async function createProductVariant(
-  data: typeof productVariant.$inferInsert
-) {
-  return await db.insert(productVariant).values(data);
+export async function createVariant(data: VariantFormValues) {
+  const variant = await db
+    .insert(productVariant)
+    .values({
+      productId: data.productId,
+      size: data.size,
+      sku: data.sku,
+      price: data.price,
+    })
+    .returning();
+
+  return variant[0];
 }
 
-export async function updateProductVariant(
-  id: string,
-  data: Partial<typeof productVariant.$inferInsert>
-) {
-  return await db
+export async function updateVariant(id: number, data: VariantFormValues) {
+  const variant = await db
     .update(productVariant)
-    .set(data)
-    .where(eq(productVariant.id, Number(id)));
+    .set({
+      size: data.size,
+      sku: data.sku,
+      price: data.price,
+    })
+    .where(eq(productVariant.id, id))
+    .returning();
+
+  return variant[0];
 }
 
-export async function deleteProductVariant(id: string) {
-  return await db
-    .delete(productVariant)
-    .where(eq(productVariant.id, Number(id)));
+export async function deleteVariant(id: number) {
+  await db.delete(productVariant).where(eq(productVariant.id, id));
 }
