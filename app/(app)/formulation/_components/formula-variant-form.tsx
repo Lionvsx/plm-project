@@ -11,13 +11,15 @@ interface FormulaVariantFormProps {
   initialValues?: {
     id?: number;
     version: number;
-    status: string;
     notes?: string | null;
     ingredients?: string | null;
   };
 }
 
-export function FormulaVariantForm({ formulaId, initialValues }: FormulaVariantFormProps) {
+export function FormulaVariantForm({
+  formulaId,
+  initialValues,
+}: FormulaVariantFormProps) {
   const router = useRouter();
   const isEditing = !!initialValues?.id;
 
@@ -32,7 +34,9 @@ export function FormulaVariantForm({ formulaId, initialValues }: FormulaVariantF
   return (
     <form action={onSubmit} className="space-y-4">
       <div className="space-y-2">
-        <label htmlFor="version" className="text-sm font-medium">Version Number</label>
+        <label htmlFor="version" className="text-sm font-medium">
+          Version Number
+        </label>
         <Input
           id="version"
           name="version"
@@ -43,17 +47,9 @@ export function FormulaVariantForm({ formulaId, initialValues }: FormulaVariantF
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="status" className="text-sm font-medium">Status</label>
-        <Input
-          id="status"
-          name="status"
-          defaultValue={initialValues?.status}
-          required
-        />
-      </div>
-      
-      <div className="space-y-2">
-        <label htmlFor="ingredients" className="text-sm font-medium">Ingredients</label>
+        <label htmlFor="ingredients" className="text-sm font-medium">
+          Ingredients
+        </label>
         <Textarea
           id="ingredients"
           name="ingredients"
@@ -62,7 +58,9 @@ export function FormulaVariantForm({ formulaId, initialValues }: FormulaVariantF
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="notes" className="text-sm font-medium">Notes</label>
+        <label htmlFor="notes" className="text-sm font-medium">
+          Notes
+        </label>
         <Textarea
           id="notes"
           name="notes"
@@ -75,4 +73,4 @@ export function FormulaVariantForm({ formulaId, initialValues }: FormulaVariantF
       </Button>
     </form>
   );
-} 
+}

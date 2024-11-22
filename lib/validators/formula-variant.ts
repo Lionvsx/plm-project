@@ -1,10 +1,10 @@
 import { z } from "zod";
 
-export const formulaVariantSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  version: z.number().min(1, "Version is required"),
-  notes: z.string().optional(),
+export const FormulaVariantSchema = z.object({
+  id: z.number().optional(),
   formulaId: z.number(),
+  version: z.number().min(1),
+  notes: z.string().optional(),
 });
 
-export type VariantFormulaFormValues = z.infer<typeof formulaVariantSchema>; 
+export type FormulaVariant = z.infer<typeof FormulaVariantSchema>; 
