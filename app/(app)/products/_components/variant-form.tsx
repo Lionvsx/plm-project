@@ -10,7 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { VariantFormValues, variantSchema } from "@/lib/validators/variant";
+import { VariantProductFormValues, variantSchema } from "@/lib/validators/product_variant";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -30,7 +30,7 @@ interface VariantFormProps {
 export function VariantForm({ productId, initialValues }: VariantFormProps) {
   const router = useRouter();
 
-  const form = useForm<VariantFormValues>({
+  const form = useForm<VariantProductFormValues>({
     resolver: zodResolver(variantSchema),
     defaultValues: initialValues
       ? {
@@ -48,7 +48,7 @@ export function VariantForm({ productId, initialValues }: VariantFormProps) {
       },
   });
 
-  const onSubmit = async (data: VariantFormValues) => {
+  const onSubmit = async (data: VariantProductFormValues) => {
     try {
       if (!initialValues) {
         await createVariant(data);
