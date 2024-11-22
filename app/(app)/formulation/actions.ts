@@ -13,8 +13,8 @@ export async function createFormula(formData: FormData) {
   };
 
   await createFormulaDb(data);
-  revalidatePath('/formulation');
-  redirect('/formulation');
+  revalidatePath("/formulation");
+  redirect("/formulation");
 }
 
 export async function updateFormula(formulaId: number, data: FormData) {
@@ -29,7 +29,11 @@ export async function createVariant(formulaId: number, data: FormData) {
   redirect(`/formulation/${formulaId}`);
 }
 
-export async function updateVariant(formulaId: number, variantId: number, data: FormData) {
+export async function updateVariant(
+  formulaId: number,
+  variantId: number,
+  data: FormData
+) {
   // Implementation for updating a formula variant
   revalidatePath(`/formulation/${formulaId}`);
   redirect(`/formulation/${formulaId}/variants/${variantId}`);
@@ -39,4 +43,4 @@ export async function deleteVariant(formulaId: number, variantId: number) {
   // Implementation for deleting a formula variant
   revalidatePath(`/formulation/${formulaId}`);
   redirect(`/formulation/${formulaId}`);
-} 
+}
