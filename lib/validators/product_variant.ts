@@ -7,4 +7,4 @@ export const variantSchema = z.object({
   productId: z.number(),
 });
 
-export type VariantFormValues = z.infer<typeof variantSchema>;
+export type VariantProductFormValues = z.infer<typeof variantSchema>;

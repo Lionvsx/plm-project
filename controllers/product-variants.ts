@@ -3,7 +3,7 @@
 import { db } from "@/db";
 import { productVariant } from "@/db/schema/product-schema";
 import { eq } from "drizzle-orm";
-import { VariantFormValues } from "@/lib/validators/variant";
+import { VariantProductFormValues } from "@/lib/validators/product_variant";
 
 export async function getVariants() {
   const variants = await db.query.productVariant.findMany({
@@ -28,7 +28,7 @@ export async function getVariantsByProductId(productId: number) {
   return variants;
 }
 
-export async function createVariant(data: VariantFormValues) {
+export async function createVariant(data: VariantProductFormValues) {
   const variant = await db
     .insert(productVariant)
     .values({
@@ -42,7 +42,7 @@ export async function createVariant(data: VariantFormValues) {
   return variant[0];
 }
 
-export async function updateVariant(id: number, data: VariantFormValues) {
+export async function updateVariant(id: number, data: VariantProductFormValues) {
   const variant = await db
     .update(productVariant)
     .set({

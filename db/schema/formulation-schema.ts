@@ -3,10 +3,8 @@ import {
   integer,
   pgTable,
   text,
-  date,
   serial,
 } from "drizzle-orm/pg-core";
-import { product } from "./product-schema";
 import { supplier } from "./supplier-schema";
 import { relations } from "drizzle-orm";
 
@@ -19,20 +17,27 @@ export const ingredient = pgTable("ingredient", {
 
 export const formula = pgTable("formula", {
   id: serial("formula_id").primaryKey(),
-  productId: integer("product_id").references(() => product.id),
-  version: integer("version"),
-  creationDate: date("creation_date"),
+  name: text("name").notNull(),
+  description: text("description"),
   notes: text("notes"),
 });
 
 export const formulaIngredient = pgTable("formula_ingredient", {
-  formulaId: integer("formula_id")
-    .references(() => formula.id)
+  variantId: integer("formula_variant_id")
+    .references(() => formulaVariant.id)
     .notNull(),
   ingredientId: integer("ingredient_id")
     .references(() => ingredient.id)
     .notNull(),
   percentage: decimal("percentage", { precision: 5, scale: 2 }),
+});
+
+export const formulaVariant = pgTable("formula_variant", {
+  id: serial("formula_variant_id").primaryKey(),
+  formulaId: integer("formula_id").references(() => formula.id),
+  name: text("name").notNull(),
+  version: integer("version"),
+  notes: text("notes"),
 });
 
 export const ingredientRelations = relations(ingredient, ({ one, many }) => ({
@@ -43,20 +48,26 @@ export const ingredientRelations = relations(ingredient, ({ one, many }) => ({
   formulas: many(formulaIngredient),
 }));
 
-export const formulaRelations = relations(formula, ({ one, many }) => ({
-  product: one(product, {
-    fields: [formula.productId],
-    references: [product.id],
-  }),
-  ingredients: many(formulaIngredient),
+export const formulaRelations = relations(formula, ({ many }) => ({
+  variants: many(formulaVariant),
 }));
+
+
+export const formulaVariantRelations = relations(formulaVariant, ({ one, many }) => ({
+  formula: one(formula, {
+    fields: [formulaVariant.formulaId],
+    references: [formula.id],
+  }),
+    ingredients: many(formulaIngredient),
+  })
+);
 
 export const formulaIngredientRelations = relations(
   formulaIngredient,
   ({ one }) => ({
-    formula: one(formula, {
-      fields: [formulaIngredient.formulaId],
-      references: [formula.id],
+    variant: one(formulaVariant, {
+      fields: [formulaIngredient.variantId],
+      references: [formulaVariant.id],
     }),
     ingredient: one(ingredient, {
       fields: [formulaIngredient.ingredientId],
