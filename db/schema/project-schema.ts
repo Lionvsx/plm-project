@@ -9,7 +9,7 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
-import { product } from "./product-schema";
+import { Product, product } from "./product-schema";
 import { user } from "./auth-schema";
 
 export const projectStatusEnum = pgEnum("project_status", [
@@ -55,8 +55,11 @@ export const task = pgTable("task", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export type Project = InferSelectModel<typeof project>;
 export type Task = InferSelectModel<typeof task>;
+export type Project = InferSelectModel<typeof project> & {
+  tasks?: Task[];
+  product?: Product;
+};
 
 export const projectRelations = relations(project, ({ one, many }) => ({
   product: one(product, {
