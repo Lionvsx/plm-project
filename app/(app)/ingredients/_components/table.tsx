@@ -1,12 +1,14 @@
 "use client";
 
-import { DataTable } from "@/components/ui/data-table";
-import { ColumnDef } from "@tanstack/react-table";
-import { Ingredient } from "@/db/schema";
-import { formatDate, formatNumber } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/ui/data-table";
+import type { getIngredients } from "@/controllers/ingredients";
+import { formatDate, formatNumber } from "@/lib/utils";
+import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
+
+type Ingredient = Awaited<ReturnType<typeof getIngredients>>[number];
 
 interface TableProps {
   data: Ingredient[];
@@ -26,8 +28,10 @@ export function Table({ data }: TableProps) {
       accessorKey: "stockQuantity",
       header: "Stock Level",
       cell: ({ row }) => {
-        const stockQuantity = parseFloat(row.getValue("stockQuantity") as string) || 0;
-        const minimumStock = parseFloat(row.original.minimumStock as string) || 0;
+        const stockQuantity =
+          parseFloat(row.getValue("stockQuantity") as string) || 0;
+        const minimumStock =
+          parseFloat(row.original.minimumStock as string) || 0;
         const unit = row.original.unit;
 
         return (
@@ -36,8 +40,8 @@ export function Table({ data }: TableProps) {
               stockQuantity <= 0
                 ? "destructive"
                 : stockQuantity < minimumStock
-                  ? "secondary"
-                  : "success"
+                ? "secondary"
+                : "success"
             }
           >
             {formatNumber(stockQuantity)} {unit}

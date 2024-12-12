@@ -56,10 +56,7 @@ export const task = pgTable("task", {
 });
 
 export type Task = InferSelectModel<typeof task>;
-export type Project = InferSelectModel<typeof project> & {
-  tasks?: Task[];
-  product?: Product;
-};
+export type Project = InferSelectModel<typeof project>;
 
 export const projectRelations = relations(project, ({ one, many }) => ({
   product: one(product, {

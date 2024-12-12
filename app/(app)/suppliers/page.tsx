@@ -62,7 +62,6 @@ export default async function SuppliersPage() {
       <DataTable
         columns={columns}
         data={suppliers}
-        searchKey="name"
         searchPlaceholder="Search suppliers..."
       />
     </div>

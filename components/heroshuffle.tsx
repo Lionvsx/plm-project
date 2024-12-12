@@ -20,9 +20,11 @@ const ShuffleHero = () => {
           and make informed decisions with our comprehensive solution tailored
           to your needs.
         </p>
-        <button className="bg-indigo-500 text-white font-medium py-2 px-4 rounded transition-all hover:bg-indigo-600 active:scale-95">
-          Get Started Now
-        </button>
+        <a href="/signup" className="inline-block">
+          <button className="bg-indigo-500 text-white font-medium py-2 px-4 rounded transition-all hover:bg-indigo-600 active:scale-95">
+            Get Started Now
+          </button>
+        </a>
       </div>
       <ShuffleGrid />
     </section>
