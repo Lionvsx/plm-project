@@ -6,12 +6,17 @@ import {
   pgTable,
   serial,
   text,
+  varchar,
 } from "drizzle-orm/pg-core";
+import { formulation } from "./formulation-schema";
 
 export const product = pgTable("product", {
   id: serial("product_id").primaryKey(),
   name: text("name").notNull(),
   description: text("description"),
+  category: varchar("category", { length: 50 }).notNull(),
+  costPrice: decimal("cost_price", { precision: 10, scale: 2 }),
+  margin: decimal("margin", { precision: 5, scale: 2 }),
   launchDate: date("launch_date", { mode: "date" }),
   discontinuationDate: date("discontinuation_date", { mode: "date" }),
 });
@@ -32,6 +37,7 @@ export type ProductVariant = InferSelectModel<typeof productVariant>;
 
 export const productRelations = relations(product, ({ many }) => ({
   variants: many(productVariant),
+  formulations: many(formulation),
 }));
 
 export const productVariantRelations = relations(productVariant, ({ one }) => ({

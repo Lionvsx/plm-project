@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1732277111679,
-      "tag": "0000_flashy_omega_sentinel",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1732283485295,
-      "tag": "0001_odd_sabra",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1732301114966,
-      "tag": "0002_puzzling_meteorite",
+      "when": 1733321740755,
+      "tag": "0000_nifty_umar",
       "breakpoints": true
     }
   ]

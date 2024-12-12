@@ -1,37 +1,159 @@
 "use server";
 
 import { db } from "@/db";
-import { product } from "@/db/schema";
+import { formulation, product, productVariant } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+
+export type ProductWithVariants = {
+  id: number;
+  name: string;
+  description: string | null;
+  category: string;
+  costPrice: number | null;
+  margin: number | null;
+  launchDate: Date | null;
+  discontinuationDate: Date | null;
+  variants: {
+    id: number;
+    size: string | null;
+    sku: string | null;
+    price: number | null;
+  }[];
+};
 
 export async function getProducts() {
-  return await db.query.product.findMany({
+  const products = await db.query.product.findMany({
     with: {
       variants: true,
     },
   });
+  return products;
 }
 
 export async function getProduct(id: number) {
-  return await db.query.product.findFirst({
+  const result = await db.query.product.findFirst({
     where: eq(product.id, id),
     with: {
+      formulations: true,
       variants: true,
     },
   });
+  return result;
 }
 
-export async function createProduct(data: typeof product.$inferInsert) {
-  return await db.insert(product).values(data);
+export async function createProduct(data: {
+  name: string;
+  description?: string;
+  category: string;
+  costPrice?: string;
+  margin?: string;
+  launchDate?: Date;
+}) {
+  const result = await db.insert(product).values(data).returning();
+  revalidatePath("/dashboard/products");
+  return result[0];
 }
 
 export async function updateProduct(
   id: number,
-  data: Partial<typeof product.$inferInsert>
+  data: {
+    name?: string;
+    description?: string;
+    category?: string;
+    costPrice?: string;
+    margin?: string;
+    launchDate?: Date;
+    discontinuationDate?: Date;
+  }
 ) {
-  return await db.update(product).set(data).where(eq(product.id, id));
+  const result = await db
+    .update(product)
+    .set(data)
+    .where(eq(product.id, id))
+    .returning();
+  revalidatePath("/dashboard/products");
+  return result[0];
 }
 
 export async function deleteProduct(id: number) {
-  return await db.delete(product).where(eq(product.id, id));
+  await db.delete(product).where(eq(product.id, id));
+  revalidatePath("/dashboard/products");
+}
+
+// Variant Management
+export async function addProductVariant(
+  productId: number,
+  data: {
+    size: string;
+    sku: string;
+    price?: string;
+  }
+) {
+  const result = await db
+    .insert(productVariant)
+    .values({
+      ...data,
+      productId,
+    })
+    .returning();
+  revalidatePath("/dashboard/products");
+  return result[0];
+}
+
+export async function updateProductVariant(
+  id: number,
+  data: {
+    size?: string;
+    sku?: string;
+    price?: string;
+  }
+) {
+  const result = await db
+    .update(productVariant)
+    .set(data)
+    .where(eq(productVariant.id, id))
+    .returning();
+  revalidatePath("/dashboard/products");
+  return result[0];
+}
+
+export async function deleteProductVariant(id: number) {
+  await db.delete(productVariant).where(eq(productVariant.id, id));
+  revalidatePath("/dashboard/products");
+}
+
+// Cost Analysis
+export async function calculateProductCost(id: number) {
+  const productData = await db.query.product.findFirst({
+    where: eq(product.id, id),
+    with: {
+      formulations: {
+        where: eq(formulation.isActive, true),
+        with: {
+          ingredients: {
+            with: {
+              ingredient: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!productData || !productData.formulations[0]) {
+    return null;
+  }
+
+  const activeFormulation = productData.formulations[0];
+  let totalCost = 0;
+
+  for (const formulationIngredient of activeFormulation.ingredients) {
+    const ingredient = formulationIngredient.ingredient;
+    const quantity = formulationIngredient.quantity;
+    totalCost +=
+      parseFloat(ingredient.costPerUnit || "0") * parseFloat(quantity);
+  }
+
+  return totalCost;
 }

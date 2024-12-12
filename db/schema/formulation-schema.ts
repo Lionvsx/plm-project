@@ -1,76 +1,68 @@
+import { InferSelectModel, relations } from "drizzle-orm";
 import {
   decimal,
   integer,
   pgTable,
-  text,
   serial,
+  text,
+  timestamp,
+  boolean,
+  varchar,
 } from "drizzle-orm/pg-core";
-import { supplier } from "./supplier-schema";
-import { relations } from "drizzle-orm";
+import { product } from "./product-schema";
+import { ingredient } from "./ingredient-schema";
 
-export const ingredient = pgTable("ingredient", {
-  id: serial("ingredient_id").primaryKey(),
-  name: text("name").notNull(),
-  description: text("description"),
-  supplierId: integer("supplier_id").references(() => supplier.id),
-});
-
-export const formula = pgTable("formula", {
-  id: serial("formula_id").primaryKey(),
-  name: text("name").notNull(),
+export const formulation = pgTable("formulation", {
+  id: serial("formulation_id").primaryKey(),
+  productId: integer("product_id")
+    .references(() => product.id)
+    .notNull(),
+  version: integer("version").notNull().default(1),
+  name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
   notes: text("notes"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const formulaIngredient = pgTable("formula_ingredient", {
-  variantId: integer("formula_variant_id")
-    .references(() => formulaVariant.id)
+export const formulationIngredient = pgTable("formulation_ingredient", {
+  id: serial("formulation_ingredient_id").primaryKey(),
+  formulationId: integer("formulation_id")
+    .references(() => formulation.id)
     .notNull(),
   ingredientId: integer("ingredient_id")
     .references(() => ingredient.id)
     .notNull(),
-  percentage: decimal("percentage", { precision: 5, scale: 2 }),
-});
-
-export const formulaVariant = pgTable("formula_variant", {
-  id: serial("formula_variant_id").primaryKey(),
-  formulaId: integer("formula_id").references(() => formula.id),
-  name: text("name").notNull(),
-  version: integer("version"),
+  quantity: decimal("quantity", { precision: 10, scale: 2 }).notNull(),
+  unit: varchar("unit", { length: 50 }).notNull(),
   notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const ingredientRelations = relations(ingredient, ({ one, many }) => ({
-  supplier: one(supplier, {
-    fields: [ingredient.supplierId],
-    references: [supplier.id],
+export type Formulation = InferSelectModel<typeof formulation>;
+export type FormulationIngredient = InferSelectModel<
+  typeof formulationIngredient
+>;
+
+export const formulationRelations = relations(formulation, ({ one, many }) => ({
+  product: one(product, {
+    fields: [formulation.productId],
+    references: [product.id],
   }),
-  formulas: many(formulaIngredient),
+  ingredients: many(formulationIngredient),
 }));
 
-export const formulaRelations = relations(formula, ({ many }) => ({
-  variants: many(formulaVariant),
-}));
-
-
-export const formulaVariantRelations = relations(formulaVariant, ({ one, many }) => ({
-  formula: one(formula, {
-    fields: [formulaVariant.formulaId],
-    references: [formula.id],
-  }),
-    ingredients: many(formulaIngredient),
-  })
-);
-
-export const formulaIngredientRelations = relations(
-  formulaIngredient,
+export const formulationIngredientRelations = relations(
+  formulationIngredient,
   ({ one }) => ({
-    variant: one(formulaVariant, {
-      fields: [formulaIngredient.variantId],
-      references: [formulaVariant.id],
+    formulation: one(formulation, {
+      fields: [formulationIngredient.formulationId],
+      references: [formulation.id],
     }),
     ingredient: one(ingredient, {
-      fields: [formulaIngredient.ingredientId],
+      fields: [formulationIngredient.ingredientId],
       references: [ingredient.id],
     }),
   })

@@ -1,0 +1,207 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { createProject, updateProject } from "@/controllers/projects";
+import { Product, Project } from "@/db/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+
+const formSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  description: z.string().optional(),
+  status: z.enum(["PLANNING", "ACTIVE", "ON_HOLD", "COMPLETED", "CANCELLED"]),
+  startDate: z.string().min(1, "Start date is required"),
+  endDate: z.string().optional(),
+  productId: z.coerce.number().min(1, "Product is required"),
+});
+
+interface FormProps {
+  initialData?: Project;
+  products: Product[];
+}
+
+export function ProjectForm({ initialData, products }: FormProps) {
+  const router = useRouter();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: initialData?.name || "",
+      description: initialData?.description || "",
+      status: initialData?.status || "PLANNING",
+      startDate: initialData?.startDate
+        ? new Date(initialData.startDate).toISOString().split("T")[0]
+        : new Date().toISOString().split("T")[0],
+      endDate: initialData?.endDate
+        ? new Date(initialData.endDate).toISOString().split("T")[0]
+        : undefined,
+      productId: initialData?.productId || undefined,
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      if (initialData) {
+        await updateProject(initialData.id, {
+          ...values,
+          startDate: new Date(values.startDate),
+          endDate: values.endDate ? new Date(values.endDate) : undefined,
+        });
+      } else {
+        await createProject({
+          ...values,
+          startDate: new Date(values.startDate),
+          endDate: values.endDate ? new Date(values.endDate) : undefined,
+        });
+      }
+      router.back();
+    } catch (error) {
+      console.error("Error saving project:", error);
+    }
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Project name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Description of the project"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Status</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a status" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="PLANNING">Planning</SelectItem>
+                  <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
+                  <SelectItem value="COMPLETED">Completed</SelectItem>
+                  <SelectItem value="ON_HOLD">On Hold</SelectItem>
+                  <SelectItem value="CANCELLED">Cancelled</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="startDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Start Date</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="endDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>End Date</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <FormField
+          control={form.control}
+          name="productId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Product</FormLabel>
+              <Select
+                onValueChange={(value) => field.onChange(Number(value))}
+                value={field.value?.toString()}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a product" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {products.map((product) => (
+                    <SelectItem key={product.id} value={product.id.toString()}>
+                      {product.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button type="submit">
+          {initialData ? "Update Project" : "Create Project"}
+        </Button>
+      </form>
+    </Form>
+  );
+}

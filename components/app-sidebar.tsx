@@ -6,7 +6,10 @@ import {
   Frame,
   Package,
   PieChart,
-  Settings2
+  Settings2,
+  Boxes,
+  Users,
+  ClipboardList
 } from "lucide-react"
 import * as React from "react"
 
@@ -30,64 +33,41 @@ const data = {
     {
       title: "Products",
       url: "/products",
-      icon: Frame,
+      icon: Package,
       items: [
         {
           title: "All Products",
           url: "/products",
         },
+      ],
+    },
+    {
+      title: "Ingredients",
+      url: "/ingredients",
+      icon: Boxes,
+      items: [
         {
-          title: "Variants",
-          url: "/products/variants",
+          title: "All Ingredients",
+          url: "/ingredients",
         },
         {
-          title: "Inventory",
-          url: "/products/inventory",
+          title: "Suppliers",
+          url: "/suppliers",
         },
       ],
     },
     {
-      title: "Formulation",
-      url: "/formulation",
-      icon: BookOpen,
+      title: "Projects",
+      url: "/projects",
+      icon: ClipboardList,
       items: [
         {
-          title: "Formulas",
-          url: "/formulation/formulas",
+          title: "All Projects",
+          url: "/projects",
         },
         {
-          title: "Ingredients",
-          url: "/formulation/ingredients",
-        },
-      ],
-    },
-    {
-      title: "Production",
-      url: "/production",
-      icon: Settings2,
-      items: [
-        {
-          title: "Batches",
-          url: "/production/batches",
-        },
-        {
-          title: "Quality Tests",
-          url: "/production/tests",
-        },
-      ],
-    },
-    {
-      title: "Marketing",
-      url: "/marketing",
-      icon: PieChart,
-      items: [
-        {
-          title: "Campaigns",
-          url: "/marketing/campaigns",
-        },
-        {
-          title: "Sales Data",
-          url: "/marketing/sales",
+          title: "Tasks",
+          url: "/projects/tasks",
         },
       ],
     },
@@ -117,8 +97,8 @@ export function AppSidebar({ products, ...props }: AppSidebarProps) {
                   <Command className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Acme Inc</span>
-                  <span className="truncate text-xs">Enterprise</span>
+                  <span className="truncate font-semibold">PLM Project</span>
+                  <span className="truncate text-xs">Product Lifecycle Management</span>
                 </div>
               </a>
             </SidebarMenuButton>
