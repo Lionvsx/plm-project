@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { createProject, updateProject } from "@/controllers/projects";
-import { Product, Project } from "@/db/schema";
+import { Project } from "@/db/schema";
 import { projectSchema } from "@/lib/validators/projects";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";

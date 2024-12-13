@@ -49,6 +49,7 @@ export async function createProduct(data: {
   costPrice?: string;
   margin?: string;
   launchDate?: Date;
+  projectId: number;
 }) {
   const result = await db.insert(product).values(data).returning();
   revalidatePath("/dashboard/products");

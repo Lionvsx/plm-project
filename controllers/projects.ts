@@ -35,7 +35,7 @@ export type ProjectWithDetails = {
 export async function getProjects() {
   const projects = await db.query.project.findMany({
     with: {
-      product: true,
+      products: true,
       tasks: {
         with: {
           assignee: true,
@@ -50,7 +50,6 @@ export async function getProject(id: number) {
   const result = await db.query.project.findFirst({
     where: eq(project.id, id),
     with: {
-      product: true,
       tasks: {
         with: {
           assignee: true,

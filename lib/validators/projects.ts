@@ -12,5 +12,4 @@ export const projectSchema = z.object({
   ]),
   startDate: z.string().min(1, "Start date is required"),
   endDate: z.string().optional(),
-  productId: z.coerce.number().min(1, "Product is required"),
 });
