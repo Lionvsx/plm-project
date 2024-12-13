@@ -4,7 +4,7 @@ import { getIngredients } from "@/controllers/ingredients";
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
-import { AddIngredientForm } from "../_components/form";
+import { IngredientForm } from "../_components/form";
 import { IngredientsTable } from "../_components/table";
 
 interface Props {
@@ -78,7 +78,7 @@ export default async function NewFormulationIngredientPage({ params }: Props) {
             <CardTitle>Add Ingredient</CardTitle>
           </CardHeader>
           <CardContent>
-            <AddIngredientForm
+            <IngredientForm
               formulationId={formulation.id}
               ingredients={ingredients}
             />

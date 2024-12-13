@@ -23,14 +23,14 @@ export function TaskTable({ tasks }: TaskTableProps) {
       header: "Status",
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
-        const variant = {
+        const statusVariant: Record<string, "secondary" | "success" | "warning" | "default"> = {
           TODO: "secondary",
           IN_PROGRESS: "warning",
           REVIEW: "default",
           COMPLETED: "success",
-        }[status];
+        } as const;
 
-        return <Badge variant={variant}>{status}</Badge>;
+        return <Badge variant={statusVariant[status]}>{status}</Badge>;
       },
     },
     {

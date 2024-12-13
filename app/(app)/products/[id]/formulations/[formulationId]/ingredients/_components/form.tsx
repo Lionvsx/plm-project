@@ -37,7 +37,7 @@ interface FormProps {
   ingredients: Ingredient[];
 }
 
-export function AddIngredientForm({ formulationId, ingredients }: FormProps) {
+export function IngredientForm({ formulationId, ingredients }: FormProps) {
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

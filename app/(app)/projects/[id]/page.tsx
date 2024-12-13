@@ -28,14 +28,13 @@ export default async function ProjectPage({ params }: Props) {
 
   const statusVariant: Record<
     string,
-    "secondary" | "success" | "warning" | "default" | "destructive"
+    "secondary" | "success" | "warning" | "default"
   > = {
-    PLANNING: "secondary",
-    IN_PROGRESS: "success",
-    ON_HOLD: "warning",
-    COMPLETED: "default",
-    CANCELLED: "destructive",
-  }[project.status];
+    TODO: "secondary",
+    IN_PROGRESS: "warning",
+    REVIEW: "default",
+    COMPLETED: "success",
+  } as const;
 
   return (
     <div className="p-6">
@@ -43,7 +42,9 @@ export default async function ProjectPage({ params }: Props) {
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold">{project.name}</h1>
-            <Badge variant={statusVariant}>{project.status}</Badge>
+            <Badge variant={statusVariant[project.status]}>
+              {project.status}
+            </Badge>
           </div>
           {project.description && (
             <p className="text-muted-foreground mt-2">{project.description}</p>
@@ -57,23 +58,6 @@ export default async function ProjectPage({ params }: Props) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Product</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Link
-              href={`/products/${project.productId}`}
-              className="text-2xl font-bold hover:underline"
-            >
-              {project.product.name}
-            </Link>
-            <p className="text-sm text-muted-foreground mt-1">
-              {project.product.category}
-            </p>
-          </CardContent>
-        </Card>
-
         <Card>
           <CardHeader>
             <CardTitle>Timeline</CardTitle>
@@ -114,7 +98,7 @@ export default async function ProjectPage({ params }: Props) {
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-semibold">Tasks</h2>
           <Button asChild>
-            <Link href={`/app/projects/${project.id}/tasks/new`}>
+            <Link href={`/projects/${project.id}/tasks/new`}>
               <Plus className="h-4 w-4 mr-2" />
               New Task
             </Link>

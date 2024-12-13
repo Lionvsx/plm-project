@@ -68,7 +68,6 @@ export default async function EditIngredientsPage({ params }: Props) {
             <IngredientForm
               formulationId={formulation.id}
               ingredients={ingredients}
-              currentIngredients={formulation.ingredients}
             />
           </CardContent>
         </Card>
