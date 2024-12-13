@@ -1,21 +1,21 @@
 import { InferSelectModel, relations } from "drizzle-orm";
 import {
+  boolean,
   decimal,
   integer,
   pgTable,
   serial,
   text,
   timestamp,
-  boolean,
   varchar,
 } from "drizzle-orm/pg-core";
-import { product } from "./product-schema";
 import { ingredient } from "./ingredient-schema";
+import { productVariant } from "./product-schema";
 
 export const formulation = pgTable("formulation", {
   id: serial("formulation_id").primaryKey(),
-  productId: integer("product_id")
-    .references(() => product.id)
+  productVariantId: integer("product_variant_id")
+    .references(() => productVariant.id)
     .notNull(),
   version: integer("version").notNull().default(1),
   name: varchar("name", { length: 255 }).notNull(),
@@ -47,9 +47,9 @@ export type FormulationIngredient = InferSelectModel<
 >;
 
 export const formulationRelations = relations(formulation, ({ one, many }) => ({
-  product: one(product, {
-    fields: [formulation.productId],
-    references: [product.id],
+  product: one(productVariant, {
+    fields: [formulation.productVariantId],
+    references: [productVariant.id],
   }),
   ingredients: many(formulationIngredient),
 }));

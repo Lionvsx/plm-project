@@ -124,9 +124,6 @@ export default async function ProductPage({ params }: Props) {
             )}
           </div>
         </div>
-
-        {/* Formulations Section */}
-        <FormulationsList productId={product.id} formulations={product.formulations} />
       </div>
     </div>
   );

@@ -35,8 +35,11 @@ export async function getProduct(id: number) {
   const result = await db.query.product.findFirst({
     where: eq(product.id, id),
     with: {
-      formulations: true,
-      variants: true,
+      variants: {
+        with: {
+          formulations: true,
+        },
+      },
     },
   });
   return result;
@@ -125,9 +128,9 @@ export async function deleteProductVariant(id: number) {
 }
 
 // Cost Analysis
-export async function calculateProductCost(id: number) {
-  const productData = await db.query.product.findFirst({
-    where: eq(product.id, id),
+export async function calculateProductVariantCost(id: number) {
+  const productVariantData = await db.query.productVariant.findFirst({
+    where: eq(productVariant.id, id),
     with: {
       formulations: {
         where: eq(formulation.isActive, true),
@@ -142,11 +145,11 @@ export async function calculateProductCost(id: number) {
     },
   });
 
-  if (!productData || !productData.formulations[0]) {
+  if (!productVariantData || !productVariantData.formulations[0]) {
     return null;
   }
 
-  const activeFormulation = productData.formulations[0];
+  const activeFormulation = productVariantData.formulations[0];
   let totalCost = 0;
 
   for (const formulationIngredient of activeFormulation.ingredients) {

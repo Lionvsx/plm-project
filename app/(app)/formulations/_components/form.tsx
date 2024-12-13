@@ -17,34 +17,27 @@ import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
 import { createFormulation, updateFormulation } from "@/controllers/formulations";
 import { Formulation } from "@/db/schema";
-
-const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  description: z.string().optional(),
-  version: z.coerce.number().min(1, "Version is required"),
-  productId: z.number().min(1, "Product ID is required"),
-  notes: z.string().optional(),
-});
+import { formulationSchema } from "@/lib/validators/formulation";
 
 interface FormProps {
   initialData?: Formulation;
-  productId: number;
+  productVariantId: number;
 }
 
-export function FormulationForm({ initialData, productId }: FormProps) {
+export function FormulationForm({ initialData, productVariantId }: FormProps) {
   const router = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof formulationSchema>>({
+    resolver: zodResolver(formulationSchema),
     defaultValues: {
       name: initialData?.name || "",
       description: initialData?.description || "",
       version: initialData?.version || 1,
-      productId: initialData?.productId || productId,
+      productVariantId: initialData?.productVariantId || productVariantId,
       notes: initialData?.notes || "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formulationSchema>) {
     try {
       if (initialData) {
         await updateFormulation(initialData.id, values);
