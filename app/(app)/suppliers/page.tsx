@@ -3,49 +3,11 @@ import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import { SuppliersTable } from "./_components/table";
 
 export default async function SuppliersPage() {
   const suppliers = await getSuppliers();
 
-  const columns = [
-    {
-      accessorKey: "name",
-      header: "Name",
-    },
-    {
-      accessorKey: "contactPerson",
-      header: "Contact Person",
-    },
-    {
-      accessorKey: "email",
-      header: "Email",
-    },
-    {
-      accessorKey: "phone",
-      header: "Phone",
-    },
-    {
-      id: "ingredients",
-      header: "Ingredients",
-      cell: ({ row }) => {
-        const supplier = row.original;
-        return supplier.ingredients?.length || 0;
-      },
-    },
-    {
-      id: "actions",
-      cell: ({ row }) => {
-        const supplier = row.original;
-        return (
-          <div className="flex gap-2">
-            <Button variant="ghost" size="sm" asChild>
-              <Link href={`/app/suppliers/${supplier.id}`}>View</Link>
-            </Button>
-          </div>
-        );
-      },
-    },
-  ];
 
   return (
     <div className="p-6">
@@ -59,11 +21,7 @@ export default async function SuppliersPage() {
         </Button>
       </div>
 
-      <DataTable
-        columns={columns}
-        data={suppliers}
-        searchPlaceholder="Search suppliers..."
-      />
+      <SuppliersTable suppliers={suppliers} />
     </div>
   );
 }
