@@ -14,7 +14,7 @@ import { user } from "./auth-schema";
 
 export const projectStatusEnum = pgEnum("project_status", [
   "PLANNING",
-  "ACTIVE",
+  "IN_PROGRESS",
   "ON_HOLD",
   "COMPLETED",
   "CANCELLED",

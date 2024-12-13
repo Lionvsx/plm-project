@@ -1,4 +1,7 @@
-import { getProject, getProjectProgress } from "@/controllers/projects";
+import {
+  getProject as getProjectFn,
+  getProjectProgress,
+} from "@/controllers/projects";
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +11,8 @@ import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 import { Pencil, Plus } from "lucide-react";
 import { DataTable } from "@/components/ui/data-table";
+import { ColumnDef } from "@tanstack/react-table";
+import type { getProject } from "@/controllers/projects";
 
 interface Props {
   params: {
@@ -16,14 +21,18 @@ interface Props {
 }
 
 export default async function ProjectPage({ params }: Props) {
-  const project = await getProject(parseInt(params.id));
+  const project = await getProjectFn(parseInt(params.id));
   const progress = await getProjectProgress(parseInt(params.id));
 
   if (!project) {
     notFound();
   }
 
-  const taskColumns = [
+  type Task = NonNullable<
+    Awaited<ReturnType<typeof getProjectFn>>
+  >["tasks"][number];
+
+  const taskColumns: ColumnDef<Task>[] = [
     {
       accessorKey: "title",
       header: "Title",
@@ -33,14 +42,17 @@ export default async function ProjectPage({ params }: Props) {
       header: "Status",
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
-        const variant = {
+        const variant: Record<
+          string,
+          "secondary" | "warning" | "default" | "success"
+        > = {
           TODO: "secondary",
           IN_PROGRESS: "warning",
           REVIEW: "default",
           COMPLETED: "success",
-        }[status];
+        };
 
-        return <Badge variant={variant}>{status}</Badge>;
+        return <Badge variant={variant[status]}>{status}</Badge>;
       },
     },
     {
@@ -51,19 +63,30 @@ export default async function ProjectPage({ params }: Props) {
       accessorKey: "deadline",
       header: "Deadline",
       cell: ({ row }) => {
-        const value = row.getValue("deadline");
+        const value = row.getValue("deadline") as string;
         return formatDate(value);
       },
     },
   ];
 
-  const statusVariant = {
+  const statusVariant: Record<
+    string,
+    "secondary" | "success" | "warning" | "default" | "destructive"
+  > = {
     PLANNING: "secondary",
-    ACTIVE: "success",
+    IN_PROGRESS: "success",
     ON_HOLD: "warning",
     COMPLETED: "default",
     CANCELLED: "destructive",
-  }[project.status];
+  };
+
+  const statusDisplay: Record<string, string> = {
+    PLANNING: "Planning",
+    IN_PROGRESS: "In Progress",
+    ON_HOLD: "On Hold",
+    COMPLETED: "Completed",
+    CANCELLED: "Cancelled",
+  };
 
   return (
     <div className="p-6">
@@ -71,7 +94,9 @@ export default async function ProjectPage({ params }: Props) {
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold">{project.name}</h1>
-            <Badge variant={statusVariant}>{project.status}</Badge>
+            <Badge variant={statusVariant[project.status]}>
+              {statusDisplay[project.status]}
+            </Badge>
           </div>
           {project.description && (
             <p className="text-muted-foreground mt-2">{project.description}</p>
