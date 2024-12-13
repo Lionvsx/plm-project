@@ -35,7 +35,7 @@ export default async function ProjectPage({ params }: Props) {
     ON_HOLD: "warning",
     COMPLETED: "default",
     CANCELLED: "destructive",
-  }[project.status]
+  }[project.status];
 
   return (
     <div className="p-6">
@@ -43,9 +43,7 @@ export default async function ProjectPage({ params }: Props) {
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold">{project.name}</h1>
-            <Badge variant={statusVariant[project.status]}>
-              {statusDisplay[project.status]}
-            </Badge>
+            <Badge variant={statusVariant}>{project.status}</Badge>
           </div>
           {project.description && (
             <p className="text-muted-foreground mt-2">{project.description}</p>
