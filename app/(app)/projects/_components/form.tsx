@@ -20,19 +20,11 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { createProject, updateProject } from "@/controllers/projects";
 import { Product, Project } from "@/db/schema";
+import { projectSchema } from "@/lib/validators/projects";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
-const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  description: z.string().optional(),
-  status: z.enum(["PLANNING", "ACTIVE", "ON_HOLD", "COMPLETED", "CANCELLED"]),
-  startDate: z.string().min(1, "Start date is required"),
-  endDate: z.string().optional(),
-  productId: z.coerce.number().min(1, "Product is required"),
-});
 
 interface FormProps {
   initialData?: Project;
@@ -41,8 +33,8 @@ interface FormProps {
 
 export function ProjectForm({ initialData, products }: FormProps) {
   const router = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof projectSchema>>({
+    resolver: zodResolver(projectSchema),
     defaultValues: {
       name: initialData?.name || "",
       description: initialData?.description || "",
@@ -57,7 +49,7 @@ export function ProjectForm({ initialData, products }: FormProps) {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof projectSchema>) {
     try {
       if (initialData) {
         await updateProject(initialData.id, {
@@ -102,10 +94,7 @@ export function ProjectForm({ initialData, products }: FormProps) {
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Description of the project"
-                  {...field}
-                />
+                <Textarea placeholder="Description of the project" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -118,10 +107,7 @@ export function ProjectForm({ initialData, products }: FormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Status</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-              >
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a status" />
