@@ -61,7 +61,6 @@ export async function getProject(id: number) {
 }
 
 export async function createProject(data: {
-  productId: number;
   name: string;
   description?: string;
   startDate: Date;

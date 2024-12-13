@@ -61,23 +61,6 @@ export default async function ProjectPage({ params }: Props) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <Card>
           <CardHeader>
-            <CardTitle>Product</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Link
-              href={`/products/${project.productId}`}
-              className="text-2xl font-bold hover:underline"
-            >
-              {project.product.name}
-            </Link>
-            <p className="text-sm text-muted-foreground mt-1">
-              {project.product.category}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
             <CardTitle>Timeline</CardTitle>
           </CardHeader>
           <CardContent>

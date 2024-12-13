@@ -11,7 +11,6 @@ interface Props {
 
 export default async function EditProjectPage({ params }: Props) {
   const project = await getProject(parseInt(params.id));
-  const products = await getProducts();
 
   if (!project) {
     notFound();
@@ -27,7 +26,7 @@ export default async function EditProjectPage({ params }: Props) {
       </div>
 
       <div className="max-w-2xl">
-        <ProjectForm initialData={project} products={products} />
+        <ProjectForm initialData={project} />
       </div>
     </div>
   );
