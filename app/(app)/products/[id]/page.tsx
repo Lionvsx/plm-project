@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatCurrency, formatDate, formatPercentage } from "@/lib/utils";
 import Link from "next/link";
-import { Pencil, Plus } from "lucide-react";
+import { ArrowRight, Pencil, Plus } from "lucide-react";
 import { FormulationsList } from "./_components/formulations";
 
 interface Props {
@@ -90,7 +90,12 @@ export default async function ProductPage({ params }: Props) {
             {product.variants.map((variant) => (
               <Card key={variant.id}>
                 <CardHeader>
-                  <CardTitle>{variant.size}</CardTitle>
+                  <CardTitle>
+                    <Link href={`/products/${product.id}/variants/${variant.id}`} className="flex items-center gap-2 hover:underline">
+                      {variant.size}
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">

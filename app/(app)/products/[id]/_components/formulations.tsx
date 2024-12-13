@@ -60,12 +60,12 @@ export function FormulationsList({ productId, productVariantId, formulations }: 
               <TableCell>
                 <div className="flex gap-2">
                   <Button variant="ghost" size="sm" asChild>
-                    <Link href={`/products/${productId}/formulations/${formulation.id}`}>
+                    <Link href={`/products/${productId}/variants/${productVariantId}/formulations/${formulation.id}`}>
                       View
                     </Link>
                   </Button>
                   <Button variant="ghost" size="sm" asChild>
-                    <Link href={`/products/${productId}/formulations/${formulation.id}/edit`}>
+                    <Link href={`/products/${productId}/variants/${productVariantId}/formulations/${formulation.id}/edit`}>
                       Edit
                     </Link>
                   </Button>

@@ -8,6 +8,7 @@ import { NewVersionForm } from "./_components/form";
 interface Props {
   params: {
     id: string;
+    variantId: string;
     formulationId: string;
   };
 }
@@ -18,7 +19,7 @@ export default async function EditFormulationPage({ params }: Props) {
     getFormulation(parseInt(params.formulationId)),
   ]);
 
-  if (!product || !formulation || formulation.productId !== product.id) {
+  if (!product || !formulation || formulation.productVariantId !== parseInt(params.variantId)) {
     notFound();
   }
 
