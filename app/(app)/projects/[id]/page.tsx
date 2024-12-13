@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 import { Pencil, Plus } from "lucide-react";
-import { DataTable } from "@/components/ui/data-table";
+import { TaskTable } from "../_components/task-table";
 
 interface Props {
   params: {
@@ -23,47 +23,13 @@ export default async function ProjectPage({ params }: Props) {
     notFound();
   }
 
-  const taskColumns = [
-    {
-      accessorKey: "title",
-      header: "Title",
-    },
-    {
-      accessorKey: "status",
-      header: "Status",
-      cell: ({ row }) => {
-        const status = row.getValue("status") as string;
-        const variant = {
-          TODO: "secondary",
-          IN_PROGRESS: "warning",
-          REVIEW: "default",
-          COMPLETED: "success",
-        }[status];
-
-        return <Badge variant={variant}>{status}</Badge>;
-      },
-    },
-    {
-      accessorKey: "assignee.name",
-      header: "Assigned To",
-    },
-    {
-      accessorKey: "deadline",
-      header: "Deadline",
-      cell: ({ row }) => {
-        const value = row.getValue("deadline");
-        return formatDate(value);
-      },
-    },
-  ];
-
   const statusVariant = {
     PLANNING: "secondary",
     ACTIVE: "success",
     ON_HOLD: "warning",
     COMPLETED: "default",
     CANCELLED: "destructive",
-  }[project.status];
+  }[project.status]
 
   return (
     <div className="p-6">
@@ -91,7 +57,7 @@ export default async function ProjectPage({ params }: Props) {
           </CardHeader>
           <CardContent>
             <Link
-              href={`/app/products/${project.productId}`}
+              href={`/products/${project.productId}`}
               className="text-2xl font-bold hover:underline"
             >
               {project.product.name}
@@ -149,12 +115,7 @@ export default async function ProjectPage({ params }: Props) {
           </Button>
         </div>
 
-        <DataTable
-          columns={taskColumns}
-          data={project.tasks}
-          filterColumn="title"
-          searchPlaceholder="Search tasks..."
-        />
+        <TaskTable tasks={project.tasks} />
       </div>
     </div>
   );
