@@ -96,7 +96,7 @@ export default async function ProjectPage({ params }: Props) {
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-semibold">Tasks</h2>
           <Button asChild>
-            <Link href={`/app/projects/${project.id}/tasks/new`}>
+            <Link href={`/projects/${project.id}/tasks/new`}>
               <Plus className="h-4 w-4 mr-2" />
               New Task
             </Link>

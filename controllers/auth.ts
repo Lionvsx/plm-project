@@ -1,6 +1,7 @@
 "use server";
 
 import { auth } from "@/auth";
+import { db } from "@/db";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -15,4 +16,8 @@ export const signOut = async () => {
     headers: headers(),
   });
   return redirect("/sign-in");
+};
+
+export const getUsers = async () => {
+  return await db.query.user.findMany();
 };
