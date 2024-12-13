@@ -11,7 +11,7 @@ export type ProjectWithDetails = {
   description: string | null;
   startDate: Date;
   endDate: Date | null;
-  status: "PLANNING" | "ACTIVE" | "ON_HOLD" | "COMPLETED" | "CANCELLED";
+  status: "PLANNING" | "IN_PROGRESS" | "ON_HOLD" | "COMPLETED" | "CANCELLED";
   product: {
     id: number;
     name: string;
