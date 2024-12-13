@@ -12,7 +12,7 @@ export default async function DashboardPage() {
   ]);
 
   const activeProjects = projects.filter(
-    (project) => project.status === "ACTIVE"
+    (project) => project.status === "IN_PROGRESS"
   );
 
   return (

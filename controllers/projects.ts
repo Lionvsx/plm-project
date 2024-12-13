@@ -66,7 +66,7 @@ export async function createProject(data: {
   description?: string;
   startDate: Date;
   endDate?: Date;
-  status?: "PLANNING" | "ACTIVE" | "ON_HOLD" | "COMPLETED" | "CANCELLED";
+  status?: "PLANNING" | "IN_PROGRESS" | "ON_HOLD" | "COMPLETED" | "CANCELLED";
 }) {
   const result = await db.insert(project).values(data).returning();
   revalidatePath("/dashboard/projects");
@@ -80,7 +80,7 @@ export async function updateProject(
     description?: string;
     startDate?: Date;
     endDate?: Date;
-    status?: "PLANNING" | "ACTIVE" | "ON_HOLD" | "COMPLETED" | "CANCELLED";
+    status?: "PLANNING" | "IN_PROGRESS" | "ON_HOLD" | "COMPLETED" | "CANCELLED";
   }
 ) {
   const result = await db
