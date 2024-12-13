@@ -8,6 +8,13 @@
       "when": 1733321740755,
       "tag": "0000_nifty_umar",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1734097128227,
+      "tag": "0001_curved_callisto",
+      "breakpoints": true
     }
   ]
 }
