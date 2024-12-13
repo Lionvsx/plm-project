@@ -62,7 +62,7 @@ export async function getFormulation(id: number) {
 }
 
 export async function createFormulation(data: {
-  productId: number;
+  productVariantId: number;
   name: string;
   description?: string;
   notes?: string;
@@ -148,7 +148,7 @@ export async function createNewVersion(formulationId: number) {
 
   // Create new formulation with incremented version
   const newFormulation = await createFormulation({
-    productId: currentFormulation.productId,
+    productVariantId: currentFormulation.productVariantId,
     name: currentFormulation.name,
     description: currentFormulation.description ?? undefined,
     notes: currentFormulation.notes ?? undefined,

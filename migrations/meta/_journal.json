@@ -22,6 +22,13 @@
       "when": 1734098697781,
       "tag": "0002_bent_emma_frost",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1734102535241,
+      "tag": "0003_curved_sentry",
+      "breakpoints": true
     }
   ]
 }

@@ -20,7 +20,7 @@ export default async function EditIngredientsPage({ params }: Props) {
     getIngredients(),
   ]);
 
-  if (!product || !formulation || formulation.productId !== product.id) {
+  if (!product || !formulation || formulation.productVariantId !== product.id) {
     notFound();
   }
 

@@ -39,16 +39,19 @@ export type ProductVariant = InferSelectModel<typeof productVariant>;
 
 export const productRelations = relations(product, ({ many, one }) => ({
   variants: many(productVariant),
-  formulations: many(formulation),
   project: one(project, {
     fields: [product.projectId],
     references: [project.id],
   }),
 }));
 
-export const productVariantRelations = relations(productVariant, ({ one }) => ({
-  product: one(product, {
-    fields: [productVariant.productId],
-    references: [product.id],
-  }),
-}));
+export const productVariantRelations = relations(
+  productVariant,
+  ({ one, many }) => ({
+    product: one(product, {
+      fields: [productVariant.productId],
+      references: [product.id],
+    }),
+    formulations: many(formulation),
+  })
+);
