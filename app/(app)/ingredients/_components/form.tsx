@@ -16,7 +16,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
 import { createIngredient, updateIngredient } from "@/controllers/ingredients";
-import { Ingredient } from "@/db/schema";
+import { Ingredient, Supplier } from "@/db/schema";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -31,9 +38,10 @@ const formSchema = z.object({
 
 interface FormProps {
   initialData?: Ingredient;
+  suppliers: Supplier[];
 }
 
-export function IngredientForm({ initialData }: FormProps) {
+export function IngredientForm({ initialData, suppliers }: FormProps) {
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -176,10 +184,24 @@ export function IngredientForm({ initialData }: FormProps) {
           name="supplierId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Supplier ID</FormLabel>
-              <FormControl>
-                <Input type="number" {...field} />
-              </FormControl>
+              <FormLabel>Supplier</FormLabel>
+              <Select onValueChange={field.onChange}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a supplier" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {suppliers?.map((supplier) => (
+                    <SelectItem
+                      key={supplier.id}
+                      value={supplier.id.toString()}
+                    >
+                      {supplier.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
