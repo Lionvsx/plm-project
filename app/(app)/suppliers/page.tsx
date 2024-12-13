@@ -14,7 +14,7 @@ export default async function SuppliersPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Suppliers</h1>
         <Button asChild>
-          <Link href="/app/suppliers/new">
+          <Link href="/suppliers/new">
             <Plus className="w-4 h-4 mr-2" />
             New Supplier
           </Link>
