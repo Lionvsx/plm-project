@@ -26,16 +26,13 @@ export default async function ProjectPage({ params }: Props) {
     notFound();
   }
 
-  const statusVariant: Record<
-    string,
-    "secondary" | "success" | "warning" | "default" | "destructive"
-  > = {
-    PLANNING: "secondary",
-    IN_PROGRESS: "success",
-    ON_HOLD: "warning",
-    COMPLETED: "default",
-    CANCELLED: "destructive",
-  }[project.status]
+  const statusVariant: Record<string, "secondary" | "success" | "warning" | "default"> = {
+    TODO: "secondary",
+    IN_PROGRESS: "warning",
+    REVIEW: "default",
+    COMPLETED: "success",
+  } as const;
+
 
   return (
     <div className="p-6">
@@ -44,7 +41,7 @@ export default async function ProjectPage({ params }: Props) {
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold">{project.name}</h1>
             <Badge variant={statusVariant[project.status]}>
-              {statusDisplay[project.status]}
+              {project.status}
             </Badge>
           </div>
           {project.description && (

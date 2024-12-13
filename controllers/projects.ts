@@ -101,7 +101,6 @@ export async function getTasks(projectId?: number) {
   const tasks = await db.query.task.findMany({
     where: projectId ? eq(task.projectId, projectId) : undefined,
     with: {
-      project: true,
       assignee: true,
     },
   });
