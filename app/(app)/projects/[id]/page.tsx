@@ -1,4 +1,7 @@
-import { getProject, getProjectProgress } from "@/controllers/projects";
+import {
+  getProject as getProjectFn,
+  getProjectProgress,
+} from "@/controllers/projects";
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,16 +19,19 @@ interface Props {
 }
 
 export default async function ProjectPage({ params }: Props) {
-  const project = await getProject(parseInt(params.id));
+  const project = await getProjectFn(parseInt(params.id));
   const progress = await getProjectProgress(parseInt(params.id));
 
   if (!project) {
     notFound();
   }
 
-  const statusVariant = {
+  const statusVariant: Record<
+    string,
+    "secondary" | "success" | "warning" | "default" | "destructive"
+  > = {
     PLANNING: "secondary",
-    ACTIVE: "success",
+    IN_PROGRESS: "success",
     ON_HOLD: "warning",
     COMPLETED: "default",
     CANCELLED: "destructive",
@@ -37,7 +43,9 @@ export default async function ProjectPage({ params }: Props) {
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold">{project.name}</h1>
-            <Badge variant={statusVariant}>{project.status}</Badge>
+            <Badge variant={statusVariant[project.status]}>
+              {statusDisplay[project.status]}
+            </Badge>
           </div>
           {project.description && (
             <p className="text-muted-foreground mt-2">{project.description}</p>
