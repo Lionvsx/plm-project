@@ -29,9 +29,6 @@ export const taskStatusEnum = pgEnum("task_status", [
 
 export const project = pgTable("project", {
   id: serial("project_id").primaryKey(),
-  productId: integer("product_id")
-    .references(() => product.id)
-    .notNull(),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
   startDate: date("start_date", { mode: "date" }).notNull(),
@@ -59,10 +56,7 @@ export type Task = InferSelectModel<typeof task>;
 export type Project = InferSelectModel<typeof project>;
 
 export const projectRelations = relations(project, ({ one, many }) => ({
-  product: one(product, {
-    fields: [project.productId],
-    references: [product.id],
-  }),
+  products: many(product),
   tasks: many(task),
 }));
 

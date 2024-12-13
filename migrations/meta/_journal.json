@@ -15,6 +15,13 @@
       "when": 1734097128227,
       "tag": "0001_curved_callisto",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1734098697781,
+      "tag": "0002_bent_emma_frost",
+      "breakpoints": true
     }
   ]
 }

@@ -23,25 +23,18 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
 import { createProduct, updateProduct } from "@/controllers/products";
-import { Product } from "@/db/schema";
-
-const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  description: z.string().optional(),
-  category: z.string().min(1, "Category is required"),
-  costPrice: z.string(),
-  margin: z.string(),
-  launchDate: z.string().optional(),
-});
+import { Product, Project } from "@/db/schema";
+import { productFormSchema } from "@/lib/validators/product";
 
 interface FormProps {
   initialData?: Product;
+  projects: Project[];
 }
 
-export function ProductForm({ initialData }: FormProps) {
+export function ProductForm({ initialData, projects }: FormProps) {
   const router = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof productFormSchema>>({
+    resolver: zodResolver(productFormSchema),
     defaultValues: {
       name: initialData?.name || "",
       description: initialData?.description || "",
@@ -51,13 +44,15 @@ export function ProductForm({ initialData }: FormProps) {
       launchDate: initialData?.launchDate
         ? new Date(initialData.launchDate).toISOString().split("T")[0]
         : "",
+      projectId: undefined
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof productFormSchema>) {
     try {
       const formattedValues = {
         ...values,
+        projectId: Number(values.projectId),
         launchDate: values.launchDate ? new Date(values.launchDate) : undefined
       };
 
@@ -128,6 +123,33 @@ export function ProductForm({ initialData }: FormProps) {
                   <SelectItem value="Eau de Toilette">Eau de Toilette</SelectItem>
                   <SelectItem value="Parfum">Parfum</SelectItem>
                   <SelectItem value="Cologne">Cologne</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="projectId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Project</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a project" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {projects?.map((project) => (
+                    <SelectItem key={project.id} value={project.id.toString()}>
+                      {project.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
