@@ -36,10 +36,9 @@ const formSchema = z.object({
 
 interface FormProps {
   initialData?: Project;
-  products: Product[];
 }
 
-export function ProjectForm({ initialData, products }: FormProps) {
+export function ProjectForm({ initialData }: FormProps) {
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -53,7 +52,6 @@ export function ProjectForm({ initialData, products }: FormProps) {
       endDate: initialData?.endDate
         ? new Date(initialData.endDate).toISOString().split("T")[0]
         : undefined,
-      productId: initialData?.productId || undefined,
     },
   });
 
@@ -169,34 +167,6 @@ export function ProjectForm({ initialData, products }: FormProps) {
             )}
           />
         </div>
-
-        <FormField
-          control={form.control}
-          name="productId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Product</FormLabel>
-              <Select
-                onValueChange={(value) => field.onChange(Number(value))}
-                value={field.value?.toString()}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a product" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {products.map((product) => (
-                    <SelectItem key={product.id} value={product.id.toString()}>
-                      {product.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <Button type="submit">
           {initialData ? "Update Project" : "Create Project"}

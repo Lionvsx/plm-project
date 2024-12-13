@@ -14,7 +14,7 @@ export default async function NewProjectPage() {
       </div>
 
       <div className="max-w-2xl">
-        <ProjectForm products={products} />
+        <ProjectForm />
       </div>
     </div>
   );
