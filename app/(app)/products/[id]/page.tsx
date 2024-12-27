@@ -1,13 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getProduct } from "@/controllers/products";
-import { formatCurrency, formatDate, formatPercentage } from "@/lib/utils";
+import { db } from "@/db";
+import { formulation, formulationIngredient, ingredient } from "@/db/schema";
+import { formatCurrency, formatDate } from "@/lib/utils";
+import { sql } from "drizzle-orm";
 import { ArrowRight, Pencil, Plus } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { db } from "@/db";
-import { sql } from "drizzle-orm";
-import { formulation, formulationIngredient, ingredient } from "@/db/schema";
 
 interface Props {
   params: {

@@ -10,6 +10,7 @@ import { IngredientsTable } from "../_components/table";
 interface Props {
   params: {
     id: string;
+    variantId: string;
     formulationId: string;
   };
 }
@@ -21,7 +22,7 @@ export default async function NewFormulationIngredientPage({ params }: Props) {
     getIngredients(),
   ]);
 
-  if (!product || !formulation || formulation.productVariantId !== product.id) {
+  if (!product || !formulation || formulation.productVariantId !== parseInt(params.variantId)) {
     notFound();
   }
 
