@@ -88,7 +88,7 @@ async function seedDatabase() {
         supplierId: supplier1[0].id,
         name: "Rose Essential Oil",
         description: "Premium rose essential oil from Bulgaria",
-        costPerUnit: "8.50",
+        costPerUnit: "4.50",
         unitType: UnitType.VOLUME,
         unit: VolumeUnit.MILLILITER,
         stockQuantity: "1000",
@@ -98,7 +98,7 @@ async function seedDatabase() {
         supplierId: supplier1[0].id,
         name: "Jasmine Absolute",
         description: "Pure jasmine absolute extract",
-        costPerUnit: "7.75",
+        costPerUnit: "3.75",
         unitType: UnitType.VOLUME,
         unit: VolumeUnit.MILLILITER,
         stockQuantity: "800",
@@ -361,21 +361,74 @@ async function seedDatabase() {
     );
     const prod = products.find((p: Product) => p.id === variant?.productId);
     const isRose = prod?.name === "Midnight Rose";
+    const size = parseInt(variant?.size?.replace("ml", "") || "0");
+
+    // Calculate quantities based on bottle size
+    const alcoholQuantity = (size * 0.8).toFixed(2); // 80% alcohol
+    const fixativeQuantity = (size * 0.03).toFixed(2); // 3% fixative
+    const mainEssenceQuantity = (size * 0.12).toFixed(2); // 12% main essence
+    const secondaryEssenceQuantity = (size * 0.05).toFixed(2); // 5% secondary essence
 
     return db.insert(formulationIngredient).values([
+      // Perfumer's Alcohol (80%)
       {
         formulationId: currentFormulation.id,
-        ingredientId: ingredients[isRose ? 0 : 2].id,
-        quantity: "20.00",
+        ingredientId: ingredients[4].id, // Perfumer's Alcohol
+        quantity: alcoholQuantity,
         unit: VolumeUnit.MILLILITER,
-        notes: "Base note",
+        notes: "Base solvent",
+      },
+      // Fixative (3%)
+      {
+        formulationId: currentFormulation.id,
+        ingredientId: ingredients[5].id, // Fixative Base
+        quantity: fixativeQuantity,
+        unit: VolumeUnit.MILLILITER,
+        notes: "Enhances longevity",
+      },
+      // Main Essence (12%)
+      {
+        formulationId: currentFormulation.id,
+        ingredientId: ingredients[isRose ? 0 : 2].id, // Rose Oil or Bergamot Oil
+        quantity: mainEssenceQuantity,
+        unit: VolumeUnit.MILLILITER,
+        notes: isRose ? "Main rose note" : "Main citrus note",
+      },
+      // Secondary Essence (5%)
+      {
+        formulationId: currentFormulation.id,
+        ingredientId: ingredients[isRose ? 1 : 3].id, // Jasmine or Vanilla
+        quantity: secondaryEssenceQuantity,
+        unit: VolumeUnit.MILLILITER,
+        notes: isRose ? "Supporting jasmine note" : "Vanilla base note",
+      },
+      // Packaging components
+      {
+        formulationId: currentFormulation.id,
+        ingredientId:
+          size === 30
+            ? ingredients[7].id
+            : size === 50
+            ? ingredients[7].id
+            : ingredients[6].id, // Select bottle based on size
+        quantity: "1",
+        unit: PieceUnit.PIECE,
+        notes: "Glass bottle",
       },
       {
         formulationId: currentFormulation.id,
-        ingredientId: ingredients[isRose ? 1 : 3].id,
-        quantity: "15.00",
-        unit: VolumeUnit.MILLILITER,
-        notes: "Heart note",
+        ingredientId:
+          size === 30 || size === 50 ? ingredients[9].id : ingredients[8].id, // Silver pump for smaller sizes, gold for 100ml
+        quantity: "1",
+        unit: PieceUnit.PIECE,
+        notes: "Spray pump",
+      },
+      {
+        formulationId: currentFormulation.id,
+        ingredientId: size === 100 ? ingredients[10].id : ingredients[11].id, // Luxury box for 100ml, standard for others
+        quantity: "1",
+        unit: PieceUnit.PIECE,
+        notes: "Packaging box",
       },
     ]);
   });
