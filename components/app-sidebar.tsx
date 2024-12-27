@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   BookOpen,
@@ -9,14 +9,15 @@ import {
   Settings2,
   Boxes,
   Users,
-  ClipboardList
-} from "lucide-react"
-import * as React from "react"
+  ClipboardList,
+  ShoppingCart,
+} from "lucide-react";
+import * as React from "react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavProducts } from "@/components/nav-products"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import { NavMain } from "@/components/nav-main";
+import { NavProducts } from "@/components/nav-products";
+import { NavSecondary } from "@/components/nav-secondary";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -25,8 +26,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { Product } from "@/db/schema"
+} from "@/components/ui/sidebar";
+import { Product } from "@/db/schema";
 
 const data = {
   navMain: [
@@ -71,6 +72,17 @@ const data = {
         },
       ],
     },
+    {
+      title: "Orders",
+      url: "/orders",
+      icon: ShoppingCart,
+      items: [
+        {
+          title: "All Orders",
+          url: "/orders",
+        },
+      ],
+    },
   ],
   navSecondary: [
     {
@@ -79,10 +91,10 @@ const data = {
       icon: Settings2,
     },
   ],
-}
+};
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  products: Product[]
+  products: Product[];
 }
 
 export function AppSidebar({ products, ...props }: AppSidebarProps) {
@@ -98,7 +110,9 @@ export function AppSidebar({ products, ...props }: AppSidebarProps) {
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">PLM Project</span>
-                  <span className="truncate text-xs">Product Lifecycle Management</span>
+                  <span className="truncate text-xs">
+                    Product Lifecycle Management
+                  </span>
                 </div>
               </a>
             </SidebarMenuButton>
@@ -107,17 +121,18 @@ export function AppSidebar({ products, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProducts products={products.map(p => ({
-          ...p,
-          url: `/products/${p.id}`,
-          icon: Package,
-        }))} />
+        <NavProducts
+          products={products.map((p) => ({
+            ...p,
+            url: `/products/${p.id}`,
+            icon: Package,
+          }))}
+        />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }
-
