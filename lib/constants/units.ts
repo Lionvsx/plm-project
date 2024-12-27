@@ -1,6 +1,7 @@
 export enum UnitType {
   VOLUME = "VOLUME",
   WEIGHT = "WEIGHT",
+  PIECE = "PIECE",
 }
 
 export enum VolumeUnit {
@@ -14,7 +15,11 @@ export enum WeightUnit {
   KILOGRAM = "kg",
 }
 
-export type Unit = VolumeUnit | WeightUnit;
+export enum PieceUnit {
+  PIECE = "pc",
+}
+
+export type Unit = VolumeUnit | WeightUnit | PieceUnit;
 
 export const unitTypeMap: Record<Unit, UnitType> = {
   [VolumeUnit.MILLILITER]: UnitType.VOLUME,
@@ -22,6 +27,7 @@ export const unitTypeMap: Record<Unit, UnitType> = {
   [WeightUnit.MILLIGRAM]: UnitType.WEIGHT,
   [WeightUnit.GRAM]: UnitType.WEIGHT,
   [WeightUnit.KILOGRAM]: UnitType.WEIGHT,
+  [PieceUnit.PIECE]: UnitType.PIECE,
 };
 
 export const conversionFactors: Record<Unit, number> = {
@@ -30,6 +36,7 @@ export const conversionFactors: Record<Unit, number> = {
   [WeightUnit.MILLIGRAM]: 0.001, // Base: Grams
   [WeightUnit.GRAM]: 1,
   [WeightUnit.KILOGRAM]: 1000,
+  [PieceUnit.PIECE]: 1, // No conversion for pieces
 };
 
 export function convertUnit(
