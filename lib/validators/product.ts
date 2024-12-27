@@ -1,3 +1,5 @@
+import { product } from "@/db/schema";
+import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 export const productSchema = z.object({
@@ -7,14 +9,6 @@ export const productSchema = z.object({
   discontinuationDate: z.date().optional(),
 });
 
-export const productFormSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  description: z.string().optional(),
-  category: z.string().min(1, "Category is required"),
-  costPrice: z.string(),
-  margin: z.string(),
-  launchDate: z.string().optional(),
-  projectId: z.string(),
-});
+export const insertProductSchema = createInsertSchema(product);
 
 export type ProductFormValues = z.infer<typeof productSchema>;

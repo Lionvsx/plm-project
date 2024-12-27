@@ -1,7 +1,13 @@
 "use server";
 
 import { db } from "@/db";
-import { formulation, product, productVariant } from "@/db/schema";
+import {
+  formulation,
+  InsertProduct,
+  Product,
+  product,
+  productVariant,
+} from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -37,7 +43,15 @@ export async function getProduct(id: number) {
     with: {
       variants: {
         with: {
-          formulations: true,
+          formulations: {
+            with: {
+              ingredients: {
+                with: {
+                  ingredient: true,
+                },
+              },
+            },
+          },
         },
       },
     },
@@ -45,32 +59,13 @@ export async function getProduct(id: number) {
   return result;
 }
 
-export async function createProduct(data: {
-  name: string;
-  description?: string;
-  category: string;
-  costPrice?: string;
-  margin?: string;
-  launchDate?: Date;
-  projectId: number;
-}) {
+export async function createProduct(data: InsertProduct) {
   const result = await db.insert(product).values(data).returning();
   revalidatePath("/dashboard/products");
   return result[0];
 }
 
-export async function updateProduct(
-  id: number,
-  data: {
-    name?: string;
-    description?: string;
-    category?: string;
-    costPrice?: string;
-    margin?: string;
-    launchDate?: Date;
-    discontinuationDate?: Date;
-  }
-) {
+export async function updateProduct(id: number, data: InsertProduct) {
   const result = await db
     .update(product)
     .set(data)
