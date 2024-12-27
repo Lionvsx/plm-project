@@ -46,7 +46,7 @@ export function NewVersionForm({ productId, currentFormulation }: FormProps) {
       const newFormulation = await createNewVersion(currentFormulation.id);
       if (newFormulation) {
         // Redirect to ingredients page for the new version
-        router.push(`/products/${productId}/formulations/${newFormulation.id}/ingredients/edit`);
+        router.push(`/products/${productId}/variants/${currentFormulation.productVariantId}/formulations/${newFormulation.id}/ingredients/new`);
         router.refresh();
       }
     } catch (error) {

@@ -9,6 +9,8 @@ import { Unit } from "@/lib/constants/units";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { EditIngredientForm } from "./edit-form";
+import { useState } from "react";
 
 interface IngredientsTableProps {
   data: (FormulationIngredient & {
@@ -23,6 +25,7 @@ interface IngredientsTableProps {
 
 export function IngredientsTable({ data, formulationId }: IngredientsTableProps) {
   const router = useRouter();
+  const [editingIngredient, setEditingIngredient] = useState<IngredientsTableProps["data"][0] | null>(null);
 
   const handleDelete = async (id: number) => {
     try {
@@ -32,6 +35,7 @@ export function IngredientsTable({ data, formulationId }: IngredientsTableProps)
       console.error("Error deleting ingredient:", error);
     }
   };
+
   const columns: ColumnDef<IngredientsTableProps["data"][0]>[] = [
     {
       accessorKey: "ingredient.name",
@@ -99,11 +103,7 @@ export function IngredientsTable({ data, formulationId }: IngredientsTableProps)
             <Button
               variant="ghost"
               size="icon"
-              onClick={() =>
-                router.push(
-                  `/ingredients/${ingredient.ingredient.id}/edit`
-                )
-              }
+              onClick={() => setEditingIngredient(ingredient)}
             >
               <Pencil className="h-4 w-4" />
             </Button>
@@ -114,11 +114,21 @@ export function IngredientsTable({ data, formulationId }: IngredientsTableProps)
   ];
 
   return (
-    <DataTable
-      columns={columns}
-      data={data}
-      filterColumn="ingredient.name"
-      searchPlaceholder="Search ingredients..."
-    />
+    <>
+      <DataTable
+        columns={columns}
+        data={data}
+        filterColumn="ingredient.name"
+        searchPlaceholder="Search ingredients..."
+      />
+
+      {editingIngredient && (
+        <EditIngredientForm
+          open={!!editingIngredient}
+          onOpenChange={(open) => !open && setEditingIngredient(null)}
+          ingredient={editingIngredient}
+        />
+      )}
+    </>
   );
 }

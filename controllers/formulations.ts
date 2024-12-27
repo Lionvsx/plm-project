@@ -120,9 +120,9 @@ export async function addFormulationIngredient(
 export async function updateFormulationIngredient(
   id: number,
   data: {
-    quantity?: string;
-    unit?: string;
-    notes?: string;
+    quantity: string;
+    unit: string;
+    notes?: string | null;
   }
 ) {
   const result = await db
@@ -130,7 +130,7 @@ export async function updateFormulationIngredient(
     .set(data)
     .where(eq(formulationIngredient.id, id))
     .returning();
-  revalidatePath("/dashboard/formulations");
+  revalidatePath("/products");
   return result[0];
 }
 

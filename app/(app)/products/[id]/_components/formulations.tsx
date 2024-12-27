@@ -63,15 +63,17 @@ export function FormulationsList({ productId, productVariantId, formulations }: 
               <TableCell>{formatDate(formulation.updatedAt)}</TableCell>
               <TableCell>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" asChild>
-                    <Link
-                      href={`/products/${productId}/variants/${productVariantId}/formulations/${formulation.id}/edit`}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Create New Version
-                    </Link>
-                  </Button>
+                  {formulation.isActive && (
+                    <Button variant="outline" size="sm" asChild>
+                      <Link
+                        href={`/products/${productId}/variants/${productVariantId}/formulations/${formulation.id}/edit`}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Create New Version
+                      </Link>
+                    </Button>
+                  )}
                 </div>
               </TableCell>
             </TableRow>
