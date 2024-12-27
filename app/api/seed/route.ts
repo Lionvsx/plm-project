@@ -13,7 +13,7 @@ import {
   type Product,
   type ProductVariant,
 } from "@/db/schema/product-schema";
-import { UnitType, VolumeUnit } from "@/lib/constants/units";
+import { UnitType, VolumeUnit, PieceUnit } from "@/lib/constants/units";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { NextResponse } from "next/server";
 import { Pool } from "pg";
@@ -26,30 +26,59 @@ const db = drizzle(pool, { schema });
 
 async function seedDatabase() {
   // Create suppliers
-  const suppliers = (await Promise.all([
-    db
-      .insert(supplier)
-      .values({
-        name: "Fragrance Essentials Co.",
-        contactPerson: "John Smith",
-        email: "john@fragranceessentials.com",
-        phone: "+1-555-0123",
-        address: "123 Perfume Lane, New York, NY 10001",
-      })
-      .returning() as Promise<Supplier[]>,
-    db
-      .insert(supplier)
-      .values({
-        name: "Natural Scents Ltd.",
-        contactPerson: "Emma Johnson",
-        email: "emma@naturalscents.com",
-        phone: "+1-555-0124",
-        address: "456 Aroma Street, Los Angeles, CA 90001",
-      })
-      .returning() as Promise<Supplier[]>,
-  ])) as [Supplier[], Supplier[]];
-
-  const [supplier1, supplier2] = suppliers;
+  const [supplier1, supplier2, supplier3, supplier4, supplier5] =
+    (await Promise.all([
+      db
+        .insert(supplier)
+        .values({
+          name: "Fragrance Essentials Co.",
+          contactPerson: "John Smith",
+          email: "john@fragranceessentials.com",
+          phone: "+1-555-0123",
+          address: "123 Perfume Lane, New York, NY 10001",
+        })
+        .returning() as Promise<Supplier[]>,
+      db
+        .insert(supplier)
+        .values({
+          name: "Natural Scents Ltd.",
+          contactPerson: "Emma Johnson",
+          email: "emma@naturalscents.com",
+          phone: "+1-555-0124",
+          address: "456 Aroma Street, Los Angeles, CA 90001",
+        })
+        .returning() as Promise<Supplier[]>,
+      db
+        .insert(supplier)
+        .values({
+          name: "Base Materials Inc.",
+          contactPerson: "Michael Brown",
+          email: "michael@basematerials.com",
+          phone: "+1-555-0125",
+          address: "789 Chemical Road, Chicago, IL 60601",
+        })
+        .returning() as Promise<Supplier[]>,
+      db
+        .insert(supplier)
+        .values({
+          name: "Premium Packaging Co.",
+          contactPerson: "Sarah Wilson",
+          email: "sarah@premiumpackaging.com",
+          phone: "+1-555-0126",
+          address: "321 Box Street, Miami, FL 33101",
+        })
+        .returning() as Promise<Supplier[]>,
+      db
+        .insert(supplier)
+        .values({
+          name: "Luxury Containers Ltd.",
+          contactPerson: "David Lee",
+          email: "david@luxurycontainers.com",
+          phone: "+1-555-0127",
+          address: "654 Glass Avenue, Seattle, WA 98101",
+        })
+        .returning() as Promise<Supplier[]>,
+    ])) as [Supplier[], Supplier[], Supplier[], Supplier[], Supplier[]];
 
   // Create ingredients
   const ingredients = (await db
@@ -59,7 +88,7 @@ async function seedDatabase() {
         supplierId: supplier1[0].id,
         name: "Rose Essential Oil",
         description: "Premium rose essential oil from Bulgaria",
-        costPerUnit: "12.50",
+        costPerUnit: "8.50",
         unitType: UnitType.VOLUME,
         unit: VolumeUnit.MILLILITER,
         stockQuantity: "1000",
@@ -69,7 +98,7 @@ async function seedDatabase() {
         supplierId: supplier1[0].id,
         name: "Jasmine Absolute",
         description: "Pure jasmine absolute extract",
-        costPerUnit: "15.75",
+        costPerUnit: "7.75",
         unitType: UnitType.VOLUME,
         unit: VolumeUnit.MILLILITER,
         stockQuantity: "800",
@@ -79,7 +108,7 @@ async function seedDatabase() {
         supplierId: supplier2[0].id,
         name: "Bergamot Oil",
         description: "Cold-pressed bergamot essential oil",
-        costPerUnit: "5.25",
+        costPerUnit: "1.25",
         unitType: UnitType.VOLUME,
         unit: VolumeUnit.MILLILITER,
         stockQuantity: "1200",
@@ -89,11 +118,91 @@ async function seedDatabase() {
         supplierId: supplier2[0].id,
         name: "Vanilla Extract",
         description: "Premium Madagascar vanilla extract",
-        costPerUnit: "8.00",
+        costPerUnit: "2.00",
         unitType: UnitType.VOLUME,
         unit: VolumeUnit.MILLILITER,
         stockQuantity: "900",
         minimumStock: "200",
+      },
+      {
+        supplierId: supplier3[0].id,
+        name: "Perfumer's Alcohol",
+        description: "Pure ethanol base for perfumes",
+        costPerUnit: "0.50",
+        unitType: UnitType.VOLUME,
+        unit: VolumeUnit.MILLILITER,
+        stockQuantity: "5000",
+        minimumStock: "1000",
+      },
+      {
+        supplierId: supplier3[0].id,
+        name: "Fixative Base",
+        description: "Helps scent last longer",
+        costPerUnit: "1.20",
+        unitType: UnitType.VOLUME,
+        unit: VolumeUnit.MILLILITER,
+        stockQuantity: "2000",
+        minimumStock: "400",
+      },
+      {
+        supplierId: supplier4[0].id,
+        name: "Luxury Glass Bottle 50mL",
+        description: "High-quality clear glass bottle",
+        costPerUnit: "4.50",
+        unitType: UnitType.PIECE,
+        unit: PieceUnit.PIECE,
+        stockQuantity: "1000",
+        minimumStock: "200",
+      },
+      {
+        supplierId: supplier4[0].id,
+        name: "Premium Glass Bottle 50mL",
+        description: "Standard glass bottle",
+        costPerUnit: "3.20",
+        unitType: UnitType.PIECE,
+        unit: PieceUnit.PIECE,
+        stockQuantity: "1500",
+        minimumStock: "300",
+      },
+      {
+        supplierId: supplier4[0].id,
+        name: "Metal Spray Pump Gold",
+        description: "Gold-plated spray pump",
+        costPerUnit: "2.80",
+        unitType: UnitType.PIECE,
+        unit: PieceUnit.PIECE,
+        stockQuantity: "1000",
+        minimumStock: "200",
+      },
+      {
+        supplierId: supplier4[0].id,
+        name: "Metal Spray Pump Silver",
+        description: "Silver-plated spray pump",
+        costPerUnit: "2.20",
+        unitType: UnitType.PIECE,
+        unit: PieceUnit.PIECE,
+        stockQuantity: "1500",
+        minimumStock: "300",
+      },
+      {
+        supplierId: supplier5[0].id,
+        name: "Luxury Box",
+        description: "Premium packaging box with silk lining",
+        costPerUnit: "3.50",
+        unitType: UnitType.PIECE,
+        unit: PieceUnit.PIECE,
+        stockQuantity: "1000",
+        minimumStock: "200",
+      },
+      {
+        supplierId: supplier5[0].id,
+        name: "Standard Box",
+        description: "Standard cardboard packaging box",
+        costPerUnit: "1.80",
+        unitType: UnitType.PIECE,
+        unit: PieceUnit.PIECE,
+        stockQuantity: "2000",
+        minimumStock: "400",
       },
     ])
     .returning()) as unknown as Ingredient[];
