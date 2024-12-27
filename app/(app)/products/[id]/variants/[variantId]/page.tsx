@@ -4,6 +4,8 @@ import { FormulationsList } from "../../_components/formulations";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Pencil } from "lucide-react";
+import { BOMGenerator } from "@/components/bom-generator";
+import { Unit } from "@/lib/constants/units";
 
 interface Props {
   params: {
@@ -27,6 +29,11 @@ export default async function VariantPage({ params }: Props) {
     notFound();
   }
 
+  // Find the latest active formulation
+  const activeFormulation = variant.formulations
+    .filter((f) => f.isActive)
+    .sort((a, b) => b.version - a.version)[0];
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
@@ -36,12 +43,27 @@ export default async function VariantPage({ params }: Props) {
             Product variant for {product.name}
           </p>
         </div>
-        <Button asChild>
-          <Link href={`/products/${product.id}/variants/${variant.id}/edit`}>
-            <Pencil className="w-4 h-4 mr-2" />
-            Edit Variant
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          {activeFormulation && (
+            <BOMGenerator
+              productName={product.name}
+              variantSku={variant.sku || ""}
+              formulationName={activeFormulation.name || "Untitled"}
+              ingredients={activeFormulation.ingredients.map((i) => ({
+                name: i.ingredient.name,
+                quantity: i.quantity,
+                unit: i.unit as Unit,
+                costPerUnit: i.ingredient.costPerUnit,
+              }))}
+            />
+          )}
+          <Button asChild>
+            <Link href={`/products/${product.id}/variants/${variant.id}/edit`}>
+              <Pencil className="w-4 h-4 mr-2" />
+              Edit Variant
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <div className="space-y-6">
