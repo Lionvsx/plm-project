@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useRouter } from "next/navigation";
+import { addFormulationIngredient } from "@/controllers/formulations";
+import { Ingredient } from "@/db/schema";
 import {
   Select,
   SelectContent,
@@ -21,9 +24,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useRouter } from "next/navigation";
-import { addFormulationIngredient } from "@/controllers/formulations";
-import { Ingredient } from "@/db/schema";
+import { UnitSelector } from "@/components/unit-selector";
+import { Unit, UnitType } from "@/lib/constants/units";
 
 const formSchema = z.object({
   ingredientId: z.coerce.number().min(1, "Ingredient is required"),
@@ -49,12 +51,18 @@ export function IngredientForm({ formulationId, ingredients }: FormProps) {
     },
   });
 
+  const selectedIngredient = ingredients.find(
+    (i) => i.id === form.watch("ingredientId")
+  );
+  console.log(selectedIngredient);
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       await addFormulationIngredient(formulationId, values);
-      router.back();
+      router.refresh();
+      form.reset();
     } catch (error) {
-      console.error("Error adding ingredient:", error);
+      console.error("Error saving formulation ingredient:", error);
     }
   }
 
@@ -67,22 +75,19 @@ export function IngredientForm({ formulationId, ingredients }: FormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Ingredient</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value?.toString()}
-              >
+              <Select onValueChange={field.onChange}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select an ingredient" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {ingredients.map((ingredient) => (
+                  {ingredients?.map((ingredient) => (
                     <SelectItem
                       key={ingredient.id}
                       value={ingredient.id.toString()}
                     >
-                      {ingredient.name} ({ingredient.unit})
+                      {ingredient.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -114,7 +119,12 @@ export function IngredientForm({ formulationId, ingredients }: FormProps) {
               <FormItem>
                 <FormLabel>Unit</FormLabel>
                 <FormControl>
-                  <Input placeholder="e.g., ml, g, kg" {...field} />
+                  <UnitSelector
+                    unitType={UnitType.VOLUME}
+                    unit={field.value as Unit}
+                    onUnitChange={field.onChange}
+                    key={selectedIngredient?.unitType}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

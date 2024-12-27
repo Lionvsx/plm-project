@@ -24,11 +24,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { UnitType, type Unit } from "@/lib/constants/units";
+import { UnitSelector, UnitTypeSelector } from "@/components/unit-selector";
+import { useState } from "react";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().optional(),
   costPerUnit: z.string().min(1, "Cost per unit is required"),
+  unitType: z.nativeEnum(UnitType),
   unit: z.string().min(1, "Unit is required"),
   stockQuantity: z.string().optional(),
   minimumStock: z.string().optional(),
@@ -43,12 +47,17 @@ interface FormProps {
 
 export function IngredientForm({ initialData, suppliers }: FormProps) {
   const router = useRouter();
+  const [selectedUnitType, setSelectedUnitType] = useState<UnitType>(
+    initialData?.unitType || UnitType.VOLUME
+  );
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: initialData?.name || "",
       description: initialData?.description || "",
       costPerUnit: initialData?.costPerUnit || "",
+      unitType: initialData?.unitType || UnitType.VOLUME,
       unit: initialData?.unit || "",
       stockQuantity: initialData?.stockQuantity || "",
       minimumStock: initialData?.minimumStock || "",
@@ -120,19 +129,47 @@ export function IngredientForm({ initialData, suppliers }: FormProps) {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="unit"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Unit</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g., ml, g, kg" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="unitType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Unit Type</FormLabel>
+                  <FormControl>
+                    <UnitTypeSelector
+                      value={field.value}
+                      onChange={(value) => {
+                        field.onChange(value);
+                        setSelectedUnitType(value);
+                        // Reset unit when type changes
+                        form.setValue("unit", "");
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="unit"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Unit</FormLabel>
+                  <FormControl>
+                    <UnitSelector
+                      unitType={selectedUnitType}
+                      unit={field.value as Unit}
+                      onUnitChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">

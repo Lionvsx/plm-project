@@ -1,90 +1,73 @@
 "use client";
 
-import { DataTable } from "@/components/ui/data-table";
-import { ColumnDef } from "@tanstack/react-table";
-import { FormulationIngredient } from "@/db/schema";
-import { formatNumber } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2 } from "lucide-react";
-import { deleteFormulationIngredient } from "@/controllers/formulations";
-import { useRouter } from "next/navigation";
+import { DataTable } from "@/components/ui/data-table";
+import { UnitDisplay } from "@/components/unit-display";
+import { FormulationIngredient } from "@/db/schema";
+import { Unit } from "@/lib/constants/units";
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 
-interface TableProps {
+interface IngredientsTableProps {
   data: (FormulationIngredient & {
     ingredient: {
+      id: number;
       name: string;
-      unit: string;
-      costPerUnit: string;
+      unitType: string;
     };
   })[];
   formulationId: number;
 }
 
-export function IngredientsTable({ data, formulationId }: TableProps) {
-  const router = useRouter();
-
-  const handleDelete = async (id: number) => {
-    try {
-      await deleteFormulationIngredient(id);
-      router.refresh();
-    } catch (error) {
-      console.error("Error deleting ingredient:", error);
-    }
-  };
-
-  const columns: ColumnDef<TableProps["data"][0]>[] = [
+export function IngredientsTable({ data, formulationId }: IngredientsTableProps) {
+  const columns: ColumnDef<IngredientsTableProps["data"][0]>[] = [
     {
       accessorKey: "ingredient.name",
-      header: "Ingredient",
-    },
-    {
-      accessorKey: "quantity",
-      header: "Quantity",
-      cell: ({ row }) => {
-        const quantity = row.getValue("quantity") as string;
-        const unit = row.original.unit;
-        return `${formatNumber(quantity)} ${unit}`;
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Ingredient
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
       },
     },
     {
-      id: "cost",
-      header: "Cost",
+      accessorKey: "quantity",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Quantity
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => {
-        const quantity = parseFloat(row.original.quantity);
-        const costPerUnit = parseFloat(row.original.ingredient.costPerUnit);
-        const totalCost = quantity * costPerUnit;
-        return `$${formatNumber(totalCost)}`;
+        return (
+          <UnitDisplay
+            value={parseFloat(row.original.quantity)}
+            unit={row.original.unit as Unit}
+          />
+        );
       },
     },
     {
       accessorKey: "notes",
-      header: "Notes",
-    },
-    {
-      id: "actions",
-      cell: ({ row }) => {
-        const formulationIngredient = row.original;
+      header: ({ column }) => {
         return (
-          <div className="flex gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => handleDelete(formulationIngredient.id)}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() =>
-                router.push(
-                  `/ingredients/${formulationIngredient.ingredientId}/edit`
-                )
-              }
-            >
-              <Pencil className="h-4 w-4" />
-            </Button>
-          </div>
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Notes
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
         );
       },
     },

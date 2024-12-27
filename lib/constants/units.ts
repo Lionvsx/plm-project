@@ -53,7 +53,7 @@ export function formatQuantity(value: number, unit: Unit): string {
   let displayValue = value;
 
   if (unitType === UnitType.VOLUME) {
-    if (value >= 1 && unit === VolumeUnit.MILLILITER) {
+    if (value >= 1000 && unit === VolumeUnit.MILLILITER) {
       displayValue = value / 1000;
       displayUnit = VolumeUnit.LITER;
     } else if (value < 1 && unit === VolumeUnit.LITER) {
