@@ -19,6 +19,16 @@ export function Table({ data }: TableProps) {
     {
       accessorKey: "name",
       header: "Name",
+      cell: ({ row }) => {
+        return (
+          <Link
+            href={`/ingredients/${row.original.id}`}
+            className="hover:underline"
+          >
+            {row.getValue("name")}
+          </Link>
+        );
+      },
     },
     {
       accessorKey: "description",
@@ -92,6 +102,9 @@ export function Table({ data }: TableProps) {
       data={data}
       filterColumn="name"
       searchPlaceholder="Search ingredients..."
+      onRowClick={(row) => {
+        window.location.href = `/ingredients/${row.id}`;
+      }}
     />
   );
 }

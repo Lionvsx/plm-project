@@ -7,7 +7,7 @@ import Link from "next/link";
 import { getSuppliers } from "@/controllers/ingredients";
 import { ColumnDef } from "@tanstack/react-table";
 
-type Supplier = Awaited<ReturnType<typeof getSuppliers>>[number]
+type Supplier = Awaited<ReturnType<typeof getSuppliers>>[number];
 
 interface SuppliersTableProps {
   suppliers: Supplier[];
@@ -18,6 +18,16 @@ export const SuppliersTable = ({ suppliers }: SuppliersTableProps) => {
     {
       accessorKey: "name",
       header: "Name",
+      cell: ({ row }) => {
+        return (
+          <Link
+            href={`/suppliers/${row.original.id}`}
+            className="hover:underline"
+          >
+            {row.getValue("name")}
+          </Link>
+        );
+      },
     },
     {
       accessorKey: "contactPerson",
@@ -46,7 +56,7 @@ export const SuppliersTable = ({ suppliers }: SuppliersTableProps) => {
         return (
           <div className="flex gap-2">
             <Button variant="ghost" size="sm" asChild>
-              <Link href={`/app/suppliers/${supplier.id}`}>View</Link>
+              <Link href={`/suppliers/${supplier.id}`}>View</Link>
             </Button>
           </div>
         );
@@ -58,7 +68,11 @@ export const SuppliersTable = ({ suppliers }: SuppliersTableProps) => {
     <DataTable
       columns={columns}
       data={suppliers}
+      filterColumn="name"
       searchPlaceholder="Search suppliers..."
+      onRowClick={(row) => {
+        window.location.href = `/suppliers/${row.id}`;
+      }}
     />
   );
 };

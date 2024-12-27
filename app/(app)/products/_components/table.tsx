@@ -6,6 +6,9 @@ import { Product } from "@/db/schema";
 import { formatCurrency, formatDate, formatPercentage } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import type { getProducts } from "@/controllers/products";
+
+type Product = Awaited<ReturnType<typeof getProducts>>[number];
 
 interface TableProps {
   data: Product[];
@@ -16,6 +19,16 @@ export function Table({ data }: TableProps) {
     {
       accessorKey: "name",
       header: "Name",
+      cell: ({ row }) => {
+        return (
+          <Link
+            href={`/products/${row.original.id}`}
+            className="hover:underline"
+          >
+            {row.getValue("name")}
+          </Link>
+        );
+      },
     },
     {
       accessorKey: "category",
@@ -66,6 +79,9 @@ export function Table({ data }: TableProps) {
       data={data}
       filterColumn="name"
       searchPlaceholder="Search products..."
+      onRowClick={(row) => {
+        window.location.href = `/products/${row.id}`;
+      }}
     />
   );
 }
