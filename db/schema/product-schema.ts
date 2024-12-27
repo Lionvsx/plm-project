@@ -1,4 +1,4 @@
-import { InferSelectModel, relations } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import {
   date,
   decimal,
@@ -17,14 +17,12 @@ export const product = pgTable("product", {
   description: text("description"),
   projectId: integer("projectId").references(() => project.id),
   category: varchar("category", { length: 50 }).notNull(),
-  costPrice: decimal("cost_price", { precision: 10, scale: 2 }),
-  margin: decimal("margin", { precision: 5, scale: 2 }),
   launchDate: date("launch_date", { mode: "date" }),
   discontinuationDate: date("discontinuation_date", { mode: "date" }),
 });
 
 export type Product = InferSelectModel<typeof product>;
-
+export type InsertProduct = InferInsertModel<typeof product>;
 export const productVariant = pgTable("product_variant", {
   // Internal IDs
   id: serial("variant_id").primaryKey(),

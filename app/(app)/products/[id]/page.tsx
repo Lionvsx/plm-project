@@ -1,11 +1,13 @@
-import { getProduct } from "@/controllers/products";
-import { notFound } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getProduct } from "@/controllers/products";
 import { formatCurrency, formatDate, formatPercentage } from "@/lib/utils";
-import Link from "next/link";
 import { ArrowRight, Pencil, Plus } from "lucide-react";
-import { FormulationsList } from "./_components/formulations";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { db } from "@/db";
+import { sql } from "drizzle-orm";
+import { formulation, formulationIngredient, ingredient } from "@/db/schema";
 
 interface Props {
   params: {
@@ -13,12 +15,37 @@ interface Props {
   };
 }
 
+async function getVariantCosts(variantId: number) {
+  'use server'
+
+  const costs = await db
+    .select({
+      totalCost: sql<number>`
+        SUM(
+          ${formulationIngredient}.quantity * ${ingredient}.cost_per_unit
+        )`.as('total_cost')
+    })
+    .from(formulationIngredient)
+    .innerJoin(formulation, sql`${formulation.id} = ${formulationIngredient.formulationId}`)
+    .innerJoin(ingredient, sql`${ingredient.id} = ${formulationIngredient.ingredientId}`)
+    .where(sql`${formulation.productVariantId} = ${variantId} AND ${formulation.isActive} = true`)
+    .groupBy(formulation.productVariantId);
+
+  return costs[0]?.totalCost ?? 0;
+}
+
 export default async function ProductPage({ params }: Props) {
   const product = await getProduct(parseInt(params.id));
-
   if (!product) {
     notFound();
   }
+
+  const variantCosts = await Promise.all(
+    product.variants.map(v => getVariantCosts(v.id))
+  );
+
+  const totalCosts = variantCosts.reduce((sum, cost) => sum + cost, 0);
+  const averageCost = variantCosts.length > 0 ? totalCosts / variantCosts.length : 0;
 
   return (
     <div className="p-6">
@@ -38,25 +65,25 @@ export default async function ProductPage({ params }: Props) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
         <Card>
           <CardHeader>
-            <CardTitle>Cost Price</CardTitle>
+            <CardTitle>Average Cost</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {formatCurrency(product.costPrice)}
+              {formatCurrency(averageCost)}
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Margin</CardTitle>
+            <CardTitle>Total Ingredients Cost</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {formatPercentage(product.margin)}
+              {formatCurrency(totalCosts)}
             </div>
           </CardContent>
         </Card>

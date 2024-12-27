@@ -24,7 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
 import { createProduct, updateProduct } from "@/controllers/products";
 import { Product, Project } from "@/db/schema";
-import { productFormSchema } from "@/lib/validators/product";
+import { insertProductSchema } from "@/lib/validators/product";
 
 interface FormProps {
   initialData?: Product;
@@ -33,22 +33,18 @@ interface FormProps {
 
 export function ProductForm({ initialData, projects }: FormProps) {
   const router = useRouter();
-  const form = useForm<z.infer<typeof productFormSchema>>({
-    resolver: zodResolver(productFormSchema),
+  const form = useForm<z.infer<typeof insertProductSchema>>({
+    resolver: zodResolver(insertProductSchema),
     defaultValues: {
       name: initialData?.name || "",
       description: initialData?.description || "",
       category: initialData?.category || "",
-      costPrice: initialData?.costPrice?.toString() || "",
-      margin: initialData?.margin?.toString() || "",
-      launchDate: initialData?.launchDate
-        ? new Date(initialData.launchDate).toISOString().split("T")[0]
-        : "",
-      projectId: undefined
+      launchDate: initialData?.launchDate || undefined,
+      projectId: initialData?.projectId || undefined,
     },
   });
 
-  async function onSubmit(values: z.infer<typeof productFormSchema>) {
+  async function onSubmit(values: z.infer<typeof insertProductSchema>) {
     try {
       const formattedValues = {
         ...values,
@@ -96,6 +92,7 @@ export function ProductForm({ initialData, projects }: FormProps) {
                   placeholder="Product description"
                   className="resize-none"
                   {...field}
+                  value={field.value ?? ''}
                 />
               </FormControl>
               <FormMessage />
@@ -137,7 +134,7 @@ export function ProductForm({ initialData, projects }: FormProps) {
             <FormItem>
               <FormLabel>Project</FormLabel>
               <Select
-                onValueChange={field.onChange}
+                onValueChange={(value) => field.onChange(parseInt(value))}
               >
                 <FormControl>
                   <SelectTrigger>
@@ -157,46 +154,6 @@ export function ProductForm({ initialData, projects }: FormProps) {
           )}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            control={form.control}
-            name="costPrice"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Cost Price</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    placeholder="0.00"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="margin"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Margin (%)</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    placeholder="0.0"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
         <FormField
           control={form.control}
           name="launchDate"
@@ -204,7 +161,12 @@ export function ProductForm({ initialData, projects }: FormProps) {
             <FormItem>
               <FormLabel>Launch Date</FormLabel>
               <FormControl>
-                <Input type="date" {...field} />
+                <Input
+                  type="date"
+                  {...field}
+                  value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
+                  onChange={(e) => field.onChange(new Date(e.target.value))}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

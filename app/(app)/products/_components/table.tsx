@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { Product } from "@/db/schema";
-import { formatCurrency, formatDate, formatPercentage } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 
@@ -30,22 +30,6 @@ export function Table({ data }: TableProps) {
     {
       accessorKey: "category",
       header: "Category",
-    },
-    {
-      accessorKey: "costPrice",
-      header: "Cost Price",
-      cell: ({ row }) => {
-        const value = row.getValue("costPrice") as string;
-        return formatCurrency(value);
-      },
-    },
-    {
-      accessorKey: "margin",
-      header: "Margin",
-      cell: ({ row }) => {
-        const value = row.getValue("margin") as string;
-        return formatPercentage(value);
-      },
     },
     {
       accessorKey: "launchDate",
