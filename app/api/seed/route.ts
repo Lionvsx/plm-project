@@ -20,6 +20,7 @@ import {
   type Formulation,
 } from "@/db/schema/formulation-schema";
 import { orderItem } from "@/db/schema/order-schema";
+import { UnitType, VolumeUnit, WeightUnit } from "@/lib/constants/units";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -63,7 +64,8 @@ async function seedDatabase() {
         name: "Rose Essential Oil",
         description: "Premium rose essential oil from Bulgaria",
         costPerUnit: "120.50",
-        unit: "ml",
+        unitType: UnitType.VOLUME,
+        unit: VolumeUnit.MILLILITER,
         stockQuantity: "1000",
         minimumStock: "200",
       },
@@ -72,7 +74,8 @@ async function seedDatabase() {
         name: "Jasmine Absolute",
         description: "Pure jasmine absolute extract",
         costPerUnit: "180.75",
-        unit: "ml",
+        unitType: UnitType.VOLUME,
+        unit: VolumeUnit.MILLILITER,
         stockQuantity: "800",
         minimumStock: "150",
       },
@@ -81,7 +84,8 @@ async function seedDatabase() {
         name: "Bergamot Oil",
         description: "Cold-pressed bergamot essential oil",
         costPerUnit: "85.25",
-        unit: "ml",
+        unitType: UnitType.VOLUME,
+        unit: VolumeUnit.MILLILITER,
         stockQuantity: "1200",
         minimumStock: "250",
       },
@@ -90,7 +94,8 @@ async function seedDatabase() {
         name: "Vanilla Extract",
         description: "Premium Madagascar vanilla extract",
         costPerUnit: "95.00",
-        unit: "ml",
+        unitType: UnitType.VOLUME,
+        unit: VolumeUnit.MILLILITER,
         stockQuantity: "900",
         minimumStock: "200",
       },
@@ -191,14 +196,14 @@ async function seedDatabase() {
         formulationId: currentFormulation.id,
         ingredientId: ingredients[isRose ? 0 : 2].id,
         quantity: "20.00",
-        unit: "ml",
+        unit: VolumeUnit.MILLILITER,
         notes: "Base note",
       },
       {
         formulationId: currentFormulation.id,
         ingredientId: ingredients[isRose ? 1 : 3].id,
         quantity: "15.00",
-        unit: "ml",
+        unit: VolumeUnit.MILLILITER,
         notes: "Heart note",
       },
     ]);

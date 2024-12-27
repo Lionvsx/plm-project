@@ -8,6 +8,7 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
+import { UnitType } from "@/lib/constants/units";
 
 export const supplier = pgTable("supplier", {
   id: serial("supplier_id").primaryKey(),
@@ -26,7 +27,8 @@ export const ingredient = pgTable("ingredient", {
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
   costPerUnit: decimal("cost_per_unit", { precision: 10, scale: 2 }).notNull(),
-  unit: varchar("unit", { length: 50 }).notNull(), // e.g., "ml", "g", "kg"
+  unitType: varchar("unit_type", { length: 50 }).notNull().$type<UnitType>(),
+  unit: varchar("unit", { length: 50 }).notNull(),
   stockQuantity: decimal("stock_quantity", { precision: 10, scale: 2 }).default(
     "0"
   ),

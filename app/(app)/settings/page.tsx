@@ -1,5 +1,7 @@
 import { SeedButton } from "@/components/seed-button";
+import { DropDatabaseButton } from "@/components/drop-database-button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 export default function AdminPage() {
   return (
@@ -15,7 +17,7 @@ export default function AdminPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-8">
               <div>
                 <h3 className="font-medium mb-2">Reset & Seed Database</h3>
                 <p className="text-sm text-muted-foreground mb-4">
@@ -23,6 +25,17 @@ export default function AdminPage() {
                   Use this only in development or when you want to reset to a known state.
                 </p>
                 <SeedButton />
+              </div>
+
+              <Separator />
+
+              <div>
+                <h3 className="font-medium mb-2 text-destructive">Clear Database</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  ⚠️ This will permanently delete ALL data from the database.
+                  This action cannot be undone. Use with extreme caution.
+                </p>
+                <DropDatabaseButton />
               </div>
             </div>
           </CardContent>
