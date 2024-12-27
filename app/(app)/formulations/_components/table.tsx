@@ -61,7 +61,7 @@ export function Table({ data }: TableProps) {
         return (
           <div className="flex gap-2">
             <Button variant="ghost" size="sm" asChild>
-              <Link href={`/app/formulations/${formulation.id}`}>View</Link>
+              <Link href={`/formulations/${formulation.id}`}>View</Link>
             </Button>
           </div>
         );

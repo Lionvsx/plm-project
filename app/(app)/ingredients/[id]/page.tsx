@@ -42,7 +42,7 @@ export default async function IngredientPage({ params }: Props) {
           )}
         </div>
         <Button variant="outline" size="icon" asChild>
-          <Link href={`/app/ingredients/${ingredient.id}/edit`}>
+          <Link href={`/ingredients/${ingredient.id}/edit`}>
             <Pencil className="h-4 w-4" />
           </Link>
         </Button>
@@ -85,7 +85,7 @@ export default async function IngredientPage({ params }: Props) {
             {ingredient.supplier ? (
               <>
                 <Link
-                  href={`/app/suppliers/${ingredient.supplier.id}`}
+                  href={`/suppliers/${ingredient.supplier.id}`}
                   className="text-2xl font-bold hover:underline"
                 >
                   {ingredient.supplier.name}
