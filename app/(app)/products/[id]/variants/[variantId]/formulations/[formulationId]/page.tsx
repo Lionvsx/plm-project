@@ -53,7 +53,7 @@ export default async function FormulationPage({ params }: Props) {
         <div className="flex gap-2">
           <Button variant="outline" size="icon" asChild>
             <Link
-              href={`/products/${product.id}/formulations/${formulation.id}/edit`}
+              href={`/products/${product.id}/variants/${params.variantId}/formulations/${formulation.id}/edit`}
             >
               <Pencil className="h-4 w-4" />
             </Link>
@@ -100,10 +100,10 @@ export default async function FormulationPage({ params }: Props) {
           <h2 className="text-xl font-semibold">Ingredients</h2>
           <Button asChild>
             <Link
-              href={`/products/${product.id}/formulations/${formulation.id}/ingredients/new`}
+              href={`/products/${product.id}/variants/${params.variantId}/formulations/${formulation.id}/ingredients/new`}
             >
-              <Plus className="w-4 h-4 mr-2" />
-              Add Ingredient
+              <Pencil className="w-4 h-4 mr-2" />
+              Edit Formulation Ingredients
             </Link>
           </Button>
         </div>
@@ -116,7 +116,6 @@ export default async function FormulationPage({ params }: Props) {
               <TableHead>Unit</TableHead>
               <TableHead>Cost</TableHead>
               <TableHead>Notes</TableHead>
-              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -129,17 +128,6 @@ export default async function FormulationPage({ params }: Props) {
                   ${(parseFloat(item.quantity) * parseFloat(item.ingredient.costPerUnit)).toFixed(2)}
                 </TableCell>
                 <TableCell>{item.notes}</TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    <Button variant="ghost" size="sm" asChild>
-                      <Link
-                        href={`/products/${product.id}/formulations/${formulation.id}/ingredients/${item.id}/edit`}
-                      >
-                        Edit
-                      </Link>
-                    </Button>
-                  </div>
-                </TableCell>
               </TableRow>
             ))}
             {formulation.ingredients.length === 0 && (
