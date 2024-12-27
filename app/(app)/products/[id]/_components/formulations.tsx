@@ -14,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useRouter } from "next/navigation";
 
 interface FormulationsListProps {
   productId: number;
@@ -22,6 +23,7 @@ interface FormulationsListProps {
 }
 
 export function FormulationsList({ productId, productVariantId, formulations }: FormulationsListProps) {
+  const router = useRouter();
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -46,7 +48,9 @@ export function FormulationsList({ productId, productVariantId, formulations }: 
         </TableHeader>
         <TableBody>
           {formulations.map((formulation) => (
-            <TableRow key={formulation.id}>
+            <TableRow key={formulation.id} className="hover:cursor-pointer" onClick={() => {
+              router.push(`/products/${productId}/variants/${productVariantId}/formulations/${formulation.id}`);
+            }}>
               <TableCell>{formulation.name}</TableCell>
               <TableCell>v{formulation.version}</TableCell>
               <TableCell>
@@ -59,14 +63,13 @@ export function FormulationsList({ productId, productVariantId, formulations }: 
               <TableCell>{formatDate(formulation.updatedAt)}</TableCell>
               <TableCell>
                 <div className="flex gap-2">
-                  <Button variant="ghost" size="sm" asChild>
-                    <Link href={`/products/${productId}/variants/${productVariantId}/formulations/${formulation.id}`}>
-                      View
-                    </Link>
-                  </Button>
-                  <Button variant="ghost" size="sm" asChild>
-                    <Link href={`/products/${productId}/variants/${productVariantId}/formulations/${formulation.id}/edit`}>
-                      Edit
+                  <Button variant="outline" size="sm" asChild>
+                    <Link
+                      href={`/products/${productId}/variants/${productVariantId}/formulations/${formulation.id}/edit`}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Create New Version
                     </Link>
                   </Button>
                 </div>
