@@ -176,15 +176,17 @@ export function OrderForm({ productVariants }: FormProps) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {productVariants.map((variant) => (
-                          <SelectItem
-                            key={variant.id}
-                            value={variant.id.toString()}
-                          >
-                            {variant.product?.name} -{" "}
-                            {formatCurrency(variant.price)}
-                          </SelectItem>
-                        ))}
+                        {productVariants
+                          .filter((variant) => variant.product)
+                          .map((variant) => (
+                            <SelectItem
+                              key={variant.id}
+                              value={variant.id.toString()}
+                            >
+                              {variant.product?.name} - {variant.size} -{" "}
+                              {formatCurrency(variant.price || "0")}
+                            </SelectItem>
+                          ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
