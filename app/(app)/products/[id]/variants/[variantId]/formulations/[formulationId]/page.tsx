@@ -30,9 +30,20 @@ export default async function FormulationPage({ params }: Props) {
     getFormulation(parseInt(params.formulationId)),
   ]);
 
-  if (!product || !formulation || formulation.productVariantId !== parseInt(params.variantId)) {
+  if (
+    !product ||
+    !formulation ||
+    formulation.productVariantId !== parseInt(params.variantId)
+  ) {
     notFound();
   }
+
+  // Calculate total cost
+  const totalCost = formulation.ingredients.reduce((sum, item) => {
+    const cost =
+      parseFloat(item.quantity) * parseFloat(item.ingredient.costPerUnit);
+    return sum + cost;
+  }, 0);
 
   return (
     <div className="p-6">
@@ -46,7 +57,7 @@ export default async function FormulationPage({ params }: Props) {
           </div>
           {formulation.description && (
             <p className="text-muted-foreground mt-2">
-              {formulation.description}
+              {formulation.description} • Version {formulation.version}
             </p>
           )}
         </div>
@@ -64,10 +75,10 @@ export default async function FormulationPage({ params }: Props) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <Card>
           <CardHeader>
-            <CardTitle>Version</CardTitle>
+            <CardTitle>Total Cost</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">v{formulation.version}</div>
+            <div className="text-2xl font-bold">${totalCost.toFixed(2)}</div>
           </CardContent>
         </Card>
 
@@ -125,7 +136,11 @@ export default async function FormulationPage({ params }: Props) {
                 <TableCell>{item.quantity}</TableCell>
                 <TableCell>{item.unit}</TableCell>
                 <TableCell>
-                  ${(parseFloat(item.quantity) * parseFloat(item.ingredient.costPerUnit)).toFixed(2)}
+                  $
+                  {(
+                    parseFloat(item.quantity) *
+                    parseFloat(item.ingredient.costPerUnit)
+                  ).toFixed(2)}
                 </TableCell>
                 <TableCell>{item.notes}</TableCell>
               </TableRow>
