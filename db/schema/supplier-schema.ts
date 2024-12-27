@@ -1,4 +1,6 @@
 import { pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+import { ingredient } from "./ingredient-schema";
 
 export const supplier = pgTable("supplier", {
   id: serial("id").primaryKey(),
@@ -14,3 +16,7 @@ export const supplier = pgTable("supplier", {
 
 export type Supplier = typeof supplier.$inferSelect;
 export type NewSupplier = typeof supplier.$inferInsert;
+
+export const supplierRelations = relations(supplier, ({ many }) => ({
+  ingredients: many(ingredient),
+}));

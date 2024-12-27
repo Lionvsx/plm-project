@@ -156,6 +156,7 @@ export async function getSuppliers() {
       email: true,
       phone: true,
       address: true,
+      notes: true,
       createdAt: true,
       updatedAt: true,
     },
@@ -173,6 +174,7 @@ export async function getSupplier(id: number) {
       email: true,
       phone: true,
       address: true,
+      notes: true,
       createdAt: true,
       updatedAt: true,
     },
@@ -182,9 +184,11 @@ export async function getSupplier(id: number) {
 
 export async function createSupplier(data: {
   name: string;
+  contactPerson?: string;
   email?: string;
   phone?: string;
   address?: string;
+  notes?: string;
 }) {
   const result = await db.insert(supplier).values(data).returning();
   revalidatePath("/suppliers");
@@ -195,9 +199,11 @@ export async function updateSupplier(
   id: number,
   data: {
     name: string;
+    contactPerson?: string;
     email?: string;
     phone?: string;
     address?: string;
+    notes?: string;
   }
 ) {
   const result = await db

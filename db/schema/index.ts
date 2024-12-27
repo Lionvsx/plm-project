@@ -4,3 +4,4 @@ export * from "./project-schema";
 export * from "./formulation-schema";
 export * from "./ingredient-schema";
 export * from "./order-schema";
+export * from "./supplier-schema";

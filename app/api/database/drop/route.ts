@@ -1,10 +1,10 @@
 import * as schema from "@/db/schema";
-import { project } from "@/db/schema";
+import { project, supplier } from "@/db/schema";
 import {
   formulation,
   formulationIngredient,
 } from "@/db/schema/formulation-schema";
-import { ingredient, supplier } from "@/db/schema/ingredient-schema";
+import { ingredient } from "@/db/schema/ingredient-schema";
 import { order, orderItem } from "@/db/schema/order-schema";
 import { product, productVariant } from "@/db/schema/product-schema";
 import { drizzle } from "drizzle-orm/node-postgres";

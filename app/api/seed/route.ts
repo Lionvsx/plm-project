@@ -1,26 +1,22 @@
-import { NextResponse } from "next/server";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
 import * as schema from "@/db/schema";
+import { Supplier, supplier } from "@/db/schema";
 import {
-  ingredient,
-  supplier,
-  type Ingredient,
-  type Supplier,
-} from "@/db/schema/ingredient-schema";
+  formulation,
+  formulationIngredient,
+  type Formulation,
+} from "@/db/schema/formulation-schema";
+import { ingredient, type Ingredient } from "@/db/schema/ingredient-schema";
+import { orderItem } from "@/db/schema/order-schema";
 import {
   product,
   productVariant,
   type Product,
   type ProductVariant,
 } from "@/db/schema/product-schema";
-import {
-  formulation,
-  formulationIngredient,
-  type Formulation,
-} from "@/db/schema/formulation-schema";
-import { orderItem } from "@/db/schema/order-schema";
-import { UnitType, VolumeUnit, WeightUnit } from "@/lib/constants/units";
+import { UnitType, VolumeUnit } from "@/lib/constants/units";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { NextResponse } from "next/server";
+import { Pool } from "pg";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,

@@ -23,7 +23,7 @@ export default async function IngredientPage({ params }: Props) {
   const isLowStock =
     ingredient.minimumStock &&
     parseFloat(ingredient.stockQuantity || "0") <=
-    parseFloat(ingredient.minimumStock || "0");
+      parseFloat(ingredient.minimumStock || "0");
 
   return (
     <div className="p-6">
@@ -31,9 +31,7 @@ export default async function IngredientPage({ params }: Props) {
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold">{ingredient.name}</h1>
-            {isLowStock && (
-              <Badge variant="destructive">Low Stock</Badge>
-            )}
+            {isLowStock && <Badge variant="destructive">Low Stock</Badge>}
           </div>
           {ingredient.description && (
             <p className="text-muted-foreground mt-2">
@@ -90,9 +88,9 @@ export default async function IngredientPage({ params }: Props) {
                 >
                   {ingredient.supplier.name}
                 </Link>
-                {ingredient.supplier.contactPerson && (
+                {ingredient.supplier.email && (
                   <p className="text-sm text-muted-foreground mt-1">
-                    Contact: {ingredient.supplier.contactPerson}
+                    Contact: {ingredient.supplier.email}
                   </p>
                 )}
               </>

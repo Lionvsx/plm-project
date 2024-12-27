@@ -9,17 +9,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { UnitType } from "@/lib/constants/units";
-
-export const supplier = pgTable("supplier", {
-  id: serial("id").primaryKey(),
-  name: varchar("name", { length: 255 }).notNull(),
-  contactPerson: varchar("contact_person", { length: 255 }),
-  email: varchar("email", { length: 255 }),
-  phone: varchar("phone", { length: 50 }),
-  address: text("address"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+import { supplier } from "./supplier-schema";
 
 export const ingredient = pgTable("ingredient", {
   id: serial("ingredient_id").primaryKey(),
@@ -38,7 +28,6 @@ export const ingredient = pgTable("ingredient", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export type Supplier = InferSelectModel<typeof supplier>;
 export type Ingredient = InferSelectModel<typeof ingredient>;
 
 export const ingredientRelations = relations(ingredient, ({ one }) => ({
@@ -46,8 +35,4 @@ export const ingredientRelations = relations(ingredient, ({ one }) => ({
     fields: [ingredient.supplierId],
     references: [supplier.id],
   }),
-}));
-
-export const supplierRelations = relations(supplier, ({ many }) => ({
-  ingredients: many(ingredient),
 }));

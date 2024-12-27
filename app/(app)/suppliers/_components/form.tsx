@@ -24,6 +24,7 @@ const formSchema = z.object({
   email: z.string().email().optional().or(z.literal("")),
   phone: z.string().optional(),
   address: z.string().optional(),
+  notes: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -43,6 +44,7 @@ export function SupplierForm({ initialData, isEditing }: SupplierFormProps) {
       email: initialData?.email || "",
       phone: initialData?.phone || "",
       address: initialData?.address || "",
+      notes: initialData?.notes || "",
     },
   });
 
@@ -131,6 +133,20 @@ export function SupplierForm({ initialData, isEditing }: SupplierFormProps) {
               <FormLabel>Address</FormLabel>
               <FormControl>
                 <Textarea placeholder="Supplier address" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes</FormLabel>
+              <FormControl>
+                <Textarea placeholder="Additional notes" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
