@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
 import { IngredientForm } from "../_components/form";
 import { IngredientsTable } from "../_components/table";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface Props {
   params: {
@@ -85,6 +87,15 @@ export default async function NewFormulationIngredientPage({ params }: Props) {
             />
           </CardContent>
         </Card>
+      </div>
+      <div className="flex justify-start mt-6 px-6">
+        <Button
+          asChild
+        >
+          <Link href={`/products/${params.id}/variants/${params.variantId}/formulations/${params.formulationId}`}>
+            Back to Formulation
+          </Link>
+        </Button>
       </div>
     </div>
   );

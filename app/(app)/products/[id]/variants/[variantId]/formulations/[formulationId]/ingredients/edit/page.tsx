@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
 import { IngredientForm } from "../_components/form";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface Props {
   params: {
