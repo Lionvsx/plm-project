@@ -67,12 +67,16 @@ export function Table({ data }: TableProps) {
       id: "actions",
       cell: ({ row }) => {
         return (
-          <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-            <Button variant="ghost" size="sm" asChild>
-              <Link href={`/orders/${row.original.id}/edit`}>
-                <Pencil className="h-4 w-4 mr-2" />
-                Edit
-              </Link>
+          <div
+            className="flex gap-2"
+            onClick={(e) => {
+              e.stopPropagation();
+              window.location.href = `/orders/${row.original.id}/edit`;
+            }}
+          >
+            <Button variant="ghost" size="sm">
+              <Pencil className="h-4 w-4 mr-2" />
+              Edit
             </Button>
           </div>
         );
