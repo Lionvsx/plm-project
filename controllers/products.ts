@@ -161,3 +161,21 @@ export async function calculateProductVariantCost(id: number) {
 
   return totalCost;
 }
+
+export async function getProductVariants() {
+  const variants = await db.query.productVariant.findMany({
+    with: {
+      product: {
+        columns: {
+          id: true,
+          name: true,
+          category: true,
+        },
+      },
+    },
+  });
+
+  console.log("Variants récupérés:", variants);
+
+  return variants;
+}
