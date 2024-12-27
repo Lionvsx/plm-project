@@ -6,7 +6,7 @@ import {
   type Formulation,
 } from "@/db/schema/formulation-schema";
 import { ingredient, type Ingredient } from "@/db/schema/ingredient-schema";
-import { orderItem } from "@/db/schema/order-schema";
+import { order, orderItem } from "@/db/schema/order-schema";
 import {
   product,
   productVariant,
@@ -59,7 +59,7 @@ async function seedDatabase() {
         supplierId: supplier1[0].id,
         name: "Rose Essential Oil",
         description: "Premium rose essential oil from Bulgaria",
-        costPerUnit: "120.50",
+        costPerUnit: "12.50",
         unitType: UnitType.VOLUME,
         unit: VolumeUnit.MILLILITER,
         stockQuantity: "1000",
@@ -69,7 +69,7 @@ async function seedDatabase() {
         supplierId: supplier1[0].id,
         name: "Jasmine Absolute",
         description: "Pure jasmine absolute extract",
-        costPerUnit: "180.75",
+        costPerUnit: "15.75",
         unitType: UnitType.VOLUME,
         unit: VolumeUnit.MILLILITER,
         stockQuantity: "800",
@@ -79,7 +79,7 @@ async function seedDatabase() {
         supplierId: supplier2[0].id,
         name: "Bergamot Oil",
         description: "Cold-pressed bergamot essential oil",
-        costPerUnit: "85.25",
+        costPerUnit: "5.25",
         unitType: UnitType.VOLUME,
         unit: VolumeUnit.MILLILITER,
         stockQuantity: "1200",
@@ -89,7 +89,7 @@ async function seedDatabase() {
         supplierId: supplier2[0].id,
         name: "Vanilla Extract",
         description: "Premium Madagascar vanilla extract",
-        costPerUnit: "95.00",
+        costPerUnit: "8.00",
         unitType: UnitType.VOLUME,
         unit: VolumeUnit.MILLILITER,
         stockQuantity: "900",
@@ -118,73 +118,139 @@ async function seedDatabase() {
     .returning()) as unknown as Product[];
 
   // Create product variants
-  const variantPromises = products.map(
-    (prod: Product) =>
-      Promise.all([
-        db
-          .insert(productVariant)
-          .values({
-            productId: prod.id,
-            size: "30ml",
-            sku: `${prod.name.substring(0, 3).toUpperCase()}-30`,
-            price: "49.99",
-          })
-          .returning(),
-        db
-          .insert(productVariant)
-          .values({
-            productId: prod.id,
-            size: "50ml",
-            sku: `${prod.name.substring(0, 3).toUpperCase()}-50`,
-            price: "79.99",
-          })
-          .returning(),
-        db
-          .insert(productVariant)
-          .values({
-            productId: prod.id,
-            size: "100ml",
-            sku: `${prod.name.substring(0, 3).toUpperCase()}-100`,
-            price: "129.99",
-          })
-          .returning(),
-      ]) as Promise<[ProductVariant[], ProductVariant[], ProductVariant[]]>
+  const variantPromises = products.map((prod: Product) =>
+    Promise.all([
+      db
+        .insert(productVariant)
+        .values({
+          productId: prod.id,
+          size: "30ml",
+          sku: `${prod.name.substring(0, 3).toUpperCase()}-30`,
+          price: "49.99",
+        })
+        .returning(),
+      db
+        .insert(productVariant)
+        .values({
+          productId: prod.id,
+          size: "50ml",
+          sku: `${prod.name.substring(0, 3).toUpperCase()}-50`,
+          price: "79.99",
+        })
+        .returning(),
+      db
+        .insert(productVariant)
+        .values({
+          productId: prod.id,
+          size: "100ml",
+          sku: `${prod.name.substring(0, 3).toUpperCase()}-100`,
+          price: "129.99",
+        })
+        .returning(),
+    ])
   );
 
   const variants = await Promise.all(variantPromises);
+  const allVariants = variants.flat().map((v) => v[0]); // Flatten and get first item of each array
+
+  // Create orders for 3 clients
+  const orders = await db
+    .insert(order)
+    .values([
+      {
+        customerName: "Sophie Martin",
+        customerEmail: "sophie.martin@email.com",
+        customerPhone: "+1-555-0001",
+        status: "COMPLETED",
+        notes: "Regular customer - prefers quick delivery",
+        deliveryDate: new Date("2024-02-20"),
+      },
+      {
+        customerName: "David Chen",
+        customerEmail: "david.chen@email.com",
+        customerPhone: "+1-555-0002",
+        status: "IN_PRODUCTION",
+        notes: "New customer - special packaging requested",
+        deliveryDate: new Date("2024-03-01"),
+      },
+      {
+        customerName: "Maria Garcia",
+        customerEmail: "maria.garcia@email.com",
+        customerPhone: "+1-555-0003",
+        status: "PENDING",
+        notes: "Bulk order for boutique store",
+        deliveryDate: new Date("2024-03-15"),
+      },
+    ])
+    .returning();
+
+  // Create order items
+  await db.insert(orderItem).values([
+    // Sophie's order - 3 items total (2 Midnight Rose 30ml + 1 Citrus Dream 30ml)
+    {
+      orderId: orders[0].id,
+      productVariantId: allVariants[0].id, // Midnight Rose 30ml
+      quantity: 2,
+      unitPrice: "49.99",
+      notes: "Gift wrapping needed",
+    },
+    {
+      orderId: orders[0].id,
+      productVariantId: allVariants[3].id, // Citrus Dream 30ml
+      quantity: 1,
+      unitPrice: "49.99",
+    },
+    // David's order - 1 item (Midnight Rose 50ml)
+    {
+      orderId: orders[1].id,
+      productVariantId: allVariants[1].id, // Midnight Rose 50ml
+      quantity: 1,
+      unitPrice: "79.99",
+      notes: "Special packaging",
+    },
+    // Maria's order - 10 items total (5 each of 100ml variants)
+    {
+      orderId: orders[2].id,
+      productVariantId: allVariants[2].id, // Midnight Rose 100ml
+      quantity: 5,
+      unitPrice: "129.99",
+      notes: "Bulk order discount applied",
+    },
+    {
+      orderId: orders[2].id,
+      productVariantId: allVariants[5].id, // Citrus Dream 100ml
+      quantity: 5,
+      unitPrice: "129.99",
+      notes: "Bulk order discount applied",
+    },
+  ]);
 
   // Create formulations
-  const formulationPromises = variants
-    .flat()
-    .map(async (variant: ProductVariant[]) => {
-      const productVariant = variant[0];
-      const prod = products.find(
-        (p: Product) => p.id === productVariant.productId
-      );
+  const formulationPromises = allVariants.map(
+    async (variant: ProductVariant) => {
+      const prod = products.find((p: Product) => p.id === variant.productId);
       return db
         .insert(formulation)
         .values({
-          productVariantId: productVariant.id,
-          name: `${prod?.name} ${productVariant.size} Formula`,
+          productVariantId: variant.id,
+          name: `${prod?.name} ${variant.size} Formula`,
           description: "Standard formulation",
           version: 1,
           isActive: true,
         })
         .returning() as Promise<Formulation[]>;
-    });
+    }
+  );
 
   const formulations = await Promise.all(formulationPromises);
 
   // Create formulation ingredients
   const ingredientPromises = formulations.map(async (form: Formulation[]) => {
     const currentFormulation = form[0];
-    const variant = variants
-      .flat()
-      .find(
-        (v: ProductVariant[]) => v[0].id === currentFormulation.productVariantId
-      );
-    const prod =
-      variant && products.find((p: Product) => p.id === variant[0].productId);
+    const variant = allVariants.find(
+      (v: ProductVariant) => v.id === currentFormulation.productVariantId
+    );
+    const prod = products.find((p: Product) => p.id === variant?.productId);
     const isRose = prod?.name === "Midnight Rose";
 
     return db.insert(formulationIngredient).values([
@@ -212,6 +278,7 @@ async function dropAllTables() {
   try {
     // Delete in order of dependencies (from most dependent to least dependent)
     await db.delete(orderItem);
+    await db.delete(order);
     await db.delete(formulationIngredient);
     await db.delete(formulation);
     await db.delete(productVariant);
