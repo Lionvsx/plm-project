@@ -18,7 +18,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { createOrder } from "@/controllers/orders";
+import { createOrder, updateOrder } from "@/controllers/orders";
+import type { getOrders } from "@/controllers/orders";
 import { ProductVariant } from "@/db/schema";
 import { orderSchema } from "@/lib/validators/orders";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,6 +27,8 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { Plus, Trash } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
+
+type Order = Awaited<ReturnType<typeof getOrders>>[number];
 
 interface FormProps {
   productVariants: Array<{
@@ -40,19 +43,26 @@ interface FormProps {
       category: string;
     } | null;
   }>;
+  initialData?: Order;
 }
 
-export function OrderForm({ productVariants }: FormProps) {
+export function OrderForm({ productVariants, initialData }: FormProps) {
   const router = useRouter();
   const form = useForm({
     resolver: zodResolver(orderSchema),
     defaultValues: {
-      customerName: "",
-      customerEmail: "",
-      customerPhone: "",
-      notes: "",
-      deliveryDate: "",
-      items: [{ productVariantId: "", quantity: 1, notes: "" }],
+      customerName: initialData?.customerName || "",
+      customerEmail: initialData?.customerEmail || "",
+      customerPhone: initialData?.customerPhone || "",
+      notes: initialData?.notes || "",
+      deliveryDate: initialData?.deliveryDate
+        ? new Date(initialData.deliveryDate).toISOString().split("T")[0]
+        : "",
+      items: initialData?.items?.map((item) => ({
+        productVariantId: item.productVariant.id.toString(),
+        quantity: item.quantity,
+        notes: item.notes || "",
+      })) || [{ productVariantId: "", quantity: 1, notes: "" }],
     },
   });
 
@@ -63,7 +73,7 @@ export function OrderForm({ productVariants }: FormProps) {
 
   async function onSubmit(values: any) {
     try {
-      await createOrder({
+      const orderData = {
         ...values,
         deliveryDate: values.deliveryDate
           ? new Date(values.deliveryDate)
@@ -74,13 +84,20 @@ export function OrderForm({ productVariants }: FormProps) {
           unitPrice:
             productVariants.find(
               (v) => v.id === parseInt(item.productVariantId)
-            )?.price || 0,
+            )?.price || "0",
         })),
-      });
+      };
+
+      if (initialData) {
+        await updateOrder(initialData.id, orderData);
+      } else {
+        await createOrder(orderData);
+      }
+
       router.push("/orders");
       router.refresh();
     } catch (error) {
-      console.error("Error creating order:", error);
+      console.error("Error saving order:", error);
     }
   }
 
@@ -169,7 +186,10 @@ export function OrderForm({ productVariants }: FormProps) {
                 render={({ field }) => (
                   <FormItem className="flex-1">
                     <FormLabel>Product</FormLabel>
-                    <Select onValueChange={field.onChange}>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select a product" />
@@ -234,7 +254,9 @@ export function OrderForm({ productVariants }: FormProps) {
           )}
         />
 
-        <Button type="submit">Create Order</Button>
+        <Button type="submit">
+          {initialData ? "Update Order" : "Create Order"}
+        </Button>
       </form>
     </Form>
   );
