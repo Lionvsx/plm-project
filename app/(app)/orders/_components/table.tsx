@@ -18,7 +18,7 @@ export function Table({ data }: TableProps) {
   const columns: ColumnDef<Order>[] = [
     {
       accessorKey: "customerName",
-      header: "Client",
+      header: "Customer",
       cell: ({ row }) => {
         return (
           <Link href={`/orders/${row.original.id}`} className="hover:underline">
@@ -44,7 +44,7 @@ export function Table({ data }: TableProps) {
     },
     {
       accessorKey: "deliveryDate",
-      header: "Date de livraison",
+      header: "Delivery Date",
       cell: ({ row }) => {
         const value = row.getValue("deliveryDate") as Date;
         return value ? formatDate(value) : "-";
@@ -52,7 +52,7 @@ export function Table({ data }: TableProps) {
     },
     {
       id: "items",
-      header: "Produits",
+      header: "Products",
       cell: ({ row }) => {
         return row.original.items?.length || 0;
       },
@@ -76,7 +76,7 @@ export function Table({ data }: TableProps) {
       columns={columns}
       data={data}
       filterColumn="customerName"
-      searchPlaceholder="Rechercher une commande..."
+      searchPlaceholder="Search for an order..."
       onRowClick={(row) => {
         window.location.href = `/orders/${row.id}`;
       }}

@@ -92,9 +92,9 @@ export function OrderForm({ productVariants }: FormProps) {
           name="customerName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nom du client</FormLabel>
+              <FormLabel>Customer Name</FormLabel>
               <FormControl>
-                <Input placeholder="Nom du client" {...field} />
+                <Input placeholder="Customer name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -121,9 +121,9 @@ export function OrderForm({ productVariants }: FormProps) {
             name="customerPhone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Téléphone</FormLabel>
+                <FormLabel>Phone</FormLabel>
                 <FormControl>
-                  <Input placeholder="Téléphone" {...field} />
+                  <Input placeholder="Phone" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -136,7 +136,7 @@ export function OrderForm({ productVariants }: FormProps) {
           name="deliveryDate"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Date de livraison</FormLabel>
+              <FormLabel>Delivery Date</FormLabel>
               <FormControl>
                 <Input type="date" {...field} />
               </FormControl>
@@ -147,7 +147,7 @@ export function OrderForm({ productVariants }: FormProps) {
 
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium">Produits</h3>
+            <h3 className="text-lg font-medium">Products</h3>
             <Button
               type="button"
               variant="outline"
@@ -157,7 +157,7 @@ export function OrderForm({ productVariants }: FormProps) {
               }
             >
               <Plus className="h-4 w-4 mr-2" />
-              Ajouter un produit
+              Add Product
             </Button>
           </div>
 
@@ -168,11 +168,11 @@ export function OrderForm({ productVariants }: FormProps) {
                 name={`items.${index}.productVariantId`}
                 render={({ field }) => (
                   <FormItem className="flex-1">
-                    <FormLabel>Produit</FormLabel>
+                    <FormLabel>Product</FormLabel>
                     <Select onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Sélectionner un produit" />
+                          <SelectValue placeholder="Select a product" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -199,7 +199,7 @@ export function OrderForm({ productVariants }: FormProps) {
                 name={`items.${index}.quantity`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Quantité</FormLabel>
+                    <FormLabel>Quantity</FormLabel>
                     <FormControl>
                       <Input type="number" min="1" {...field} />
                     </FormControl>
@@ -227,14 +227,14 @@ export function OrderForm({ productVariants }: FormProps) {
             <FormItem>
               <FormLabel>Notes</FormLabel>
               <FormControl>
-                <Textarea placeholder="Notes supplémentaires" {...field} />
+                <Textarea placeholder="Additional notes" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <Button type="submit">Créer la commande</Button>
+        <Button type="submit">Create Order</Button>
       </form>
     </Form>
   );

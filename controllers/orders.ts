@@ -24,7 +24,11 @@ export async function getOrder(id: number) {
     with: {
       items: {
         with: {
-          productVariant: true,
+          productVariant: {
+            with: {
+              product: true,
+            },
+          },
         },
       },
     },

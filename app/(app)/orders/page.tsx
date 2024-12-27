@@ -10,11 +10,11 @@ export default async function OrdersPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Commandes</h1>
+        <h1 className="text-3xl font-bold">Orders</h1>
         <Button asChild>
           <Link href="/orders/new">
             <Plus className="w-4 h-4 mr-2" />
-            Nouvelle Commande
+            New Order
           </Link>
         </Button>
       </div>

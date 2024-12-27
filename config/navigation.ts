@@ -25,7 +25,7 @@ export const navigation = [
     icon: "TruckDelivery",
   },
   {
-    title: "Commandes",
+    title: "Orders",
     href: "/orders",
     icon: "ShoppingCart",
   },
