@@ -34,6 +34,15 @@ export default async function VariantPage({ params }: Props) {
     .filter((f) => f.isActive)
     .sort((a, b) => b.version - a.version)[0];
 
+  // Calculate total fabrication cost if there's an active formulation
+  const fabricationCost = activeFormulation
+    ? activeFormulation.ingredients.reduce((sum, item) => {
+        const cost =
+          parseFloat(item.quantity) * parseFloat(item.ingredient.costPerUnit);
+        return sum + cost;
+      }, 0)
+    : 0;
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
@@ -67,7 +76,7 @@ export default async function VariantPage({ params }: Props) {
       </div>
 
       <div className="space-y-6">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-2">
             <p className="text-sm font-medium">SKU</p>
             <p>{variant.sku}</p>
@@ -77,8 +86,12 @@ export default async function VariantPage({ params }: Props) {
             <p>{variant.size}</p>
           </div>
           <div className="space-y-2">
+            <p className="text-sm font-medium">Fabrication Cost</p>
+            <p>${fabricationCost.toFixed(2)}</p>
+          </div>
+          <div className="space-y-2">
             <p className="text-sm font-medium">Price</p>
-            <p>{variant.price}</p>
+            <p>${variant.price}</p>
           </div>
         </div>
 

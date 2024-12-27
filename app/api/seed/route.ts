@@ -227,15 +227,20 @@ async function seedDatabase() {
     .returning()) as unknown as Product[];
 
   // Create product variants
-  const variantPromises = products.map((prod: Product) =>
-    Promise.all([
+  const variantPromises = products.map((prod: Product) => {
+    const prices =
+      prod.name === "Midnight Rose"
+        ? ["49.99", "73.99", "139.99"] // Midnight Rose: 30ml, 50ml, 100ml
+        : ["34.99", "49.99", "89.99"]; // Citrus Dream: 30ml, 50ml, 100ml
+
+    return Promise.all([
       db
         .insert(productVariant)
         .values({
           productId: prod.id,
           size: "30ml",
           sku: `${prod.name.substring(0, 3).toUpperCase()}-30`,
-          price: "49.99",
+          price: prices[0],
         })
         .returning(),
       db
@@ -244,7 +249,7 @@ async function seedDatabase() {
           productId: prod.id,
           size: "50ml",
           sku: `${prod.name.substring(0, 3).toUpperCase()}-50`,
-          price: "79.99",
+          price: prices[1],
         })
         .returning(),
       db
@@ -253,11 +258,11 @@ async function seedDatabase() {
           productId: prod.id,
           size: "100ml",
           sku: `${prod.name.substring(0, 3).toUpperCase()}-100`,
-          price: "129.99",
+          price: prices[2],
         })
         .returning(),
-    ])
-  );
+    ]);
+  });
 
   const variants = await Promise.all(variantPromises);
   const allVariants = variants.flat().map((v) => v[0]); // Flatten and get first item of each array
