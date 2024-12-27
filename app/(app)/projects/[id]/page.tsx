@@ -51,7 +51,7 @@ export default async function ProjectPage({ params }: Props) {
           )}
         </div>
         <Button variant="outline" size="icon" asChild>
-          <Link href={`/app/projects/${project.id}/edit`}>
+          <Link href={`/projects/${project.id}/edit`}>
             <Pencil className="h-4 w-4" />
           </Link>
         </Button>
