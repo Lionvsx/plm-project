@@ -222,7 +222,7 @@ export function IngredientForm({ initialData, suppliers }: FormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Supplier</FormLabel>
-              <Select onValueChange={field.onChange}>
+              <Select onValueChange={v => field.onChange(parseInt(v))} value={field.value?.toString()}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a supplier" />
