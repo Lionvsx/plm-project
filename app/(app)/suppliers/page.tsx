@@ -1,13 +1,11 @@
 import { getSuppliers } from "@/controllers/ingredients";
-import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import { SuppliersTable } from "./_components/table";
+import { Table } from "./_components/table";
 
 export default async function SuppliersPage() {
   const suppliers = await getSuppliers();
-
 
   return (
     <div className="p-6">
@@ -21,7 +19,7 @@ export default async function SuppliersPage() {
         </Button>
       </div>
 
-      <SuppliersTable suppliers={suppliers} />
+      <Table data={suppliers} />
     </div>
   );
 }

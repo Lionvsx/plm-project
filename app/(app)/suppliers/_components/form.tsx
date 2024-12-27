@@ -98,7 +98,11 @@ export function SupplierForm({ initialData, isEditing }: SupplierFormProps) {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="contact@supplier.com" {...field} />
+                <Input
+                  type="email"
+                  placeholder="contact@supplier.com"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -126,10 +130,7 @@ export function SupplierForm({ initialData, isEditing }: SupplierFormProps) {
             <FormItem>
               <FormLabel>Address</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Supplier address"
-                  {...field}
-                />
+                <Textarea placeholder="Supplier address" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -140,11 +141,7 @@ export function SupplierForm({ initialData, isEditing }: SupplierFormProps) {
           <Button type="submit">
             {isEditing ? "Update" : "Create"} Supplier
           </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => router.back()}
-          >
+          <Button type="button" variant="outline" onClick={() => router.back()}>
             Cancel
           </Button>
         </div>

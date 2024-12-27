@@ -11,7 +11,7 @@ import {
 import { UnitType } from "@/lib/constants/units";
 
 export const supplier = pgTable("supplier", {
-  id: serial("supplier_id").primaryKey(),
+  id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   contactPerson: varchar("contact_person", { length: 255 }),
   email: varchar("email", { length: 255 }),

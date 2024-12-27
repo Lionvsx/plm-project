@@ -43,6 +43,27 @@
       "when": 1735314740443,
       "tag": "0005_luxuriant_sally_floyd",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1735316687711,
+      "tag": "0006_massive_eternals",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1735317825247,
+      "tag": "0007_narrow_supernaut",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1735318780778,
+      "tag": "0008_same_kid_colt",
+      "breakpoints": true
     }
   ]
 }

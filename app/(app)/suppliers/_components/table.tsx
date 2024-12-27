@@ -2,36 +2,35 @@
 "use client";
 
 import { DataTable } from "@/components/ui/data-table";
+import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { getSuppliers } from "@/controllers/ingredients";
-import { ColumnDef } from "@tanstack/react-table";
+import type { getSuppliers } from "@/controllers/suppliers";
+import { Pencil } from "lucide-react";
 
 type Supplier = Awaited<ReturnType<typeof getSuppliers>>[number];
 
-interface SuppliersTableProps {
-  suppliers: Supplier[];
+interface TableProps {
+  data: Supplier[];
 }
 
-export const SuppliersTable = ({ suppliers }: SuppliersTableProps) => {
+export function Table({ data }: TableProps) {
   const columns: ColumnDef<Supplier>[] = [
     {
       accessorKey: "name",
       header: "Name",
       cell: ({ row }) => {
         return (
-          <Link
-            href={`/suppliers/${row.original.id}`}
-            className="hover:underline"
-          >
-            {row.getValue("name")}
-          </Link>
+          <div onClick={(e) => e.stopPropagation()}>
+            <Link
+              href={`/suppliers/${row.original.id}`}
+              className="hover:underline"
+            >
+              {row.getValue("name")}
+            </Link>
+          </div>
         );
       },
-    },
-    {
-      accessorKey: "contactPerson",
-      header: "Contact Person",
     },
     {
       accessorKey: "email",
@@ -40,23 +39,27 @@ export const SuppliersTable = ({ suppliers }: SuppliersTableProps) => {
     {
       accessorKey: "phone",
       header: "Phone",
+      cell: ({ row }) => row.getValue("phone") || "-",
     },
     {
-      id: "ingredients",
-      header: "Ingredients",
-      cell: ({ row }) => {
-        const supplier = row.original;
-        return supplier.ingredients?.length || 0;
-      },
+      accessorKey: "address",
+      header: "Address",
+      cell: ({ row }) => row.getValue("address") || "-",
     },
     {
       id: "actions",
       cell: ({ row }) => {
-        const supplier = row.original;
         return (
-          <div className="flex gap-2">
-            <Button variant="ghost" size="sm" asChild>
-              <Link href={`/suppliers/${supplier.id}`}>View</Link>
+          <div
+            className="flex gap-2"
+            onClick={(e) => {
+              e.stopPropagation();
+              window.location.href = `/suppliers/${row.original.id}/edit`;
+            }}
+          >
+            <Button variant="ghost" size="sm">
+              <Pencil className="h-4 w-4 mr-2" />
+              Edit
             </Button>
           </div>
         );
@@ -67,7 +70,7 @@ export const SuppliersTable = ({ suppliers }: SuppliersTableProps) => {
   return (
     <DataTable
       columns={columns}
-      data={suppliers}
+      data={data}
       filterColumn="name"
       searchPlaceholder="Search suppliers..."
       onRowClick={(row) => {
@@ -75,4 +78,4 @@ export const SuppliersTable = ({ suppliers }: SuppliersTableProps) => {
       }}
     />
   );
-};
+}

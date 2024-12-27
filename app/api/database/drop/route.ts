@@ -1,14 +1,15 @@
-import { NextResponse } from "next/server";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
 import * as schema from "@/db/schema";
-import { orderItem } from "@/db/schema/order-schema";
+import { project } from "@/db/schema";
 import {
-  formulationIngredient,
   formulation,
+  formulationIngredient,
 } from "@/db/schema/formulation-schema";
-import { productVariant, product } from "@/db/schema/product-schema";
 import { ingredient, supplier } from "@/db/schema/ingredient-schema";
+import { order, orderItem } from "@/db/schema/order-schema";
+import { product, productVariant } from "@/db/schema/product-schema";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { NextResponse } from "next/server";
+import { Pool } from "pg";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -26,6 +27,8 @@ async function dropAllTables() {
     await db.delete(product);
     await db.delete(ingredient);
     await db.delete(supplier);
+    await db.delete(order);
+    await db.delete(project);
   } catch (error) {
     console.error("Error dropping tables:", error);
     throw error;
