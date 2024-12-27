@@ -77,3 +77,56 @@ export async function createOrder(data: {
   revalidatePath("/orders");
   return result;
 }
+
+export async function updateOrder(id: number, data: any) {
+  try {
+    const updatedOrder = await db.transaction(async (tx) => {
+      // Update the main order
+      const [updatedOrder] = await tx
+        .update(order)
+        .set({
+          customerName: data.customerName,
+          customerEmail: data.customerEmail,
+          customerPhone: data.customerPhone,
+          notes: data.notes,
+          deliveryDate: data.deliveryDate,
+          updatedAt: new Date(),
+        })
+        .where(eq(order.id, id))
+        .returning();
+
+      if (!updatedOrder) {
+        throw new Error("Order not found");
+      }
+
+      // Delete existing items
+      await tx.delete(orderItem).where(eq(orderItem.orderId, id));
+
+      // Insert new items
+      const items = await Promise.all(
+        data.items.map((item: any) =>
+          tx
+            .insert(orderItem)
+            .values({
+              orderId: id,
+              productVariantId: item.productVariantId,
+              quantity: item.quantity,
+              unitPrice: item.unitPrice,
+              notes: item.notes,
+            })
+            .returning()
+        )
+      );
+
+      return {
+        ...updatedOrder,
+        items: items.map((i) => i[0]),
+      };
+    });
+
+    return updatedOrder;
+  } catch (error) {
+    console.error("Error updating order:", error);
+    throw error;
+  }
+}

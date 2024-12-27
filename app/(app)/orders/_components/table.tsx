@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
 import type { getOrders } from "@/controllers/orders";
+import { Pencil } from "lucide-react";
 
 type Order = Awaited<ReturnType<typeof getOrders>>[number];
 
@@ -21,9 +22,14 @@ export function Table({ data }: TableProps) {
       header: "Customer",
       cell: ({ row }) => {
         return (
-          <Link href={`/orders/${row.original.id}`} className="hover:underline">
-            {row.getValue("customerName")}
-          </Link>
+          <div onClick={(e) => e.stopPropagation()}>
+            <Link
+              href={`/orders/${row.original.id}`}
+              className="hover:underline"
+            >
+              {row.getValue("customerName")}
+            </Link>
+          </div>
         );
       },
     },
@@ -61,9 +67,12 @@ export function Table({ data }: TableProps) {
       id: "actions",
       cell: ({ row }) => {
         return (
-          <div className="flex gap-2">
+          <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
             <Button variant="ghost" size="sm" asChild>
-              <Link href={`/orders/${row.original.id}`}>View</Link>
+              <Link href={`/orders/${row.original.id}/edit`}>
+                <Pencil className="h-4 w-4 mr-2" />
+                Edit
+              </Link>
             </Button>
           </div>
         );
