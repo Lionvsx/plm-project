@@ -9,6 +9,7 @@ import { IngredientForm } from "../_components/form";
 interface Props {
   params: {
     id: string;
+    variantId: string;
     formulationId: string;
   };
 }
@@ -20,7 +21,7 @@ export default async function EditIngredientsPage({ params }: Props) {
     getIngredients(),
   ]);
 
-  if (!product || !formulation || formulation.productVariantId !== product.id) {
+  if (!product || !formulation || formulation.productVariantId !== parseInt(params.variantId)) {
     notFound();
   }
 
