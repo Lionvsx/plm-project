@@ -23,6 +23,13 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -30,6 +37,8 @@ interface DataTableProps<TData, TValue> {
   searchPlaceholder?: string;
   filterColumn?: string;
   onRowClick?: (row: TData) => void;
+  statusColumn?: string;
+  statusOptions?: { label: string; value: string }[];
 }
 
 export function DataTable<TData, TValue>({
@@ -38,6 +47,8 @@ export function DataTable<TData, TValue>({
   searchPlaceholder = "Search...",
   filterColumn = "name",
   onRowClick,
+  statusColumn,
+  statusOptions,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -61,7 +72,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center py-4">
+      <div className="flex items-center gap-4 py-4">
         <Input
           placeholder={searchPlaceholder}
           value={
@@ -72,6 +83,30 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
+        {statusColumn && statusOptions && (
+          <Select
+            value={
+              (table.getColumn(statusColumn)?.getFilterValue() as string) ?? ""
+            }
+            onValueChange={(value) => {
+              table
+                .getColumn(statusColumn)
+                ?.setFilterValue(value === "ALL" ? "" : value);
+            }}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filter by status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">All Statuses</SelectItem>
+              {statusOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
       </div>
       <div className="rounded-md border">
         <Table>

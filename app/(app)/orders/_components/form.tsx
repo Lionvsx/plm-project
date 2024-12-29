@@ -37,6 +37,7 @@ const formSchema = z.object({
   customerName: z.string().min(1, "Customer name is required"),
   customerEmail: z.string().email().optional().or(z.literal("")),
   customerPhone: z.string().optional(),
+  status: z.enum(["PENDING", "IN_PRODUCTION", "COMPLETED", "CANCELLED"]),
   notes: z.string().optional(),
   deliveryDate: z.string().optional(),
   items: z.array(orderItemSchema).min(1, "At least one item is required"),
@@ -78,6 +79,7 @@ export function OrderForm({
       customerName: initialData?.customerName || "",
       customerEmail: initialData?.customerEmail || "",
       customerPhone: initialData?.customerPhone || "",
+      status: initialData?.status || "PENDING",
       notes: initialData?.notes || "",
       deliveryDate: initialData?.deliveryDate
         ? new Date(initialData.deliveryDate).toISOString().split("T")[0]
@@ -294,6 +296,30 @@ export function OrderForm({
             ))}
           </div>
         </div>
+
+        <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Status</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a status" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="PENDING">Pending</SelectItem>
+                  <SelectItem value="IN_PRODUCTION">In Production</SelectItem>
+                  <SelectItem value="COMPLETED">Completed</SelectItem>
+                  <SelectItem value="CANCELLED">Cancelled</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <FormField
           control={form.control}

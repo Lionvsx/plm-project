@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { order, orderItem } from "@/db/schema/order-schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { desc } from "drizzle-orm";
 
 export async function getOrders() {
   const orders = await db.query.order.findMany({
@@ -14,6 +15,7 @@ export async function getOrders() {
         },
       },
     },
+    orderBy: (orders) => [desc(orders.deliveryDate)],
   });
   return orders;
 }
@@ -40,6 +42,7 @@ export async function createOrder(data: {
   customerName: string;
   customerEmail?: string;
   customerPhone?: string;
+  status?: string;
   notes?: string;
   deliveryDate?: Date;
   items: {
@@ -56,6 +59,7 @@ export async function createOrder(data: {
         customerName: data.customerName,
         customerEmail: data.customerEmail,
         customerPhone: data.customerPhone,
+        status: data.status as any,
         notes: data.notes,
         deliveryDate: data.deliveryDate,
       })
@@ -88,6 +92,7 @@ export async function updateOrder(id: number, data: any) {
           customerName: data.customerName,
           customerEmail: data.customerEmail,
           customerPhone: data.customerPhone,
+          status: data.status,
           notes: data.notes,
           deliveryDate: data.deliveryDate,
           updatedAt: new Date(),
@@ -124,6 +129,7 @@ export async function updateOrder(id: number, data: any) {
       };
     });
 
+    revalidatePath("/orders");
     return updatedOrder;
   } catch (error) {
     console.error("Error updating order:", error);

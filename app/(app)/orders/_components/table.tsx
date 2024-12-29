@@ -16,6 +16,13 @@ interface TableProps {
 }
 
 export function Table({ data }: TableProps) {
+  const statusOptions = [
+    { label: "Pending", value: "PENDING" },
+    { label: "In Production", value: "IN_PRODUCTION" },
+    { label: "Completed", value: "COMPLETED" },
+    { label: "Cancelled", value: "CANCELLED" },
+  ];
+
   const columns: ColumnDef<Order>[] = [
     {
       accessorKey: "customerName",
@@ -90,6 +97,8 @@ export function Table({ data }: TableProps) {
       data={data}
       filterColumn="customerName"
       searchPlaceholder="Search for an order..."
+      statusColumn="status"
+      statusOptions={statusOptions}
       onRowClick={(row) => {
         window.location.href = `/orders/${row.id}`;
       }}
