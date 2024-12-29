@@ -190,7 +190,7 @@ export function Table({ data }: TableProps) {
                   className="bg-yellow-500 hover:bg-yellow-600 text-white min-w-[140px]"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleStatusChange(order, "IN_PRODUCTION");
+                    router.push(`/orders/${order.id}/launch-production`);
                   }}
                 >
                   Launch Production
