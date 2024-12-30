@@ -41,6 +41,16 @@ export function SupplierOrderForm({
       quantity: number;
     }>
   >([]);
+  const [additionalSuppliers, setAdditionalSuppliers] = useState<number[]>([]);
+  const [supplierSelectKey, setSupplierSelectKey] = useState(0);
+
+  // Combine les fournisseurs requis et additionnels
+  const allSupplierIds = Array.from(
+    new Set([
+      ...supplierNeeds.map((n) => n.supplier.id),
+      ...additionalSuppliers,
+    ])
+  );
 
   const handleQuantityChange = (
     supplierId: number,
@@ -99,153 +109,200 @@ export function SupplierOrderForm({
     router.push(`/orders/${orderId}`);
   };
 
+  const addSupplier = () => {
+    setAdditionalSuppliers([...additionalSuppliers]);
+  };
+
   return (
     <div className="space-y-6">
-      {supplierNeeds.map(({ supplier, ingredients }) => (
-        <Card key={supplier.id}>
-          <CardHeader>
-            <div className="flex justify-between items-center">
-              <CardTitle>{supplier.name}</CardTitle>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => addIngredient(supplier.id)}
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Ingredient
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {/* Required ingredients */}
-              {ingredients.map((ingredient) => (
-                <div
-                  key={ingredient.ingredientId}
-                  className="flex items-center gap-4 p-4 border rounded-lg"
-                >
-                  <div className="flex-1">
-                    <p className="font-medium">{ingredient.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      Current Stock: {ingredient.availableStock}{" "}
-                      {ingredient.unit}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      type="number"
-                      className="w-24"
-                      defaultValue={ingredient.orderQuantity}
-                      min={ingredient.orderQuantity}
-                      onChange={(e) =>
-                        handleQuantityChange(
-                          supplier.id,
-                          ingredient.ingredientId,
-                          parseFloat(e.target.value)
-                        )
-                      }
-                    />
-                    <span className="text-sm text-muted-foreground">
-                      {ingredient.unit}
-                    </span>
-                  </div>
-                  <Badge variant="secondary">Required</Badge>
-                </div>
+      {/* Bouton pour ajouter un fournisseur supplémentaire */}
+      <div className="flex justify-end">
+        <Select
+          key={supplierSelectKey}
+          onValueChange={(value) => {
+            const supplierId = parseInt(value);
+            if (!allSupplierIds.includes(supplierId)) {
+              setAdditionalSuppliers([...additionalSuppliers, supplierId]);
+              setSupplierSelectKey((prev) => prev + 1); // Force le reset du Select
+            }
+          }}
+        >
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Add supplier" />
+          </SelectTrigger>
+          <SelectContent>
+            {suppliers
+              .filter((s) => !allSupplierIds.includes(s.id))
+              .map((supplier) => (
+                <SelectItem key={supplier.id} value={supplier.id.toString()}>
+                  {supplier.name}
+                </SelectItem>
               ))}
+          </SelectContent>
+        </Select>
+      </div>
 
-              {/* Additional ingredients */}
-              {additionalIngredients
-                .filter((item) => item.supplierId === supplier.id)
-                .map((item, index) => (
+      {/* Liste des fournisseurs (requis et additionnels) */}
+      {allSupplierIds.map((supplierId) => {
+        const supplierNeed = supplierNeeds.find(
+          (n) => n.supplier.id === supplierId
+        );
+        const supplier =
+          supplierNeed?.supplier || suppliers.find((s) => s.id === supplierId)!;
+        const requiredIngredients = supplierNeed?.ingredients || [];
+
+        return (
+          <Card key={supplierId}>
+            <CardHeader>
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <CardTitle>{supplier.name}</CardTitle>
+                  {!supplierNeed && (
+                    <Badge variant="outline">Additional Supplier</Badge>
+                  )}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => addIngredient(supplierId)}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Ingredient
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {/* Required ingredients */}
+                {requiredIngredients.map((ingredient) => (
                   <div
-                    key={index}
+                    key={ingredient.ingredientId}
                     className="flex items-center gap-4 p-4 border rounded-lg"
                   >
                     <div className="flex-1">
-                      <Select
-                        value={
-                          item.ingredientId ? item.ingredientId.toString() : ""
-                        }
-                        onValueChange={(value) => {
-                          const ingredientId = parseInt(value);
-                          if (!isNaN(ingredientId)) {
-                            handleIngredientSelect(supplier.id, ingredientId);
-                            // Initialiser la quantité à 0 pour le nouvel ingrédient
-                            handleQuantityChange(supplier.id, ingredientId, 0);
-                          }
-                        }}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select ingredient">
-                            {item.ingredientId
-                              ? allIngredients.find(
-                                  (i) => i.ingredientId === item.ingredientId
-                                )?.name
-                              : "Select ingredient"}
-                          </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent>
-                          {allIngredients
-                            .filter(
-                              (ing) =>
-                                !ingredients.some(
-                                  (i) => i.ingredientId === ing.ingredientId
-                                )
-                            )
-                            .filter(
-                              (ing) =>
-                                !additionalIngredients.some(
-                                  (ai) =>
-                                    ai.ingredientId === ing.ingredientId &&
-                                    ai.supplierId === supplier.id &&
-                                    ai.ingredientId !== 0
-                                )
-                            )
-                            .map((ingredient) => (
-                              <SelectItem
-                                key={ingredient.ingredientId}
-                                value={ingredient.ingredientId.toString()}
-                              >
-                                {ingredient.name}
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
+                      <p className="font-medium">{ingredient.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Current Stock: {ingredient.availableStock}{" "}
+                        {ingredient.unit}
+                      </p>
                     </div>
                     <div className="flex items-center gap-2">
                       <Input
                         type="number"
                         className="w-24"
-                        value={item.quantity}
+                        defaultValue={ingredient.orderQuantity}
+                        min={ingredient.orderQuantity}
                         onChange={(e) =>
                           handleQuantityChange(
-                            supplier.id,
-                            item.ingredientId,
+                            supplierId,
+                            ingredient.ingredientId,
                             parseFloat(e.target.value)
                           )
                         }
                       />
                       <span className="text-sm text-muted-foreground">
-                        {
-                          allIngredients.find(
-                            (i) => i.ingredientId === item.ingredientId
-                          )?.unit
-                        }
+                        {ingredient.unit}
                       </span>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeIngredient(index)}
-                    >
-                      <Trash className="h-4 w-4" />
-                    </Button>
+                    <Badge variant="secondary">Required</Badge>
                   </div>
                 ))}
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+
+                {/* Additional ingredients */}
+                {additionalIngredients
+                  .filter((item) => item.supplierId === supplierId)
+                  .map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-4 p-4 border rounded-lg"
+                    >
+                      <div className="flex-1">
+                        <Select
+                          value={
+                            item.ingredientId
+                              ? item.ingredientId.toString()
+                              : ""
+                          }
+                          onValueChange={(value) => {
+                            const ingredientId = parseInt(value);
+                            if (!isNaN(ingredientId)) {
+                              handleIngredientSelect(supplierId, ingredientId);
+                              handleQuantityChange(supplierId, ingredientId, 0);
+                            }
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select ingredient">
+                              {item.ingredientId
+                                ? allIngredients.find(
+                                    (i) => i.ingredientId === item.ingredientId
+                                  )?.name
+                                : "Select ingredient"}
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent>
+                            {allIngredients
+                              .filter(
+                                (ing) =>
+                                  !requiredIngredients.some(
+                                    (i) => i.ingredientId === ing.ingredientId
+                                  )
+                              )
+                              .filter(
+                                (ing) =>
+                                  !additionalIngredients.some(
+                                    (ai) =>
+                                      ai.ingredientId === ing.ingredientId &&
+                                      ai.supplierId === supplierId &&
+                                      ai.ingredientId !== 0
+                                  )
+                              )
+                              .map((ingredient) => (
+                                <SelectItem
+                                  key={ingredient.ingredientId}
+                                  value={ingredient.ingredientId.toString()}
+                                >
+                                  {ingredient.name}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="number"
+                          className="w-24"
+                          value={item.quantity}
+                          onChange={(e) =>
+                            handleQuantityChange(
+                              supplierId,
+                              item.ingredientId,
+                              parseFloat(e.target.value)
+                            )
+                          }
+                        />
+                        <span className="text-sm text-muted-foreground">
+                          {
+                            allIngredients.find(
+                              (i) => i.ingredientId === item.ingredientId
+                            )?.unit
+                          }
+                        </span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeIngredient(index)}
+                      >
+                        <Trash className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })}
 
       <div className="flex justify-end gap-4">
         <Button variant="outline" onClick={() => router.back()}>
