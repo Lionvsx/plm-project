@@ -111,7 +111,11 @@ export async function calculateOrderIngredientNeeds(
                 with: {
                   ingredients: {
                     with: {
-                      ingredient: true,
+                      ingredient: {
+                        with: {
+                          supplier: true,
+                        },
+                      },
                     },
                   },
                 },
@@ -156,7 +160,7 @@ export async function calculateOrderIngredientNeeds(
           availableStock,
           minimumStock,
           isStockCritical: totalQuantity > availableStock,
-          supplierId: ingredient.supplierId,
+          supplierId: ingredient.supplier?.id || null,
         });
       }
     }

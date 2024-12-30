@@ -115,56 +115,21 @@ export function SupplierOrderForm({
 
   return (
     <div className="space-y-6">
-      {/* Bouton pour ajouter un fournisseur supplémentaire */}
-      <div className="flex justify-end">
-        <Select
-          key={supplierSelectKey}
-          onValueChange={(value) => {
-            const supplierId = parseInt(value);
-            if (!allSupplierIds.includes(supplierId)) {
-              setAdditionalSuppliers([...additionalSuppliers, supplierId]);
-              setSupplierSelectKey((prev) => prev + 1); // Force le reset du Select
-            }
-          }}
-        >
-          <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Add supplier" />
-          </SelectTrigger>
-          <SelectContent>
-            {suppliers
-              .filter((s) => !allSupplierIds.includes(s.id))
-              .map((supplier) => (
-                <SelectItem key={supplier.id} value={supplier.id.toString()}>
-                  {supplier.name}
-                </SelectItem>
-              ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Liste des fournisseurs (requis et additionnels) */}
-      {allSupplierIds.map((supplierId) => {
-        const supplierNeed = supplierNeeds.find(
-          (n) => n.supplier.id === supplierId
-        );
-        const supplier =
-          supplierNeed?.supplier || suppliers.find((s) => s.id === supplierId)!;
-        const requiredIngredients = supplierNeed?.ingredients || [];
-
+      {/* Required suppliers */}
+      {supplierNeeds.map((supplierNeed) => {
+        const { supplier, ingredients: requiredIngredients } = supplierNeed;
         return (
-          <Card key={supplierId}>
+          <Card key={supplier.id}>
             <CardHeader>
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <CardTitle>{supplier.name}</CardTitle>
-                  {!supplierNeed && (
-                    <Badge variant="outline">Additional Supplier</Badge>
-                  )}
+                  <Badge variant="secondary">Required</Badge>
                 </div>
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => addIngredient(supplierId)}
+                  onClick={() => addIngredient(supplier.id)}
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Add Ingredient
@@ -194,7 +159,7 @@ export function SupplierOrderForm({
                         min={ingredient.orderQuantity}
                         onChange={(e) =>
                           handleQuantityChange(
-                            supplierId,
+                            supplier.id,
                             ingredient.ingredientId,
                             parseFloat(e.target.value)
                           )
@@ -208,9 +173,9 @@ export function SupplierOrderForm({
                   </div>
                 ))}
 
-                {/* Additional ingredients */}
+                {/* Additional ingredients for required suppliers */}
                 {additionalIngredients
-                  .filter((item) => item.supplierId === supplierId)
+                  .filter((item) => item.supplierId === supplier.id)
                   .map((item, index) => (
                     <div
                       key={index}
@@ -226,8 +191,12 @@ export function SupplierOrderForm({
                           onValueChange={(value) => {
                             const ingredientId = parseInt(value);
                             if (!isNaN(ingredientId)) {
-                              handleIngredientSelect(supplierId, ingredientId);
-                              handleQuantityChange(supplierId, ingredientId, 0);
+                              handleIngredientSelect(supplier.id, ingredientId);
+                              handleQuantityChange(
+                                supplier.id,
+                                ingredientId,
+                                0
+                              );
                             }
                           }}
                         >
@@ -241,31 +210,32 @@ export function SupplierOrderForm({
                             </SelectValue>
                           </SelectTrigger>
                           <SelectContent>
-                            {allIngredients
-                              .filter(
-                                (ing) =>
-                                  !requiredIngredients.some(
-                                    (i) => i.ingredientId === ing.ingredientId
-                                  )
-                              )
-                              .filter(
-                                (ing) =>
-                                  !additionalIngredients.some(
-                                    (ai) =>
-                                      ai.ingredientId === ing.ingredientId &&
-                                      ai.supplierId === supplierId &&
-                                      ai.ingredientId !== 0
-                                  )
-                              )
-                              .filter((ing) => ing.supplierId === supplierId)
-                              .map((ingredient) => (
+                            {(() => {
+                              const availableIngredients = allIngredients
+                                .filter((ing) => ing.supplierId === supplier.id)
+                                .filter(
+                                  (ing) =>
+                                    !requiredIngredients.some(
+                                      (i) => i.ingredientId === ing.ingredientId
+                                    )
+                                )
+                                .filter(
+                                  (ing) =>
+                                    !additionalIngredients.some(
+                                      (ai) =>
+                                        ai.ingredientId === ing.ingredientId &&
+                                        ai.supplierId === supplier.id
+                                    )
+                                );
+                              return availableIngredients.map((ingredient) => (
                                 <SelectItem
                                   key={ingredient.ingredientId}
                                   value={ingredient.ingredientId.toString()}
                                 >
                                   {ingredient.name}
                                 </SelectItem>
-                              ))}
+                              ));
+                            })()}
                           </SelectContent>
                         </Select>
                       </div>
@@ -276,7 +246,7 @@ export function SupplierOrderForm({
                           value={item.quantity}
                           onChange={(e) =>
                             handleQuantityChange(
-                              supplierId,
+                              supplier.id,
                               item.ingredientId,
                               parseFloat(e.target.value)
                             )
@@ -304,6 +274,167 @@ export function SupplierOrderForm({
           </Card>
         );
       })}
+
+      {/* Additional suppliers section */}
+      {additionalSuppliers.length > 0 && (
+        <>
+          <div className="mt-8 mb-4">
+            <h2 className="text-lg font-semibold">Additional Suppliers</h2>
+          </div>
+          {additionalSuppliers.map((supplierId) => {
+            const supplier = suppliers.find((s) => s.id === supplierId)!;
+            return (
+              <Card key={supplierId}>
+                <CardHeader>
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                      <CardTitle>{supplier.name}</CardTitle>
+                      <Badge variant="outline">Additional</Badge>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => addIngredient(supplierId)}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Ingredient
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {additionalIngredients
+                      .filter((item) => item.supplierId === supplierId)
+                      .map((item, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center gap-4 p-4 border rounded-lg"
+                        >
+                          <div className="flex-1">
+                            <Select
+                              value={
+                                item.ingredientId
+                                  ? item.ingredientId.toString()
+                                  : ""
+                              }
+                              onValueChange={(value) => {
+                                const ingredientId = parseInt(value);
+                                if (!isNaN(ingredientId)) {
+                                  handleIngredientSelect(
+                                    supplierId,
+                                    ingredientId
+                                  );
+                                  handleQuantityChange(
+                                    supplierId,
+                                    ingredientId,
+                                    0
+                                  );
+                                }
+                              }}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select ingredient">
+                                  {item.ingredientId
+                                    ? allIngredients.find(
+                                        (i) =>
+                                          i.ingredientId === item.ingredientId
+                                      )?.name
+                                    : "Select ingredient"}
+                                </SelectValue>
+                              </SelectTrigger>
+                              <SelectContent>
+                                {(() => {
+                                  const availableIngredients = allIngredients
+                                    .filter(
+                                      (ing) => ing.supplierId === supplierId
+                                    )
+                                    .filter(
+                                      (ing) =>
+                                        !additionalIngredients.some(
+                                          (ai) =>
+                                            ai.ingredientId ===
+                                              ing.ingredientId &&
+                                            ai.supplierId === supplierId
+                                        )
+                                    );
+                                  return availableIngredients.map(
+                                    (ingredient) => (
+                                      <SelectItem
+                                        key={ingredient.ingredientId}
+                                        value={ingredient.ingredientId.toString()}
+                                      >
+                                        {ingredient.name}
+                                      </SelectItem>
+                                    )
+                                  );
+                                })()}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Input
+                              type="number"
+                              className="w-24"
+                              value={item.quantity}
+                              onChange={(e) =>
+                                handleQuantityChange(
+                                  supplierId,
+                                  item.ingredientId,
+                                  parseFloat(e.target.value)
+                                )
+                              }
+                            />
+                            <span className="text-sm text-muted-foreground">
+                              {
+                                allIngredients.find(
+                                  (i) => i.ingredientId === item.ingredientId
+                                )?.unit
+                              }
+                            </span>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => removeIngredient(index)}
+                          >
+                            <Trash className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </>
+      )}
+
+      {/* Add supplier button */}
+      <div className="flex justify-end">
+        <Select
+          key={supplierSelectKey}
+          onValueChange={(value) => {
+            const supplierId = parseInt(value);
+            if (!allSupplierIds.includes(supplierId)) {
+              setAdditionalSuppliers([...additionalSuppliers, supplierId]);
+              setSupplierSelectKey((prev) => prev + 1);
+            }
+          }}
+        >
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Add supplier" />
+          </SelectTrigger>
+          <SelectContent>
+            {suppliers
+              .filter((s) => !allSupplierIds.includes(s.id))
+              .map((supplier) => (
+                <SelectItem key={supplier.id} value={supplier.id.toString()}>
+                  {supplier.name}
+                </SelectItem>
+              ))}
+          </SelectContent>
+        </Select>
+      </div>
 
       <div className="flex justify-end gap-4">
         <Button variant="outline" onClick={() => router.back()}>
