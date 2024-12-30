@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { updateOrder } from "@/controllers/orders";
 import type { Order } from "@/db/schema";
 import type { OrderIngredientNeeds } from "@/controllers/orders";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, ShoppingCart } from "lucide-react";
 
 interface LaunchProductionFormProps {
   order: Order;
@@ -40,26 +40,33 @@ export function LaunchProductionForm({
         <Button variant="outline" onClick={() => router.back()}>
           Cancel
         </Button>
-        <Button
-          onClick={async () => {
-            try {
-              await updateOrder(order.id, {
-                ...order,
-                status: "IN_PRODUCTION",
-              });
-              router.push("/orders");
-              router.refresh();
-            } catch (error) {
-              console.error("Error launching production:", error);
-            }
-          }}
-          disabled={hasInsufficientStock}
-          className="bg-yellow-500 hover:bg-yellow-600 text-white"
-        >
-          {hasInsufficientStock
-            ? "Insufficient Stock"
-            : "Confirm Production Launch"}
-        </Button>
+        {hasInsufficientStock ? (
+          <Button
+            onClick={() => router.push(`/orders/${order.id}/supplier-order`)}
+            className="bg-blue-500 hover:bg-blue-600 text-white"
+          >
+            <ShoppingCart className="h-4 w-4 mr-2" />
+            Order from Suppliers
+          </Button>
+        ) : (
+          <Button
+            onClick={async () => {
+              try {
+                await updateOrder(order.id, {
+                  ...order,
+                  status: "IN_PRODUCTION",
+                });
+                router.push("/orders");
+                router.refresh();
+              } catch (error) {
+                console.error("Error launching production:", error);
+              }
+            }}
+            className="bg-yellow-500 hover:bg-yellow-600 text-white"
+          >
+            Confirm Production Launch
+          </Button>
+        )}
       </div>
     </div>
   );

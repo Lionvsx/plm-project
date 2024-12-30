@@ -92,6 +92,7 @@ export type OrderIngredientNeeds = {
   availableStock: number;
   minimumStock: number;
   isStockCritical: boolean;
+  supplierId?: number | null;
 };
 
 export async function calculateOrderIngredientNeeds(
@@ -155,6 +156,7 @@ export async function calculateOrderIngredientNeeds(
           availableStock,
           minimumStock,
           isStockCritical: totalQuantity > availableStock,
+          supplierId: ingredient.supplierId,
         });
       }
     }

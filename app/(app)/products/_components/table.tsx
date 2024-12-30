@@ -1,11 +1,14 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
-import { Product } from "@/db/schema";
-import { formatDate } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
+import { product } from "@/db/schema";
+import { formatCurrency, formatDate, formatPercentage } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import type { getProducts } from "@/controllers/products";
+
+type Product = Awaited<ReturnType<typeof getProducts>>[number];
 
 interface TableProps {
   data: Product[];
@@ -30,6 +33,22 @@ export function Table({ data }: TableProps) {
     {
       accessorKey: "category",
       header: "Category",
+    },
+    {
+      accessorKey: "costPrice",
+      header: "Cost Price",
+      cell: ({ row }) => {
+        const value = row.getValue("costPrice") as string;
+        return formatCurrency(value);
+      },
+    },
+    {
+      accessorKey: "margin",
+      header: "Margin",
+      cell: ({ row }) => {
+        const value = row.getValue("margin") as string;
+        return formatPercentage(value);
+      },
     },
     {
       accessorKey: "launchDate",
