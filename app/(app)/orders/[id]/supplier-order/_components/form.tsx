@@ -65,10 +65,27 @@ export function SupplierOrderForm({
   };
 
   const addIngredient = (supplierId: number) => {
-    setAdditionalIngredients([
-      ...additionalIngredients,
-      { supplierId, ingredientId: 0, quantity: 0 },
-    ]);
+    const hasEmptyRow = additionalIngredients.some(
+      (item) => item.supplierId === supplierId && item.ingredientId === 0
+    );
+    if (!hasEmptyRow) {
+      setAdditionalIngredients([
+        ...additionalIngredients,
+        { supplierId, ingredientId: 0, quantity: 0 },
+      ]);
+    }
+  };
+
+  const handleIngredientSelect = (supplierId: number, ingredientId: number) => {
+    const existingIndex = additionalIngredients.findIndex(
+      (item) => item.supplierId === supplierId && item.ingredientId === 0
+    );
+
+    if (existingIndex >= 0) {
+      const newIngredients = [...additionalIngredients];
+      newIngredients[existingIndex].ingredientId = ingredientId;
+      setAdditionalIngredients(newIngredients);
+    }
   };
 
   const removeIngredient = (index: number) => {
@@ -146,27 +163,52 @@ export function SupplierOrderForm({
                   >
                     <div className="flex-1">
                       <Select
-                        value={item.ingredientId.toString()}
-                        onValueChange={(value) =>
-                          handleQuantityChange(
-                            supplier.id,
-                            parseInt(value),
-                            item.quantity
-                          )
+                        value={
+                          item.ingredientId ? item.ingredientId.toString() : ""
                         }
+                        onValueChange={(value) => {
+                          const ingredientId = parseInt(value);
+                          if (!isNaN(ingredientId)) {
+                            handleIngredientSelect(supplier.id, ingredientId);
+                            // Initialiser la quantité à 0 pour le nouvel ingrédient
+                            handleQuantityChange(supplier.id, ingredientId, 0);
+                          }
+                        }}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select ingredient" />
+                          <SelectValue placeholder="Select ingredient">
+                            {item.ingredientId
+                              ? allIngredients.find(
+                                  (i) => i.ingredientId === item.ingredientId
+                                )?.name
+                              : "Select ingredient"}
+                          </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          {allIngredients.map((ingredient) => (
-                            <SelectItem
-                              key={ingredient.ingredientId}
-                              value={ingredient.ingredientId.toString()}
-                            >
-                              {ingredient.name}
-                            </SelectItem>
-                          ))}
+                          {allIngredients
+                            .filter(
+                              (ing) =>
+                                !ingredients.some(
+                                  (i) => i.ingredientId === ing.ingredientId
+                                )
+                            )
+                            .filter(
+                              (ing) =>
+                                !additionalIngredients.some(
+                                  (ai) =>
+                                    ai.ingredientId === ing.ingredientId &&
+                                    ai.supplierId === supplier.id &&
+                                    ai.ingredientId !== 0
+                                )
+                            )
+                            .map((ingredient) => (
+                              <SelectItem
+                                key={ingredient.ingredientId}
+                                value={ingredient.ingredientId.toString()}
+                              >
+                                {ingredient.name}
+                              </SelectItem>
+                            ))}
                         </SelectContent>
                       </Select>
                     </div>
