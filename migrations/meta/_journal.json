@@ -64,6 +64,13 @@
       "when": 1735318780778,
       "tag": "0008_same_kid_colt",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1735575765933,
+      "tag": "0009_normal_bug",
+      "breakpoints": true
     }
   ]
 }
