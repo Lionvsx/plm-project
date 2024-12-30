@@ -257,6 +257,7 @@ export function SupplierOrderForm({
                                       ai.ingredientId !== 0
                                   )
                               )
+                              .filter((ing) => ing.supplierId === supplierId)
                               .map((ingredient) => (
                                 <SelectItem
                                   key={ingredient.ingredientId}
