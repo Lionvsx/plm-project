@@ -24,6 +24,7 @@ interface FormulationsListProps {
 
 export function FormulationsList({ productId, productVariantId, formulations }: FormulationsListProps) {
   const router = useRouter();
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -47,7 +48,7 @@ export function FormulationsList({ productId, productVariantId, formulations }: 
           </TableRow>
         </TableHeader>
         <TableBody>
-          {formulations.map((formulation) => (
+          {[...formulations].sort((a, b) => b.version - a.version).map((formulation) => (
             <TableRow key={formulation.id} className="hover:cursor-pointer" onClick={() => {
               router.push(`/products/${productId}/variants/${productVariantId}/formulations/${formulation.id}`);
             }}>
