@@ -11,6 +11,8 @@ export const roleEnum = pgEnum("role", [
 
 export type Role = (typeof roleEnum.enumValues)[number];
 
+export const ROLES = roleEnum.enumValues;
+
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
