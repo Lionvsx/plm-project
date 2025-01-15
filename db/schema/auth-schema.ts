@@ -1,4 +1,15 @@
-import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, pgEnum } from "drizzle-orm/pg-core";
+
+export const roleEnum = pgEnum("role", [
+  "admin", // Full system access
+  "product_manager", // Manages product development and lifecycle
+  "formulation_scientist", // Creates and manages product formulations
+  "quality_control", // Handles quality assurance and compliance
+  "procurement", // Manages suppliers and purchasing
+  "production_manager", // Oversees manufacturing processes
+  "sales_representative", // Handles customer orders and quotes
+  "viewer", // Read-only access for stakeholders
+]);
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -6,6 +17,7 @@ export const user = pgTable("user", {
   email: text("email").notNull().unique(),
   emailVerified: boolean("emailVerified").notNull(),
   image: text("image"),
+  role: roleEnum("role").notNull().default("viewer"),
   createdAt: timestamp("createdAt").notNull(),
   updatedAt: timestamp("updatedAt").notNull(),
 });

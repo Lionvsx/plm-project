@@ -71,6 +71,13 @@
       "when": 1735575765933,
       "tag": "0009_normal_bug",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1736964637329,
+      "tag": "0010_charming_squadron_supreme",
+      "breakpoints": true
     }
   ]
 }
