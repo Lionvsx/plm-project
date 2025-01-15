@@ -1,3 +1,5 @@
+export * from "./permissions";
+
 export type ServerActionResult<Result> = Promise<
   | {
       success: true;
