@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { updateUserRole } from "@/controllers/auth";
-import { Role } from "@/lib/types/roles";
+import { Role } from "@/db/schema";
 import { toast } from "sonner";
 
 const roles = [

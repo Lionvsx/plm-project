@@ -11,6 +11,8 @@ export const roleEnum = pgEnum("role", [
   "viewer", // Read-only access for stakeholders
 ]);
 
+export type Role = (typeof roleEnum.enumValues)[number];
+
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),

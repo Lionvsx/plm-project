@@ -2,12 +2,11 @@
 
 import { auth } from "@/auth";
 import { db } from "@/db";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { Role, user } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { user } from "@/db/schema";
-import { Role } from "@/lib/types/roles";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export const getServerSession = async () => {
   return await auth.api.getSession({
