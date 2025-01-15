@@ -4,6 +4,10 @@ import { auth } from "@/auth";
 import { db } from "@/db";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { user } from "@/db/schema";
+import { Role } from "@/lib/types/roles";
 
 export const getServerSession = async () => {
   return await auth.api.getSession({
@@ -21,3 +25,17 @@ export const signOut = async () => {
 export const getUsers = async () => {
   return await db.query.user.findMany();
 };
+
+export async function updateUserRole(userId: string, role: Role) {
+  const result = await db
+    .update(user)
+    .set({
+      role,
+      updatedAt: new Date(),
+    })
+    .where(eq(user.id, userId))
+    .returning();
+
+  revalidatePath("/users");
+  return result[0];
+}
