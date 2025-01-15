@@ -6,17 +6,31 @@ export type Permissions = {
     dataType: void;
     action: "view";
   };
+  products: {
+    dataType: void;
+    action:
+      | "view"
+      | "create"
+      | "update"
+      | "delete"
+      | "manage_variants"
+      | "manage_formulations";
+  };
+  projects: {
+    dataType: void;
+    action: "view" | "create" | "update" | "delete" | "manage";
+  };
+  suppliers: {
+    dataType: void;
+    action: "view" | "create" | "update" | "delete";
+  };
+  formulations: {
+    dataType: void;
+    action: "view" | "create" | "update" | "version" | "manage_ingredients";
+  };
   users: {
     dataType: User;
     action: "view" | "update" | "view_all" | "delete" | "manage";
-  };
-  whitelist: {
-    dataType: string;
-    action: "view" | "add" | "delete";
-  };
-  waitlist: {
-    dataType: string;
-    action: "view" | "add" | "delete";
   };
 };
 
@@ -25,6 +39,34 @@ export const ROLES = {
     "admin-dashboard": {
       view: true,
     },
+    products: {
+      view: true,
+      create: true,
+      update: true,
+      delete: true,
+      manage_variants: true,
+      manage_formulations: true,
+    },
+    projects: {
+      view: true,
+      create: true,
+      update: true,
+      delete: true,
+      manage: true,
+    },
+    suppliers: {
+      view: true,
+      create: true,
+      update: true,
+      delete: true,
+    },
+    formulations: {
+      view: true,
+      create: true,
+      update: true,
+      version: true,
+      manage_ingredients: true,
+    },
     users: {
       view: true,
       update: true,
@@ -32,37 +74,205 @@ export const ROLES = {
       delete: true,
       manage: true,
     },
-    whitelist: {
-      view: true,
-      add: true,
-      delete: true,
-    },
-    waitlist: {
-      view: true,
-      add: true,
-      delete: true,
-    },
   },
-  user: {
+  product_manager: {
     "admin-dashboard": {
       view: false,
     },
-    users: {
+    products: {
       view: true,
-      update: (user, otherUser) => user.id === otherUser.id,
-      view_all: false,
-      delete: (user, otherUser) => user.id === otherUser.id,
-      manage: false,
+      create: true,
+      update: true,
+      delete: false,
+      manage_variants: true,
+      manage_formulations: true,
     },
-    whitelist: {
-      view: false,
-      add: false,
+    projects: {
+      view: true,
+      create: true,
+      update: true,
+      delete: false,
+      manage: true,
+    },
+    suppliers: {
+      view: true,
+      create: false,
+      update: false,
       delete: false,
     },
-    waitlist: {
+    formulations: {
       view: true,
-      add: false,
-      delete: (user, email) => user.email === email,
+      create: true,
+      update: true,
+      version: true,
+      manage_ingredients: true,
+    },
+    users: {
+      view: true,
+      update: (user: User, otherUser: User) => user.id === otherUser.id,
+      view_all: false,
+      delete: false,
+      manage: false,
+    },
+  },
+  procurement: {
+    "admin-dashboard": {
+      view: false,
+    },
+    products: {
+      view: true,
+      create: false,
+      update: false,
+      delete: false,
+      manage_variants: false,
+      manage_formulations: false,
+    },
+    projects: {
+      view: true,
+      create: false,
+      update: false,
+      delete: false,
+      manage: false,
+    },
+    suppliers: {
+      view: true,
+      create: true,
+      update: true,
+      delete: false,
+    },
+    formulations: {
+      view: true,
+      create: false,
+      update: false,
+      version: false,
+      manage_ingredients: true,
+    },
+    users: {
+      view: true,
+      update: (user: User, otherUser: User) => user.id === otherUser.id,
+      view_all: false,
+      delete: false,
+      manage: false,
+    },
+  },
+  project_manager: {
+    "admin-dashboard": {
+      view: false,
+    },
+    products: {
+      view: true,
+      create: false,
+      update: true,
+      delete: false,
+      manage_variants: false,
+      manage_formulations: false,
+    },
+    projects: {
+      view: true,
+      create: true,
+      update: true,
+      delete: false,
+      manage: true,
+    },
+    suppliers: {
+      view: true,
+      create: false,
+      update: false,
+      delete: false,
+    },
+    formulations: {
+      view: true,
+      create: false,
+      update: false,
+      version: false,
+      manage_ingredients: false,
+    },
+    users: {
+      view: true,
+      update: (user: User, otherUser: User) => user.id === otherUser.id,
+      view_all: false,
+      delete: false,
+      manage: false,
+    },
+  },
+  sales_representative: {
+    "admin-dashboard": {
+      view: false,
+    },
+    products: {
+      view: true,
+      create: false,
+      update: false,
+      delete: false,
+      manage_variants: false,
+      manage_formulations: false,
+    },
+    projects: {
+      view: true,
+      create: false,
+      update: false,
+      delete: false,
+      manage: false,
+    },
+    suppliers: {
+      view: true,
+      create: false,
+      update: false,
+      delete: false,
+    },
+    formulations: {
+      view: false,
+      create: false,
+      update: false,
+      version: false,
+      manage_ingredients: false,
+    },
+    users: {
+      view: true,
+      update: (user: User, otherUser: User) => user.id === otherUser.id,
+      view_all: false,
+      delete: false,
+      manage: false,
+    },
+  },
+  viewer: {
+    "admin-dashboard": {
+      view: false,
+    },
+    products: {
+      view: true,
+      create: false,
+      update: false,
+      delete: false,
+      manage_variants: false,
+      manage_formulations: false,
+    },
+    projects: {
+      view: true,
+      create: false,
+      update: false,
+      delete: false,
+      manage: false,
+    },
+    suppliers: {
+      view: true,
+      create: false,
+      update: false,
+      delete: false,
+    },
+    formulations: {
+      view: true,
+      create: false,
+      update: false,
+      version: false,
+      manage_ingredients: false,
+    },
+    users: {
+      view: true,
+      update: (user: User, otherUser: User) => user.id === otherUser.id,
+      view_all: false,
+      delete: false,
+      manage: false,
     },
   },
 } as const satisfies RolesWithPermissions;

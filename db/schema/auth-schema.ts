@@ -3,10 +3,8 @@ import { pgTable, text, timestamp, boolean, pgEnum } from "drizzle-orm/pg-core";
 export const roleEnum = pgEnum("role", [
   "admin", // Full system access
   "product_manager", // Manages product development and lifecycle
-  "formulation_scientist", // Creates and manages product formulations
-  "quality_control", // Handles quality assurance and compliance
   "procurement", // Manages suppliers and purchasing
-  "production_manager", // Oversees manufacturing processes
+  "project_manager", // Manages projects and timelines
   "sales_representative", // Handles customer orders and quotes
   "viewer", // Read-only access for stakeholders
 ]);
