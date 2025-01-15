@@ -316,7 +316,7 @@ export const ROLES = {
       manage_formulations: false,
     },
     projects: {
-      view: true,
+      view: false,
       create: false,
       update: false,
       delete: false,

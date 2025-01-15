@@ -66,7 +66,7 @@ const data = {
         {
           title: "All Projects",
           url: "/projects",
-          show: (user: User) => hasPermission(user, 'products', 'view')
+          show: (user: User) => hasPermission(user, 'projects', 'view')
         },
       ],
       show: (user: User) => hasPermission(user, 'products', 'view')
