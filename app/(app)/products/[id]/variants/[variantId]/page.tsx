@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { FormulationsList } from "../../_components/formulations";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Pencil } from "lucide-react";
+import { Pencil, FileDown } from "lucide-react";
 import { BOMGenerator } from "@/components/bom-generator";
 import { Unit } from "@/lib/constants/units";
 
@@ -37,10 +37,10 @@ export default async function VariantPage({ params }: Props) {
   // Calculate total fabrication cost if there's an active formulation
   const fabricationCost = activeFormulation
     ? activeFormulation.ingredients.reduce((sum, item) => {
-        const cost =
-          parseFloat(item.quantity) * parseFloat(item.ingredient.costPerUnit);
-        return sum + cost;
-      }, 0)
+      const cost =
+        parseFloat(item.quantity) * parseFloat(item.ingredient.costPerUnit);
+      return sum + cost;
+    }, 0)
     : 0;
 
   return (
@@ -94,6 +94,28 @@ export default async function VariantPage({ params }: Props) {
             <p>${variant.price}</p>
           </div>
         </div>
+
+        {variant.cadFileUrl && (
+          <div className="border rounded-lg p-4">
+            <h3 className="text-sm font-medium mb-3">Technical Documents</h3>
+            <a
+              href={variant.cadFileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 hover:bg-accent p-3 rounded-md transition-colors"
+            >
+              <div className="bg-blue-100 p-2 rounded-md">
+                <FileDown className="h-5 w-5 text-blue-700" />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-medium">CAD File</span>
+                <span className="text-sm text-muted-foreground">
+                  {variant.cadFileUrl.split('/').pop()}
+                </span>
+              </div>
+            </a>
+          </div>
+        )}
 
         <FormulationsList
           productId={product.id}
