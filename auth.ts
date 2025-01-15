@@ -12,4 +12,14 @@ export const auth = betterAuth({
   },
   plugins: [nextCookies()],
   trustedOrigins: [process.env.BETTER_AUTH_URL!],
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        required: true,
+        defaultValue: "viewer",
+        input: false, // don't allow user to set role
+      },
+    },
+  },
 });

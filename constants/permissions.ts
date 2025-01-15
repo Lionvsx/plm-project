@@ -32,6 +32,10 @@ export type Permissions = {
     dataType: User;
     action: "view" | "update" | "view_all" | "delete" | "manage";
   };
+  ingredients: {
+    dataType: void;
+    action: "view" | "create" | "update" | "delete";
+  };
 };
 
 export const ROLES = {
@@ -74,6 +78,12 @@ export const ROLES = {
       delete: true,
       manage: true,
     },
+    ingredients: {
+      view: true,
+      create: true,
+      update: true,
+      delete: true,
+    },
   },
   product_manager: {
     "admin-dashboard": {
@@ -113,6 +123,12 @@ export const ROLES = {
       view_all: false,
       delete: false,
       manage: false,
+    },
+    ingredients: {
+      view: true,
+      create: true,
+      update: true,
+      delete: false,
     },
   },
   procurement: {
@@ -154,6 +170,12 @@ export const ROLES = {
       delete: false,
       manage: false,
     },
+    ingredients: {
+      view: true,
+      create: false,
+      update: false,
+      delete: false,
+    },
   },
   project_manager: {
     "admin-dashboard": {
@@ -193,6 +215,12 @@ export const ROLES = {
       view_all: false,
       delete: false,
       manage: false,
+    },
+    ingredients: {
+      view: true,
+      create: false,
+      update: false,
+      delete: false,
     },
   },
   sales_representative: {
@@ -234,6 +262,12 @@ export const ROLES = {
       delete: false,
       manage: false,
     },
+    ingredients: {
+      view: true,
+      create: false,
+      update: false,
+      delete: false,
+    },
   },
   viewer: {
     "admin-dashboard": {
@@ -273,6 +307,12 @@ export const ROLES = {
       view_all: false,
       delete: false,
       manage: false,
+    },
+    ingredients: {
+      view: true,
+      create: false,
+      update: false,
+      delete: false,
     },
   },
 } as const satisfies RolesWithPermissions;

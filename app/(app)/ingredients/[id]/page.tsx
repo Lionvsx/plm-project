@@ -6,6 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { formatCurrency, formatNumber } from "@/lib/utils";
 import Link from "next/link";
 import { Pencil } from "lucide-react";
+import { hasPermission } from "@/lib/has-permission";
+import { auth } from "@/auth";
+import { headers } from "next/headers";
+import { User } from "@/db/schema";
 
 interface Props {
   params: {
@@ -20,10 +24,15 @@ export default async function IngredientPage({ params }: Props) {
     notFound();
   }
 
+  const session = await auth.api.getSession({
+    headers: headers(),
+  });
+  const user = session?.user as User;
+
   const isLowStock =
     ingredient.minimumStock &&
     parseFloat(ingredient.stockQuantity || "0") <=
-      parseFloat(ingredient.minimumStock || "0");
+    parseFloat(ingredient.minimumStock || "0");
 
   return (
     <div className="p-6">
@@ -39,11 +48,13 @@ export default async function IngredientPage({ params }: Props) {
             </p>
           )}
         </div>
-        <Button variant="outline" size="icon" asChild>
-          <Link href={`/ingredients/${ingredient.id}/edit`}>
-            <Pencil className="h-4 w-4" />
-          </Link>
-        </Button>
+        {hasPermission(user, "ingredients", "update") && (
+          <Button variant="outline" size="icon" asChild>
+            <Link href={`/ingredients/${ingredient.id}/edit`}>
+              <Pencil className="h-4 w-4" />
+            </Link>
+          </Button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">

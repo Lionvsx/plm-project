@@ -1,10 +1,6 @@
 "use client";
 
-import { Table } from "./table";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import Link from "next/link";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -12,8 +8,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import type { Ingredient, User } from "@/db/schema";
+import { authClient } from "@/lib/auth-client";
+import { hasPermission } from "@/lib/has-permission";
+import { Plus } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
-import type { Ingredient, Supplier } from "@/db/schema";
+import { Table } from "./table";
 
 interface IngredientsClientProps {
   initialIngredients: Array<
@@ -47,6 +48,13 @@ export function IngredientsClient({
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSupplierId, setSelectedSupplierId] = useState<string>("all");
 
+  const {
+    data: session,
+  } = authClient.useSession()
+
+  if (!session?.user) return null;
+  const user = session.user as User;
+
   const filteredIngredients = initialIngredients.filter((ingredient) => {
     const matchesSearch = ingredient.name
       .toLowerCase()
@@ -61,12 +69,14 @@ export function IngredientsClient({
     <div className="p-6 space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Ingredients</h1>
-        <Link href="/ingredients/new">
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            New Ingredient
-          </Button>
-        </Link>
+        {hasPermission(user, "ingredients", "create") && (
+          <Link href="/ingredients/new">
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              New Ingredient
+            </Button>
+          </Link>
+        )}
       </div>
 
       <div className="flex gap-2">
