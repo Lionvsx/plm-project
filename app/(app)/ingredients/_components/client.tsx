@@ -1,5 +1,6 @@
 "use client";
 
+import { useUser } from "@/app/auth-provider";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -8,8 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Ingredient, User } from "@/db/schema";
-import { authClient } from "@/lib/auth-client";
+import type { Ingredient } from "@/db/schema";
 import { hasPermission } from "@/lib/has-permission";
 import { Plus } from "lucide-react";
 import Link from "next/link";
@@ -48,12 +48,9 @@ export function IngredientsClient({
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSupplierId, setSelectedSupplierId] = useState<string>("all");
 
-  const {
-    data: session,
-  } = authClient.useSession()
 
-  if (!session?.user) return null;
-  const user = session.user as User;
+  const { user } = useUser()
+  if (!user) return null;
 
   const filteredIngredients = initialIngredients.filter((ingredient) => {
     const matchesSearch = ingredient.name
