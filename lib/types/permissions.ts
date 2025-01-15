@@ -1,16 +1,12 @@
 import { Permissions } from "@/constants/permissions";
-import { User } from "@/db/schema";
-
-export type Role = "admin" | "user";
-
-type PermissionCheck<Key extends keyof Permissions> =
-  | boolean
-  | ((user: User, data: Permissions[Key]["dataType"]) => boolean);
+import { Role } from "@/db/schema";
 
 export type RolesWithPermissions = {
-  [R in Role]: Partial<{
-    [Key in keyof Permissions]: Partial<{
-      [Action in Permissions[Key]["action"]]: PermissionCheck<Key>;
-    }>;
-  }>;
+  [K in Role]: {
+    [Resource in keyof Permissions]?: {
+      [Action in Permissions[Resource]["action"]]?:
+        | boolean
+        | ((user: any, data: any) => boolean);
+    };
+  };
 };
