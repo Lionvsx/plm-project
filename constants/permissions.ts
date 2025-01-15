@@ -36,6 +36,10 @@ export type Permissions = {
     dataType: void;
     action: "view" | "create" | "update" | "delete";
   };
+  orders: {
+    dataType: void;
+    action: "view" | "create" | "update" | "delete";
+  };
 };
 
 export const ROLES = {
@@ -79,6 +83,12 @@ export const ROLES = {
       manage: true,
     },
     ingredients: {
+      view: true,
+      create: true,
+      update: true,
+      delete: true,
+    },
+    orders: {
       view: true,
       create: true,
       update: true,
@@ -130,6 +140,12 @@ export const ROLES = {
       update: true,
       delete: false,
     },
+    orders: {
+      view: true,
+      create: true,
+      update: true,
+      delete: false,
+    },
   },
   procurement: {
     "admin-dashboard": {
@@ -171,6 +187,12 @@ export const ROLES = {
       manage: false,
     },
     ingredients: {
+      view: true,
+      create: false,
+      update: false,
+      delete: false,
+    },
+    orders: {
       view: true,
       create: false,
       update: false,
@@ -222,6 +244,12 @@ export const ROLES = {
       update: false,
       delete: false,
     },
+    orders: {
+      view: true,
+      create: false,
+      update: false,
+      delete: false,
+    },
   },
   sales_representative: {
     "admin-dashboard": {
@@ -268,6 +296,12 @@ export const ROLES = {
       update: false,
       delete: false,
     },
+    orders: {
+      view: true,
+      create: false,
+      update: false,
+      delete: false,
+    },
   },
   viewer: {
     "admin-dashboard": {
@@ -309,6 +343,12 @@ export const ROLES = {
       manage: false,
     },
     ingredients: {
+      view: true,
+      create: false,
+      update: false,
+      delete: false,
+    },
+    orders: {
       view: true,
       create: false,
       update: false,

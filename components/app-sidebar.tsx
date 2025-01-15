@@ -1,16 +1,13 @@
 "use client";
 
 import {
-  BookOpen,
-  Command,
-  Frame,
-  Package,
-  PieChart,
-  Settings2,
   Boxes,
-  Users,
   ClipboardList,
+  Command,
+  Package,
+  Settings2,
   ShoppingCart,
+  Users
 } from "lucide-react";
 import * as React from "react";
 
@@ -27,7 +24,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Product } from "@/db/schema";
+import { Product, User } from "@/db/schema";
+import { hasPermission } from "@/lib/has-permission";
 
 const data = {
   navMain: [
@@ -41,6 +39,7 @@ const data = {
           url: "/products",
         },
       ],
+      show: (user: User) => hasPermission(user, 'products', 'view')
     },
     {
       title: "Ingredients",
@@ -50,10 +49,12 @@ const data = {
         {
           title: "All Ingredients",
           url: "/ingredients",
+          show: (user: User) => hasPermission(user, "ingredients", "view"),
         },
         {
           title: "Suppliers",
           url: "/suppliers",
+          show: (user: User) => hasPermission(user, 'suppliers', 'view')
         },
       ],
     },
@@ -65,8 +66,11 @@ const data = {
         {
           title: "All Projects",
           url: "/projects",
+          show: (user: User) => hasPermission(user, 'products', 'view')
         },
       ],
+      show: (user: User) => hasPermission(user, 'products', 'view')
+
     },
     {
       title: "Orders",
@@ -76,15 +80,24 @@ const data = {
         {
           title: "All Orders",
           url: "/orders",
+          show: (user: User) => hasPermission(user, 'orders', 'view')
         },
       ],
+      show: (user: User) => hasPermission(user, 'orders', 'view')
     },
   ],
   navSecondary: [
     {
+      title: "Users",
+      url: "/users",
+      icon: Users,
+      show: (user: User) => hasPermission(user, 'users', 'manage')
+    },
+    {
       title: "Settings",
       url: "/settings",
       icon: Settings2,
+      show: (user: User) => hasPermission(user, 'admin-dashboard', 'view')
     },
   ],
 };

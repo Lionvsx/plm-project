@@ -9,6 +9,7 @@ import {
   Sparkles,
 } from "lucide-react"
 
+import { useUser } from "@/app/auth-provider"
 import {
   Avatar,
   AvatarFallback,
@@ -30,12 +31,10 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { signOut } from "@/controllers/auth"
-import { authClient } from "@/lib/auth-client"
 
 export function NavUser() {
   const { isMobile } = useSidebar()
-  const { data: session } = authClient.useSession()
-
+  const { user } = useUser()
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -46,14 +45,14 @@ export function NavUser() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={session?.user?.image ?? ""} alt={session?.user?.name ?? ""} />
+                <AvatarImage src={user?.image ?? ""} alt={user?.name ?? ""} />
                 <AvatarFallback className="rounded-lg">
-                  {session?.user?.name?.split(" ").map(word => word[0]).join("").toUpperCase() ?? "US"}
+                  {user?.name?.split(" ").map(word => word[0]).join("").toUpperCase() ?? "US"}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{session?.user?.name ?? ""}</span>
-                <span className="truncate text-xs">{session?.user?.email ?? ""}</span>
+                <span className="truncate font-semibold">{user?.name ?? ""}</span>
+                <span className="truncate text-xs">{user?.email ?? ""}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -67,14 +66,14 @@ export function NavUser() {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={session?.user?.image ?? ""} alt={session?.user?.name ?? ""} />
+                  <AvatarImage src={user?.image ?? ""} alt={user?.name ?? ""} />
                   <AvatarFallback className="rounded-lg">
-                    {session?.user?.name?.split(" ").map(word => word[0]).join("").toUpperCase() ?? "US"}
+                    {user?.name?.split(" ").map(word => word[0]).join("").toUpperCase() ?? "US"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{session?.user?.name ?? ""}</span>
-                  <span className="truncate text-xs">{session?.user?.email ?? ""}</span>
+                  <span className="truncate font-semibold">{user?.name ?? ""}</span>
+                  <span className="truncate text-xs">{user?.email ?? ""}</span>
                 </div>
               </div>
             </DropdownMenuLabel>

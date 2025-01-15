@@ -1,3 +1,4 @@
+import { AuthProvider } from "@/app/auth-provider";
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   SidebarInset,
@@ -20,11 +21,13 @@ export default async function AppLayout({
   }
 
   return (
-    <SidebarProvider>
-      <AppSidebar products={products} />
-      <SidebarInset>
-        {children}
-      </SidebarInset>
-    </SidebarProvider>
+    <AuthProvider session={session}>
+      <SidebarProvider>
+        <AppSidebar products={products} />
+        <SidebarInset>
+          {children}
+        </SidebarInset>
+      </SidebarProvider>
+    </AuthProvider>
   )
 }
