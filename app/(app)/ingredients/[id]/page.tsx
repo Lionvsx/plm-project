@@ -1,15 +1,14 @@
-import { getIngredient } from "@/controllers/ingredients";
-import { notFound } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { formatCurrency, formatNumber } from "@/lib/utils";
-import Link from "next/link";
-import { Pencil } from "lucide-react";
-import { hasPermission } from "@/lib/has-permission";
-import { auth } from "@/auth";
-import { headers } from "next/headers";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getServerSession } from "@/controllers/auth";
+import { getIngredient } from "@/controllers/ingredients";
 import { User } from "@/db/schema";
+import { hasPermission } from "@/lib/has-permission";
+import { formatCurrency, formatNumber } from "@/lib/utils";
+import { Pencil } from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
 interface Props {
   params: {
@@ -24,9 +23,8 @@ export default async function IngredientPage({ params }: Props) {
     notFound();
   }
 
-  const session = await auth.api.getSession({
-    headers: headers(),
-  });
+  const session = await getServerSession();
+
   const user = session?.user as User;
 
   const isLowStock =
