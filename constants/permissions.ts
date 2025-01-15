@@ -142,8 +142,8 @@ export const ROLES = {
     },
     orders: {
       view: false,
-      create: true,
-      update: true,
+      create: false,
+      update: false,
       delete: false,
     },
   },
@@ -152,7 +152,7 @@ export const ROLES = {
       view: false,
     },
     products: {
-      view: false,
+      view: true,
       create: false,
       update: false,
       delete: false,
@@ -170,14 +170,14 @@ export const ROLES = {
       view: true,
       create: true,
       update: true,
-      delete: false,
+      delete: true,
     },
     formulations: {
       view: false,
       create: false,
       update: false,
       version: false,
-      manage_ingredients: true,
+      manage_ingredients: false,
     },
     users: {
       view: false,
@@ -204,9 +204,9 @@ export const ROLES = {
       view: false,
     },
     products: {
-      view: false,
+      view: true,
       create: false,
-      update: true,
+      update: false,
       delete: false,
       manage_variants: false,
       manage_formulations: false,
@@ -245,7 +245,7 @@ export const ROLES = {
       delete: false,
     },
     orders: {
-      view: false,
+      view: true,
       create: false,
       update: false,
       delete: false,
@@ -256,7 +256,7 @@ export const ROLES = {
       view: false,
     },
     products: {
-      view: false,
+      view: true,
       create: false,
       update: false,
       delete: false,
@@ -298,9 +298,9 @@ export const ROLES = {
     },
     orders: {
       view: true,
-      create: false,
-      update: false,
-      delete: false,
+      create: true,
+      update: true,
+      delete: true,
     },
   },
   viewer: {
