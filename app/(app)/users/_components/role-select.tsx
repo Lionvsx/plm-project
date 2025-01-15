@@ -8,19 +8,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { updateUserRole } from "@/controllers/auth";
-import { Role } from "@/db/schema";
+import { Role, ROLES } from "@/db/schema";
 import { toast } from "sonner";
-
-const roles = [
-  "admin",
-  "product_manager",
-  "formulation_scientist",
-  "quality_control",
-  "procurement",
-  "production_manager",
-  "sales_representative",
-  "viewer",
-] as const;
 
 interface RoleSelectProps {
   userId: string;
@@ -43,7 +32,7 @@ export function RoleSelect({ userId, currentRole }: RoleSelectProps) {
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        {roles.map((role) => (
+        {ROLES.map((role) => (
           <SelectItem key={role} value={role}>
             {role.replace("_", " ").replace(/\b\w/g, (l) => l.toUpperCase())}
           </SelectItem>

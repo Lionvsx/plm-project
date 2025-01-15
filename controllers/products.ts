@@ -106,6 +106,7 @@ export async function updateProductVariant(
     size?: string;
     sku?: string;
     price?: string;
+    cadFileUrl?: string;
   }
 ) {
   const result = await db

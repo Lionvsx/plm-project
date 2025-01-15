@@ -137,17 +137,28 @@ export default async function ProductPage({ params }: Props) {
                       <span className="text-muted-foreground">Price</span>
                       <span>{formatCurrency(variant.price)}</span>
                     </div>
-                    {hasPermission(user, "products", "update") && (
-                      <div className="flex justify-end mt-4">
-                        <Button variant="ghost" size="sm" asChild>
-                          <Link
-                            href={`/products/${product.id}/variants/${variant.id}/edit`}
-                          >
-                            Edit
-                          </Link>
-                        </Button>
+                    {variant.cadFileUrl && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">CAD File</span>
+                        <a
+                          href={variant.cadFileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 hover:underline text-sm"
+                        >
+                          View File
+                        </a>
                       </div>
                     )}
+                    <div className="flex justify-end mt-4">
+                      <Button variant="ghost" size="sm" asChild>
+                        <Link
+                          href={`/products/${product.id}/variants/${variant.id}/edit`}
+                        >
+                          Edit
+                        </Link>
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
