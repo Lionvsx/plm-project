@@ -66,10 +66,6 @@ const data = {
           title: "All Projects",
           url: "/projects",
         },
-        {
-          title: "Tasks",
-          url: "/projects/tasks",
-        },
       ],
     },
     {
