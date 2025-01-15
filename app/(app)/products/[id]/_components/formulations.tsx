@@ -20,21 +20,33 @@ interface FormulationsListProps {
   productId: number;
   productVariantId: number;
   formulations: Formulation[];
+  canCreate: boolean;
+  canUpdate: boolean;
 }
 
-export function FormulationsList({ productId, productVariantId, formulations }: FormulationsListProps) {
+export function FormulationsList({
+  productId,
+  productVariantId,
+  formulations,
+  canCreate,
+  canUpdate,
+}: FormulationsListProps) {
   const router = useRouter();
 
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Formulations</h2>
-        <Button asChild>
-          <Link href={`/products/${productId}/variants/${productVariantId}/formulations/new`}>
-            <Plus className="w-4 h-4 mr-2" />
-            New Formulation
-          </Link>
-        </Button>
+        {canCreate && (
+          <Button asChild>
+            <Link
+              href={`/products/${productId}/variants/${productVariantId}/formulations/new`}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              New Formulation
+            </Link>
+          </Button>
+        )}
       </div>
 
       <Table>
@@ -48,40 +60,51 @@ export function FormulationsList({ productId, productVariantId, formulations }: 
           </TableRow>
         </TableHeader>
         <TableBody>
-          {[...formulations].sort((a, b) => b.version - a.version).map((formulation) => (
-            <TableRow key={formulation.id} className="hover:cursor-pointer" onClick={() => {
-              router.push(`/products/${productId}/variants/${productVariantId}/formulations/${formulation.id}`);
-            }}>
-              <TableCell>{formulation.name}</TableCell>
-              <TableCell>v{formulation.version}</TableCell>
-              <TableCell>
-                <Badge
-                  variant={formulation.isActive ? "success" : "secondary"}
-                >
-                  {formulation.isActive ? "Active" : "Inactive"}
-                </Badge>
-              </TableCell>
-              <TableCell>{formatDate(formulation.updatedAt)}</TableCell>
-              <TableCell>
-                <div className="flex gap-2">
-                  {formulation.isActive && (
-                    <Button variant="outline" size="sm" asChild>
-                      <Link
-                        href={`/products/${productId}/variants/${productVariantId}/formulations/${formulation.id}/edit`}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Create New Version
-                      </Link>
-                    </Button>
-                  )}
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
+          {[...formulations]
+            .sort((a, b) => b.version - a.version)
+            .map((formulation) => (
+              <TableRow
+                key={formulation.id}
+                className="hover:cursor-pointer"
+                onClick={() => {
+                  router.push(
+                    `/products/${productId}/variants/${productVariantId}/formulations/${formulation.id}`
+                  );
+                }}
+              >
+                <TableCell>{formulation.name}</TableCell>
+                <TableCell>v{formulation.version}</TableCell>
+                <TableCell>
+                  <Badge
+                    variant={formulation.isActive ? "success" : "secondary"}
+                  >
+                    {formulation.isActive ? "Active" : "Inactive"}
+                  </Badge>
+                </TableCell>
+                <TableCell>{formatDate(formulation.updatedAt)}</TableCell>
+                <TableCell>
+                  <div className="flex gap-2">
+                    {canUpdate && (
+                      <Button variant="outline" size="sm" asChild>
+                        <Link
+                          href={`/products/${productId}/variants/${productVariantId}/formulations/${formulation.id}/edit`}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Plus className="w-4 h-4 mr-2" />
+                          Create New Version
+                        </Link>
+                      </Button>
+                    )}
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
           {formulations.length === 0 && (
             <TableRow>
-              <TableCell colSpan={5} className="text-center text-muted-foreground">
+              <TableCell
+                colSpan={5}
+                className="text-center text-muted-foreground"
+              >
                 No formulations found. Create one to get started.
               </TableCell>
             </TableRow>

@@ -30,14 +30,17 @@ import {
 } from "@/controllers/orders";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { User } from "@/db/schema";
+import { hasPermission } from "@/lib/has-permission";
 
 type Order = Awaited<ReturnType<typeof getOrders>>[number];
 
 interface TableProps {
   data: Order[];
+  user: User;
 }
 
-export function Table({ data }: TableProps) {
+export function Table({ data, user }: TableProps) {
   const router = useRouter();
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
@@ -177,12 +180,14 @@ export function Table({ data }: TableProps) {
       id: "actions",
       cell: ({ row }) => {
         const order = row.original;
+        const canUpdate = hasPermission(user, "orders", "update");
+
         return (
           <div
             className="flex justify-end gap-2 pr-4"
             onClick={(e) => e.stopPropagation()}
           >
-            {order.status === "PENDING" && (
+            {order.status === "PENDING" && canUpdate && (
               <>
                 <Button
                   variant="default"
@@ -208,7 +213,7 @@ export function Table({ data }: TableProps) {
                 </Button>
               </>
             )}
-            {order.status === "IN_PRODUCTION" && (
+            {order.status === "IN_PRODUCTION" && canUpdate && (
               <>
                 <Button
                   variant="default"

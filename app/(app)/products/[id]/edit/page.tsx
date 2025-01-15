@@ -11,7 +11,7 @@ interface Props {
 
 export default async function EditProductPage({ params }: Props) {
   const product = await getProduct(parseInt(params.id));
-  const projects = await getProjects()
+  const projects = await getProjects();
 
   if (!product) {
     notFound();

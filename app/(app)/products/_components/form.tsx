@@ -49,7 +49,7 @@ export function ProductForm({ initialData, projects }: FormProps) {
       const formattedValues = {
         ...values,
         projectId: Number(values.projectId),
-        launchDate: values.launchDate ? new Date(values.launchDate) : undefined
+        launchDate: values.launchDate ? new Date(values.launchDate) : undefined,
       };
 
       if (initialData) {
@@ -92,7 +92,7 @@ export function ProductForm({ initialData, projects }: FormProps) {
                   placeholder="Product description"
                   className="resize-none"
                   {...field}
-                  value={field.value ?? ''}
+                  value={field.value ?? ""}
                 />
               </FormControl>
               <FormMessage />
@@ -106,10 +106,7 @@ export function ProductForm({ initialData, projects }: FormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Category</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-              >
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a category" />
@@ -117,7 +114,9 @@ export function ProductForm({ initialData, projects }: FormProps) {
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="Eau de Parfum">Eau de Parfum</SelectItem>
-                  <SelectItem value="Eau de Toilette">Eau de Toilette</SelectItem>
+                  <SelectItem value="Eau de Toilette">
+                    Eau de Toilette
+                  </SelectItem>
                   <SelectItem value="Parfum">Parfum</SelectItem>
                   <SelectItem value="Cologne">Cologne</SelectItem>
                 </SelectContent>
@@ -164,7 +163,11 @@ export function ProductForm({ initialData, projects }: FormProps) {
                 <Input
                   type="date"
                   {...field}
-                  value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
+                  value={
+                    field.value
+                      ? new Date(field.value).toISOString().split("T")[0]
+                      : ""
+                  }
                   onChange={(e) => field.onChange(new Date(e.target.value))}
                 />
               </FormControl>

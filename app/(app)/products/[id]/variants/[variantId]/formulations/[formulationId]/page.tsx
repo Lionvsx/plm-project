@@ -7,6 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 import { Pencil, Plus } from "lucide-react";
+import { hasPermission } from "@/lib/has-permission";
+import { auth } from "@/auth";
+import { headers } from "next/headers";
+import { User } from "@/db/schema";
 import {
   Table,
   TableBody,
@@ -38,6 +42,11 @@ export default async function FormulationPage({ params }: Props) {
     notFound();
   }
 
+  const session = await auth.api.getSession({
+    headers: headers(),
+  });
+  const user = session?.user as User;
+
   // Calculate total cost
   const totalCost = formulation.ingredients.reduce((sum, item) => {
     const cost =
@@ -62,13 +71,15 @@ export default async function FormulationPage({ params }: Props) {
           )}
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="icon" asChild>
-            <Link
-              href={`/products/${product.id}/variants/${params.variantId}/formulations/${formulation.id}/edit`}
-            >
-              <Pencil className="h-4 w-4" />
-            </Link>
-          </Button>
+          {hasPermission(user, "products", "manage_formulations") && (
+            <Button variant="outline" size="icon" asChild>
+              <Link
+                href={`/products/${product.id}/variants/${params.variantId}/formulations/${formulation.id}/edit`}
+              >
+                <Pencil className="h-4 w-4" />
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
 
@@ -109,14 +120,16 @@ export default async function FormulationPage({ params }: Props) {
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-semibold">Ingredients</h2>
-          <Button asChild>
-            <Link
-              href={`/products/${product.id}/variants/${params.variantId}/formulations/${formulation.id}/ingredients/new`}
-            >
-              <Pencil className="w-4 h-4 mr-2" />
-              Edit Formulation Ingredients
-            </Link>
-          </Button>
+          {hasPermission(user, "products", "manage_formulations") && (
+            <Button asChild>
+              <Link
+                href={`/products/${product.id}/variants/${params.variantId}/formulations/${formulation.id}/ingredients/new`}
+              >
+                <Pencil className="w-4 h-4 mr-2" />
+                Edit Formulation Ingredients
+              </Link>
+            </Button>
+          )}
         </div>
 
         <Table>

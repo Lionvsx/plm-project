@@ -23,9 +23,14 @@ interface IngredientsTableProps {
   formulationId: number;
 }
 
-export function IngredientsTable({ data, formulationId }: IngredientsTableProps) {
+export function IngredientsTable({
+  data,
+  formulationId,
+}: IngredientsTableProps) {
   const router = useRouter();
-  const [editingIngredient, setEditingIngredient] = useState<IngredientsTableProps["data"][0] | null>(null);
+  const [editingIngredient, setEditingIngredient] = useState<
+    IngredientsTableProps["data"][0] | null
+  >(null);
 
   const handleDelete = async (id: number) => {
     try {

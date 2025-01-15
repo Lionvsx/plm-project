@@ -4,6 +4,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Pencil } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { hasPermission } from "@/lib/has-permission";
+import { auth } from "@/auth";
+import { headers } from "next/headers";
+import { User } from "@/db/schema";
 
 interface Props {
   params: {
@@ -18,6 +22,11 @@ export default async function SupplierPage({ params }: Props) {
     notFound();
   }
 
+  const session = await auth.api.getSession({
+    headers: headers(),
+  });
+  const user = session?.user as User;
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
@@ -27,12 +36,14 @@ export default async function SupplierPage({ params }: Props) {
             <p className="text-muted-foreground mt-2">{supplier.email}</p>
           )}
         </div>
-        <Button asChild>
-          <Link href={`/suppliers/${supplier.id}/edit`}>
-            <Pencil className="w-4 h-4 mr-2" />
-            Edit Supplier
-          </Link>
-        </Button>
+        {hasPermission(user, "suppliers", "update") && (
+          <Button asChild>
+            <Link href={`/suppliers/${supplier.id}/edit`}>
+              <Pencil className="w-4 h-4 mr-2" />
+              Edit Supplier
+            </Link>
+          </Button>
+        )}
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">

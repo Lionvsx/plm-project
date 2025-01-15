@@ -6,6 +6,10 @@ import Link from "next/link";
 import { Pencil } from "lucide-react";
 import { BOMGenerator } from "@/components/bom-generator";
 import { Unit } from "@/lib/constants/units";
+import { hasPermission } from "@/lib/has-permission";
+import { auth } from "@/auth";
+import { headers } from "next/headers";
+import { User } from "@/db/schema";
 
 interface Props {
   params: {
@@ -20,6 +24,11 @@ export default async function VariantPage({ params }: Props) {
   if (!product) {
     notFound();
   }
+
+  const session = await auth.api.getSession({
+    headers: headers(),
+  });
+  const user = session?.user as User;
 
   const variant = product.variants.find(
     (v) => v.id === parseInt(params.variantId)
@@ -53,7 +62,7 @@ export default async function VariantPage({ params }: Props) {
           </p>
         </div>
         <div className="flex gap-2">
-          {activeFormulation && (
+          {activeFormulation && hasPermission(user, "products", "manage_formulations") && (
             <BOMGenerator
               productName={product.name}
               variantSku={variant.sku || ""}
@@ -66,12 +75,16 @@ export default async function VariantPage({ params }: Props) {
               }))}
             />
           )}
-          <Button asChild>
-            <Link href={`/products/${product.id}/variants/${variant.id}/edit`}>
-              <Pencil className="w-4 h-4 mr-2" />
-              Edit Variant
-            </Link>
-          </Button>
+          {hasPermission(user, "products", "update") && (
+            <Button asChild>
+              <Link
+                href={`/products/${product.id}/variants/${variant.id}/edit`}
+              >
+                <Pencil className="w-4 h-4 mr-2" />
+                Edit Variant
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
 
@@ -99,6 +112,8 @@ export default async function VariantPage({ params }: Props) {
           productId={product.id}
           productVariantId={variant.id}
           formulations={variant.formulations}
+          canCreate={hasPermission(user, "products", "create")}
+          canUpdate={hasPermission(user, "products", "update")}
         />
       </div>
     </div>

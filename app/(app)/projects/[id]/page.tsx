@@ -11,6 +11,10 @@ import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 import { Pencil, Plus } from "lucide-react";
 import { TaskTable } from "../_components/task-table";
+import { hasPermission } from "@/lib/has-permission";
+import { auth } from "@/auth";
+import { headers } from "next/headers";
+import { User } from "@/db/schema";
 
 interface Props {
   params: {
@@ -25,6 +29,11 @@ export default async function ProjectPage({ params }: Props) {
   if (!project) {
     notFound();
   }
+
+  const session = await auth.api.getSession({
+    headers: headers(),
+  });
+  const user = session?.user as User;
 
   const statusVariant: Record<
     string,
@@ -50,11 +59,13 @@ export default async function ProjectPage({ params }: Props) {
             <p className="text-muted-foreground mt-2">{project.description}</p>
           )}
         </div>
-        <Button variant="outline" size="icon" asChild>
-          <Link href={`/projects/${project.id}/edit`}>
-            <Pencil className="h-4 w-4" />
-          </Link>
-        </Button>
+        {hasPermission(user, "projects", "update") && (
+          <Button variant="outline" size="icon" asChild>
+            <Link href={`/projects/${project.id}/edit`}>
+              <Pencil className="h-4 w-4" />
+            </Link>
+          </Button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -97,12 +108,14 @@ export default async function ProjectPage({ params }: Props) {
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-semibold">Tasks</h2>
-          <Button asChild>
-            <Link href={`/projects/${project.id}/tasks/new`}>
-              <Plus className="h-4 w-4 mr-2" />
-              New Task
-            </Link>
-          </Button>
+          {hasPermission(user, "projects", "create") && (
+            <Button asChild>
+              <Link href={`/projects/${project.id}/tasks/new`}>
+                <Plus className="h-4 w-4 mr-2" />
+                New Task
+              </Link>
+            </Button>
+          )}
         </div>
 
         <TaskTable tasks={project.tasks} />

@@ -8,6 +8,10 @@ import { sql } from "drizzle-orm";
 import { ArrowRight, Pencil, Plus } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { hasPermission } from "@/lib/has-permission";
+import { auth } from "@/auth";
+import { headers } from "next/headers";
+import { User } from "@/db/schema";
 
 interface Props {
   params: {
@@ -48,6 +52,11 @@ export default async function ProductPage({ params }: Props) {
     notFound();
   }
 
+  const session = await auth.api.getSession({
+    headers: headers(),
+  });
+  const user = session?.user as User;
+
   const variantCosts = await Promise.all(
     product.variants.map((v) => getVariantCosts(v.id))
   );
@@ -66,11 +75,13 @@ export default async function ProductPage({ params }: Props) {
           )}
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="icon" asChild>
-            <Link href={`/products/${product.id}/edit`}>
-              <Pencil className="h-4 w-4" />
-            </Link>
-          </Button>
+          {hasPermission(user, "products", "update") && (
+            <Button variant="outline" size="icon" asChild>
+              <Link href={`/products/${product.id}/edit`}>
+                <Pencil className="h-4 w-4" />
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
 
@@ -92,12 +103,14 @@ export default async function ProductPage({ params }: Props) {
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold">Variants</h2>
-            <Button asChild>
-              <Link href={`/products/${product.id}/variants/new`}>
-                <Plus className="w-4 h-4 mr-2" />
-                New Variant
-              </Link>
-            </Button>
+            {hasPermission(user, "products", "create") && (
+              <Button asChild>
+                <Link href={`/products/${product.id}/variants/new`}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  New Variant
+                </Link>
+              </Button>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -124,15 +137,17 @@ export default async function ProductPage({ params }: Props) {
                       <span className="text-muted-foreground">Price</span>
                       <span>{formatCurrency(variant.price)}</span>
                     </div>
-                    <div className="flex justify-end mt-4">
-                      <Button variant="ghost" size="sm" asChild>
-                        <Link
-                          href={`/products/${product.id}/variants/${variant.id}/edit`}
-                        >
-                          Edit
-                        </Link>
-                      </Button>
-                    </div>
+                    {hasPermission(user, "products", "update") && (
+                      <div className="flex justify-end mt-4">
+                        <Button variant="ghost" size="sm" asChild>
+                          <Link
+                            href={`/products/${product.id}/variants/${variant.id}/edit`}
+                          >
+                            Edit
+                          </Link>
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
