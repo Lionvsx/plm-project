@@ -9,8 +9,8 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
-import { Product, product } from "./product-schema";
 import { user } from "./auth-schema";
+import { product } from "./product-schema";
 
 export const projectStatusEnum = pgEnum("project_status", [
   "PLANNING",

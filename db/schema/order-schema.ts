@@ -1,12 +1,12 @@
-import { relations, InferSelectModel } from "drizzle-orm";
+import { InferSelectModel, relations } from "drizzle-orm";
 import {
+  decimal,
+  integer,
+  pgEnum,
   pgTable,
   serial,
   text,
   timestamp,
-  integer,
-  pgEnum,
-  decimal,
 } from "drizzle-orm/pg-core";
 import { productVariant } from "./product-schema";
 
