@@ -58,7 +58,7 @@ const data = {
           show: (user: User) => hasPermission(user, "suppliers", "view"),
         },
       ],
-      show: (user: User) => hasPermission(user, "products", "view"),
+      show: (user: User) => hasPermission(user, "ingredients", "view"),
     },
     {
       title: "Projects",

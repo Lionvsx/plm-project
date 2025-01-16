@@ -31,8 +31,11 @@ export type ProductWithVariants = {
 export async function getProducts() {
   const products = await db.query.product.findMany({
     with: {
-      variants: true,
+      variants: {
+        orderBy: (variants, { asc }) => [asc(variants.price)],
+      },
     },
+    orderBy: (product, { asc }) => [asc(product.name)],
   });
   return products;
 }
@@ -42,6 +45,7 @@ export async function getProduct(id: number) {
     where: eq(product.id, id),
     with: {
       variants: {
+        orderBy: (variants, { asc }) => [asc(variants.price)],
         with: {
           formulations: {
             with: {

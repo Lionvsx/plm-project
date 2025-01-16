@@ -43,7 +43,7 @@ async function seedDatabase() {
         phone: "+1-555-0123",
         address: "123 Perfume Lane, New York, NY 10001",
       })
-      .returning() as Promise<Supplier[]>,
+      .returning(),
     db
       .insert(supplier)
       .values({
@@ -52,7 +52,7 @@ async function seedDatabase() {
         phone: "+1-555-0124",
         address: "456 Aroma Street, Los Angeles, CA 90001",
       })
-      .returning() as Promise<Supplier[]>,
+      .returning(),
     db
       .insert(supplier)
       .values({
@@ -61,7 +61,7 @@ async function seedDatabase() {
         phone: "+1-555-0125",
         address: "789 Chemical Road, Chicago, IL 60601",
       })
-      .returning() as Promise<Supplier[]>,
+      .returning(),
     db
       .insert(supplier)
       .values({
@@ -70,7 +70,7 @@ async function seedDatabase() {
         phone: "+1-555-0126",
         address: "321 Box Street, Miami, FL 33101",
       })
-      .returning() as Promise<Supplier[]>,
+      .returning(),
     db
       .insert(supplier)
       .values({
@@ -79,7 +79,7 @@ async function seedDatabase() {
         phone: "+1-555-0127",
         address: "654 Glass Avenue, Seattle, WA 98101",
       })
-      .returning() as Promise<Supplier[]>,
+      .returning(),
     db
       .insert(supplier)
       .values({
@@ -88,7 +88,7 @@ async function seedDatabase() {
         phone: "+1-555-0128",
         address: "789 Spice Road, Dubai",
       })
-      .returning() as Promise<Supplier[]>,
+      .returning(),
     db
       .insert(supplier)
       .values({
@@ -97,7 +97,7 @@ async function seedDatabase() {
         phone: "+1-555-0129",
         address: "456 Ocean Drive, Miami, FL 33139",
       })
-      .returning() as Promise<Supplier[]>,
+      .returning(),
   ])) as [
     Supplier[],
     Supplier[],
@@ -109,7 +109,7 @@ async function seedDatabase() {
   ];
 
   // Create ingredients
-  const ingredients = (await db
+  const ingredients = await db
     .insert(ingredient)
     .values([
       {
@@ -323,97 +323,61 @@ async function seedDatabase() {
         minimumStock: "200",
       },
     ])
-    .returning()) as unknown as Ingredient[];
+    .returning();
 
   // Create products
-  const products = (await db
+  const products = await db
     .insert(product)
     .values([
-      // Floral Fragrances
       {
-        name: "Midnight Rose",
-        description: "A luxurious floral fragrance with deep rose notes",
+        name: "Nocturne",
+        description:
+          "An opulent floral oriental fragrance featuring Bulgarian rose absolute, night-blooming jasmine, and Madagascar vanilla, creating an aura of timeless elegance",
         category: "Eau de Parfum",
         launchDate: new Date("2025-01-15"),
       },
       {
-        name: "Jasmine Nights",
-        description: "An enchanting blend of jasmine and ylang ylang",
-        category: "Eau de Parfum",
-        launchDate: new Date("2025-02-15"),
-      },
-      // Citrus Fragrances
-      {
-        name: "Citrus Dream",
-        description: "Fresh and vibrant citrus blend with bergamot",
+        name: "Lumière",
+        description:
+          "A sparkling citrus blend of Calabrian bergamot, Sicilian orange blossom, and Mediterranean herbs, capturing the sun-drenched coastal breeze",
         category: "Eau de Toilette",
         launchDate: new Date("2025-02-01"),
       },
       {
-        name: "Mediterranean Breeze",
-        description: "Bright and zesty blend of orange and lemon",
-        category: "Eau de Toilette",
-        launchDate: new Date("2025-03-01"),
-      },
-      // Oriental/Woody Fragrances
-      {
-        name: "Oud Wood",
-        description: "Rich and mysterious blend of oud and sandalwood",
-        category: "Eau de Parfum",
+        name: "Imperium",
+        description:
+          "A majestic oriental woody fragrance combining rare Indian oud, Australian sandalwood, and golden amber, enriched with exotic spices and precious resins",
+        category: "Parfum",
         launchDate: new Date("2025-03-15"),
       },
       {
-        name: "Vanilla Amber",
-        description: "Warm and sensual mix of vanilla and amber",
-        category: "Eau de Parfum",
-        launchDate: new Date("2025-04-01"),
-      },
-      // Fresh/Aquatic Fragrances
-      {
-        name: "Ocean Mist",
-        description: "Fresh marine scent with salty notes",
+        name: "Horizon",
+        description:
+          "A sophisticated marine fragrance blending fresh sea spray, mineral accords, and coastal sage, enhanced with crystalline musks and driftwood",
         category: "Eau de Toilette",
         launchDate: new Date("2025-04-15"),
       },
-      {
-        name: "Fresh Rain",
-        description: "Clean and refreshing aquatic fragrance",
-        category: "Eau de Toilette",
-        launchDate: new Date("2025-05-01"),
-      },
     ])
-    .returning()) as unknown as Product[];
+    .returning();
 
   // Create product variants with appropriate pricing
-  const variantPromises = products.map((prod: Product) => {
+  const variantPromises = products.map((prod) => {
     let prices: string[];
     switch (prod.name) {
-      case "Midnight Rose":
-        prices = ["49.99", "69.99", "139.99"]; // Premium floral
+      case "Nocturne":
+        prices = ["89.99", "129.99", "179.99", "249.99", "299.99"]; // Premium floral oriental
         break;
-      case "Jasmine Nights":
-        prices = ["49.99", "69.99", "139.99"]; // Premium floral
+      case "Lumière":
+        prices = ["59.99", "89.99", "129.99", "179.99", "219.99"]; // Fresh citrus
         break;
-      case "Citrus Dream":
-        prices = ["34.99", "49.99", "89.99"]; // Fresh citrus
+      case "Imperium":
+        prices = ["129.99", "189.99", "249.99", "349.99", "449.99"]; // Premium oriental woody
         break;
-      case "Mediterranean Breeze":
-        prices = ["34.99", "49.99", "89.99"]; // Fresh citrus
-        break;
-      case "Oud Wood":
-        prices = ["59.99", "89.99", "169.99"]; // Premium oriental
-        break;
-      case "Vanilla Amber":
-        prices = ["54.99", "79.99", "149.99"]; // Premium oriental
-        break;
-      case "Ocean Mist":
-        prices = ["39.99", "59.99", "99.99"]; // Fresh aquatic
-        break;
-      case "Fresh Rain":
-        prices = ["39.99", "59.99", "99.99"]; // Fresh aquatic
+      case "Horizon":
+        prices = ["69.99", "99.99", "149.99", "199.99", "249.99"]; // Fresh aquatic
         break;
       default:
-        prices = ["39.99", "59.99", "99.99"]; // Default pricing
+        prices = ["69.99", "99.99", "149.99", "199.99", "249.99"]; // Default pricing
     }
 
     return Promise.all([
@@ -421,9 +385,18 @@ async function seedDatabase() {
         .insert(productVariant)
         .values({
           productId: prod.id,
+          size: "15ml",
+          sku: `${prod.name.substring(0, 3).toUpperCase()}-15`,
+          price: prices[0],
+        })
+        .returning(),
+      db
+        .insert(productVariant)
+        .values({
+          productId: prod.id,
           size: "30ml",
           sku: `${prod.name.substring(0, 3).toUpperCase()}-30`,
-          price: prices[0],
+          price: prices[1],
         })
         .returning(),
       db
@@ -432,7 +405,16 @@ async function seedDatabase() {
           productId: prod.id,
           size: "50ml",
           sku: `${prod.name.substring(0, 3).toUpperCase()}-50`,
-          price: prices[1],
+          price: prices[2],
+        })
+        .returning(),
+      db
+        .insert(productVariant)
+        .values({
+          productId: prod.id,
+          size: "75ml",
+          sku: `${prod.name.substring(0, 3).toUpperCase()}-75`,
+          price: prices[3],
         })
         .returning(),
       db
@@ -441,369 +423,73 @@ async function seedDatabase() {
           productId: prod.id,
           size: "100ml",
           sku: `${prod.name.substring(0, 3).toUpperCase()}-100`,
-          price: prices[2],
+          price: prices[4],
         })
         .returning(),
     ]);
   });
 
   const variants = await Promise.all(variantPromises);
-  const allVariants = variants.flat().map((v) => v[0]); // Flatten and get first item of each array
 
-  // Create orders for retail clients
-  const orders = await db
-    .insert(order)
-    .values([
-      {
-        customerName: "Sephora France",
-        customerEmail: "orders@sephora.fr",
-        customerPhone: "+33-1-4013-5470",
-        status: "COMPLETED",
-        notes: "Major retail chain - Q1 2025 bulk order",
-        deliveryDate: new Date("2024-12-15"),
-      },
-      {
-        customerName: "Marionnaud",
-        customerEmail: "purchasing@marionnaud.com",
-        customerPhone: "+33-1-4286-7890",
-        status: "COMPLETED",
-        notes: "National retail chain - January restock",
-        deliveryDate: new Date("2024-12-27"),
-      },
-      {
-        customerName: "L'Essence des Parfums",
-        customerEmail: "contact@lessencedesparfums.fr",
-        customerPhone: "+33-4-9134-5678",
-        status: "IN_PRODUCTION",
-        notes: "Luxury boutique in Cannes - New Year collection",
-        deliveryDate: new Date("2025-01-10"),
-      },
-      {
-        customerName: "Galeries Lafayette",
-        customerEmail: "parfums@galerieslafayette.com",
-        customerPhone: "+33-1-4282-3456",
-        status: "PENDING",
-        notes: "Department store - Valentine's Day collection",
-        deliveryDate: new Date("2025-01-25"),
-      },
-      {
-        customerName: "Nocibé",
-        customerEmail: "commandes@nocibe.fr",
-        customerPhone: "+33-3-2045-6789",
-        status: "PENDING",
-        notes: "National perfume retailer - January restock",
-        deliveryDate: new Date("2025-01-15"),
-      },
-      {
-        customerName: "Beauty Success",
-        customerEmail: "achats@beautysuccess.fr",
-        customerPhone: "+33-5-5678-9012",
-        status: "IN_PRODUCTION",
-        notes: "Regional chain - New Year collection",
-        deliveryDate: new Date("2025-01-08"),
-      },
-      {
-        customerName: "Le Printemps",
-        customerEmail: "beaute@printemps.fr",
-        customerPhone: "+33-1-4282-5789",
-        status: "PENDING",
-        notes: "Department store - Valentine's Day preview",
-        deliveryDate: new Date("2025-01-30"),
-      },
-      {
-        customerName: "Douglas France",
-        customerEmail: "orders@douglas.fr",
-        customerPhone: "+33-1-4567-8901",
-        status: "IN_PRODUCTION",
-        notes: "International beauty retailer - January collection",
-        deliveryDate: new Date("2025-01-12"),
-      },
-      {
-        customerName: "Passion Beauté",
-        customerEmail: "commandes@passionbeaute.fr",
-        customerPhone: "+33-1-7890-1234",
-        status: "PENDING",
-        notes: "Selective perfumery chain - New Year selection",
-        deliveryDate: new Date("2025-01-18"),
-      },
-    ])
-    .returning();
-
-  // Create order items with quantities matching retailer size
-  await db.insert(orderItem).values([
-    // Sephora's order - Large quantities of various products
-    {
-      orderId: orders[0].id,
-      productVariantId: allVariants[2].id, // Midnight Rose 100ml
-      quantity: 100,
-      unitPrice: "139.99",
-      notes: "Premium placement in stores",
-    },
-    {
-      orderId: orders[0].id,
-      productVariantId: allVariants[1].id, // Midnight Rose 50ml
-      quantity: 150,
-      unitPrice: "69.99",
-    },
-    {
-      orderId: orders[0].id,
-      productVariantId: allVariants[14].id, // Oud Wood 100ml
-      quantity: 80,
-      unitPrice: "169.99",
-      notes: "Luxury collection display",
-    },
-    {
-      orderId: orders[0].id,
-      productVariantId: allVariants[13].id, // Oud Wood 50ml
-      quantity: 120,
-      unitPrice: "89.99",
-    },
-    {
-      orderId: orders[0].id,
-      productVariantId: allVariants[5].id, // Jasmine Nights 100ml
-      quantity: 60,
-      unitPrice: "139.99",
-      notes: "New collection feature",
-    },
-    {
-      orderId: orders[0].id,
-      productVariantId: allVariants[17].id, // Vanilla Amber 100ml
-      quantity: 50,
-      unitPrice: "149.99",
-    },
-
-    // Marionnaud's order - Medium quantities
-    {
-      orderId: orders[1].id,
-      productVariantId: allVariants[1].id, // Midnight Rose 50ml
-      quantity: 60,
-      unitPrice: "69.99",
-    },
-    {
-      orderId: orders[1].id,
-      productVariantId: allVariants[7].id, // Citrus Dream 50ml
-      quantity: 45,
-      unitPrice: "49.99",
-    },
-    {
-      orderId: orders[1].id,
-      productVariantId: allVariants[19].id, // Ocean Mist 50ml
-      quantity: 40,
-      unitPrice: "59.99",
-    },
-    {
-      orderId: orders[1].id,
-      productVariantId: allVariants[13].id, // Oud Wood 50ml
-      quantity: 35,
-      unitPrice: "89.99",
-      notes: "Valentine's Day promotion",
-    },
-
-    // L'Essence des Parfums - Boutique order
-    {
-      orderId: orders[2].id,
-      productVariantId: allVariants[2].id, // Midnight Rose 100ml
-      quantity: 15,
-      unitPrice: "139.99",
-      notes: "New Year luxury display",
-    },
-    {
-      orderId: orders[2].id,
-      productVariantId: allVariants[14].id, // Oud Wood 100ml
-      quantity: 12,
-      unitPrice: "169.99",
-      notes: "Featured in luxury collection",
-    },
-    {
-      orderId: orders[2].id,
-      productVariantId: allVariants[17].id, // Vanilla Amber 100ml
-      quantity: 10,
-      unitPrice: "149.99",
-    },
-
-    // Galeries Lafayette - Department store order
-    {
-      orderId: orders[3].id,
-      productVariantId: allVariants[2].id, // Midnight Rose 100ml
-      quantity: 70,
-      unitPrice: "139.99",
-      notes: "Valentine's Day feature",
-    },
-    {
-      orderId: orders[3].id,
-      productVariantId: allVariants[5].id, // Jasmine Nights 100ml
-      quantity: 60,
-      unitPrice: "139.99",
-    },
-    {
-      orderId: orders[3].id,
-      productVariantId: allVariants[14].id, // Oud Wood 100ml
-      quantity: 50,
-      unitPrice: "169.99",
-    },
-    {
-      orderId: orders[3].id,
-      productVariantId: allVariants[8].id, // Mediterranean Breeze 100ml
-      quantity: 40,
-      unitPrice: "89.99",
-    },
-    {
-      orderId: orders[3].id,
-      productVariantId: allVariants[20].id, // Fresh Rain 100ml
-      quantity: 35,
-      unitPrice: "99.99",
-    },
-
-    // Nocibé - National chain order
-    {
-      orderId: orders[4].id,
-      productVariantId: allVariants[1].id, // Midnight Rose 50ml
-      quantity: 80,
-      unitPrice: "69.99",
-    },
-    {
-      orderId: orders[4].id,
-      productVariantId: allVariants[7].id, // Citrus Dream 50ml
-      quantity: 70,
-      unitPrice: "49.99",
-    },
-    {
-      orderId: orders[4].id,
-      productVariantId: allVariants[19].id, // Ocean Mist 50ml
-      quantity: 60,
-      unitPrice: "59.99",
-    },
-    {
-      orderId: orders[4].id,
-      productVariantId: allVariants[16].id, // Vanilla Amber 50ml
-      quantity: 45,
-      unitPrice: "79.99",
-      notes: "New Year promotion",
-    },
-
-    // Beauty Success - Regional chain
-    {
-      orderId: orders[5].id,
-      productVariantId: allVariants[0].id, // Midnight Rose 30ml
-      quantity: 30,
-      unitPrice: "49.99",
-    },
-    {
-      orderId: orders[5].id,
-      productVariantId: allVariants[6].id, // Citrus Dream 30ml
-      quantity: 35,
-      unitPrice: "34.99",
-    },
-    {
-      orderId: orders[5].id,
-      productVariantId: allVariants[18].id, // Ocean Mist 30ml
-      quantity: 25,
-      unitPrice: "39.99",
-    },
-
-    // Le Printemps - Department store
-    {
-      orderId: orders[6].id,
-      productVariantId: allVariants[2].id, // Midnight Rose 100ml
-      quantity: 60,
-      unitPrice: "139.99",
-      notes: "Valentine's Day collection",
-    },
-    {
-      orderId: orders[6].id,
-      productVariantId: allVariants[8].id, // Mediterranean Breeze 100ml
-      quantity: 50,
-      unitPrice: "89.99",
-    },
-    {
-      orderId: orders[6].id,
-      productVariantId: allVariants[20].id, // Fresh Rain 100ml
-      quantity: 45,
-      unitPrice: "99.99",
-    },
-    {
-      orderId: orders[6].id,
-      productVariantId: allVariants[5].id, // Jasmine Nights 100ml
-      quantity: 40,
-      unitPrice: "139.99",
-      notes: "Valentine's Day promotion",
-    },
-
-    // Douglas France - International retailer
-    {
-      orderId: orders[7].id,
-      productVariantId: allVariants[1].id, // Midnight Rose 50ml
-      quantity: 90,
-      unitPrice: "69.99",
-    },
-    {
-      orderId: orders[7].id,
-      productVariantId: allVariants[13].id, // Oud Wood 50ml
-      quantity: 70,
-      unitPrice: "89.99",
-    },
-    {
-      orderId: orders[7].id,
-      productVariantId: allVariants[16].id, // Vanilla Amber 50ml
-      quantity: 60,
-      unitPrice: "79.99",
-    },
-    {
-      orderId: orders[7].id,
-      productVariantId: allVariants[19].id, // Ocean Mist 50ml
-      quantity: 50,
-      unitPrice: "59.99",
-      notes: "January promotion",
-    },
-
-    // Passion Beauté - Selective perfumery
-    {
-      orderId: orders[8].id,
-      productVariantId: allVariants[1].id, // Midnight Rose 50ml
-      quantity: 25,
-      unitPrice: "69.99",
-    },
-    {
-      orderId: orders[8].id,
-      productVariantId: allVariants[7].id, // Citrus Dream 50ml
-      quantity: 30,
-      unitPrice: "49.99",
-    },
-    {
-      orderId: orders[8].id,
-      productVariantId: allVariants[19].id, // Ocean Mist 50ml
-      quantity: 20,
-      unitPrice: "59.99",
-    },
-  ]);
+  // Each variant in variants is an array of arrays, where each inner array contains one variant
+  const allVariants = variants.flatMap((variantGroup) =>
+    variantGroup
+      .map((variantArray) => {
+        if (!variantArray || variantArray.length === 0) {
+          console.error("Invalid variant array:", variantArray);
+          return null;
+        }
+        return variantArray[0];
+      })
+      .filter(Boolean)
+  );
 
   // Create formulations
-  const formulationPromises = allVariants.map(
-    async (variant: ProductVariant) => {
-      const prod = products.find((p: Product) => p.id === variant.productId);
-      return db
-        .insert(formulation)
-        .values({
-          productVariantId: variant.id,
-          name: `${prod?.name} ${variant.size} Formula`,
-          description: "Standard formulation",
-          version: 1,
-          isActive: true,
-        })
-        .returning() as Promise<Formulation[]>;
+  const formulationPromises = allVariants.map(async (variant) => {
+    if (!variant || !variant.id) {
+      console.error("Invalid variant:", variant);
+      throw new Error("Invalid variant object");
     }
-  );
+
+    return db
+      .insert(formulation)
+      .values({
+        productVariantId: variant.id,
+        name: `${
+          products.find((p) => p.id === variant.productId)?.name || "Unknown"
+        } ${variant.size} Formula`,
+        description: "Standard formulation",
+        version: 1,
+        isActive: true,
+      })
+      .returning();
+  });
 
   const formulations = await Promise.all(formulationPromises);
 
   // Create formulation ingredients
-  const ingredientPromises = formulations.map(async (form: Formulation[]) => {
+  const ingredientPromises = formulations.map((form) => {
     const currentFormulation = form[0];
+    if (!currentFormulation) {
+      console.error("Invalid formulation:", form);
+      throw new Error("Formulation not found");
+    }
+
     const variant = allVariants.find(
-      (v: ProductVariant) => v.id === currentFormulation.productVariantId
+      (v) => v && v.id === currentFormulation.productVariantId
     );
-    const prod = products.find((p: Product) => p.id === variant?.productId);
-    const size = parseInt(variant?.size?.replace("ml", "") || "0");
+    if (!variant) {
+      console.error("Variant not found for formulation:", currentFormulation);
+      throw new Error(
+        `Variant not found for formulation ${currentFormulation.id}`
+      );
+    }
+
+    const prod = products.find((p) => p.id === variant.productId);
+    if (!prod) throw new Error(`Product not found for variant ${variant.id}`);
+
+    const size = parseInt(variant.size?.replace("ml", "") || "0");
+    if (size === 0) throw new Error(`Invalid size for variant ${variant.id}`);
 
     // Calculate quantities based on bottle size
     const alcoholQuantity = (size * 0.8).toFixed(2); // 80% alcohol
@@ -811,73 +497,68 @@ async function seedDatabase() {
     const mainEssenceQuantity = (size * 0.12).toFixed(2); // 12% main essence
     const secondaryEssenceQuantity = (size * 0.05).toFixed(2); // 5% secondary essence
 
+    // Find ingredients by exact name match
+    const findIngredientByName = (name: string): number => {
+      const ingredient = ingredients.find((i) => i.name === name);
+      if (!ingredient) throw new Error(`Ingredient not found: ${name}`);
+      return ingredient.id;
+    };
+
     // Define ingredients based on fragrance type
     let mainEssenceId: number;
     let secondaryEssenceId: number;
     let mainEssenceNote: string;
     let secondaryEssenceNote: string;
 
-    switch (prod?.name) {
-      case "Midnight Rose":
-        mainEssenceId = ingredients[0].id; // Rose Oil
-        secondaryEssenceId = ingredients[1].id; // Jasmine
+    switch (prod.name) {
+      case "Nocturne":
+        mainEssenceId = findIngredientByName("Rose Essential Oil");
+        secondaryEssenceId = findIngredientByName("Jasmine Absolute");
         mainEssenceNote = "Main rose note";
         secondaryEssenceNote = "Supporting jasmine note";
         break;
-      case "Jasmine Nights":
-        mainEssenceId = ingredients[1].id; // Jasmine
-        secondaryEssenceId = ingredients[12].id; // Ylang Ylang
-        mainEssenceNote = "Main jasmine note";
-        secondaryEssenceNote = "Supporting ylang ylang note";
-        break;
-      case "Citrus Dream":
-        mainEssenceId = ingredients[2].id; // Bergamot
-        secondaryEssenceId = ingredients[3].id; // Vanilla
+      case "Lumière":
+        mainEssenceId = findIngredientByName("Bergamot Oil");
+        secondaryEssenceId = findIngredientByName("Orange Essential Oil");
         mainEssenceNote = "Main citrus note";
-        secondaryEssenceNote = "Vanilla base note";
+        secondaryEssenceNote = "Fresh orange note";
         break;
-      case "Mediterranean Breeze":
-        mainEssenceId = ingredients[13].id; // Orange
-        secondaryEssenceId = ingredients[14].id; // Lemon
-        mainEssenceNote = "Main orange note";
-        secondaryEssenceNote = "Fresh lemon note";
-        break;
-      case "Oud Wood":
-        mainEssenceId = ingredients[15].id; // Oud
-        secondaryEssenceId = ingredients[17].id; // Sandalwood
+      case "Imperium":
+        mainEssenceId = findIngredientByName("Oud Oil");
+        secondaryEssenceId = findIngredientByName("Sandalwood Oil");
         mainEssenceNote = "Main oud note";
         secondaryEssenceNote = "Sandalwood base";
         break;
-      case "Vanilla Amber":
-        mainEssenceId = ingredients[3].id; // Vanilla
-        secondaryEssenceId = ingredients[16].id; // Amber
-        mainEssenceNote = "Rich vanilla note";
-        secondaryEssenceNote = "Warm amber base";
-        break;
-      case "Ocean Mist":
-        mainEssenceId = ingredients[18].id; // Marine Accord
-        secondaryEssenceId = ingredients[19].id; // Sea Salt
+      case "Horizon":
+        mainEssenceId = findIngredientByName("Marine Accord");
+        secondaryEssenceId = findIngredientByName("Sea Salt Accord");
         mainEssenceNote = "Fresh marine note";
         secondaryEssenceNote = "Salty accord";
         break;
-      case "Fresh Rain":
-        mainEssenceId = ingredients[20].id; // Rain Accord
-        secondaryEssenceId = ingredients[2].id; // Bergamot
-        mainEssenceNote = "Rain accord";
-        secondaryEssenceNote = "Fresh bergamot note";
-        break;
       default:
-        mainEssenceId = ingredients[0].id;
-        secondaryEssenceId = ingredients[1].id;
-        mainEssenceNote = "Main note";
-        secondaryEssenceNote = "Supporting note";
+        throw new Error(`Unknown product type: ${prod.name}`);
     }
+
+    // Get packaging components based on size
+    const bottleId = findIngredientByName(
+      size <= 30
+        ? "Luxury Glass Bottle 50mL"
+        : size <= 50
+        ? "Premium Glass Bottle 50mL"
+        : "Premium Glass Bottle 50mL"
+    );
+    const pumpId = findIngredientByName(
+      size >= 75 ? "Metal Spray Pump Gold" : "Metal Spray Pump Silver"
+    );
+    const boxId = findIngredientByName(
+      size >= 75 ? "Luxury Box" : "Standard Box"
+    );
 
     return db.insert(formulationIngredient).values([
       // Perfumer's Alcohol (80%)
       {
         formulationId: currentFormulation.id,
-        ingredientId: ingredients[4].id, // Perfumer's Alcohol
+        ingredientId: findIngredientByName("Perfumer's Alcohol"),
         quantity: alcoholQuantity,
         unit: VolumeUnit.MILLILITER,
         notes: "Base solvent",
@@ -885,7 +566,7 @@ async function seedDatabase() {
       // Fixative (3%)
       {
         formulationId: currentFormulation.id,
-        ingredientId: ingredients[5].id, // Fixative Base
+        ingredientId: findIngredientByName("Fixative Base"),
         quantity: fixativeQuantity,
         unit: VolumeUnit.MILLILITER,
         notes: "Enhances longevity",
@@ -909,34 +590,235 @@ async function seedDatabase() {
       // Packaging components
       {
         formulationId: currentFormulation.id,
-        ingredientId:
-          size === 30
-            ? ingredients[9].id // Premium Glass Bottle 30mL
-            : size === 50
-            ? ingredients[10].id // Premium Glass Bottle 50mL
-            : ingredients[11].id, // Premium Glass Bottle 100mL
+        ingredientId: bottleId,
         quantity: "1",
         unit: PieceUnit.PIECE,
         notes: `Glass bottle ${size}mL`,
       },
       {
         formulationId: currentFormulation.id,
-        ingredientId: size === 100 ? ingredients[12].id : ingredients[13].id, // Gold pump for 100ml, silver for others
+        ingredientId: pumpId,
         quantity: "1",
         unit: PieceUnit.PIECE,
-        notes: size === 100 ? "Gold spray pump" : "Silver spray pump",
+        notes: size >= 75 ? "Gold spray pump" : "Silver spray pump",
       },
       {
         formulationId: currentFormulation.id,
-        ingredientId: size === 100 ? ingredients[14].id : ingredients[15].id, // Luxury box for 100ml, standard for others
+        ingredientId: boxId,
         quantity: "1",
         unit: PieceUnit.PIECE,
-        notes: size === 100 ? "Luxury packaging box" : "Standard packaging box",
+        notes: size >= 75 ? "Luxury packaging box" : "Standard packaging box",
       },
     ]);
   });
 
   await Promise.all(ingredientPromises);
+
+  // Create orders for major retailers
+  const orders = await db
+    .insert(order)
+    .values([
+      {
+        customerName: "Sephora France",
+        customerEmail: "orders@sephora.fr",
+        customerPhone: "+33-1-4013-5470",
+        status: "IN_PRODUCTION",
+        notes: "Q1 2025 Main Collection Launch",
+        deliveryDate: new Date("2025-01-20"),
+      },
+      {
+        customerName: "Le Printemps",
+        customerEmail: "beaute@printemps.fr",
+        customerPhone: "+33-1-4282-5789",
+        status: "PENDING",
+        notes: "Spring 2025 Luxury Collection",
+        deliveryDate: new Date("2025-02-15"),
+      },
+    ])
+    .returning();
+
+  // Create order items with strategic quantities
+  const orderItems = [
+    // Sephora's order - Large quantities focusing on bestsellers and new launches
+    {
+      orderId: orders[0].id,
+      productVariantId: allVariants.find(
+        (v) =>
+          v?.size === "100ml" &&
+          products.find((p) => p.id === v?.productId)?.name === "Nocturne"
+      )?.id,
+      quantity: 200,
+      unitPrice: "299.99",
+      notes: "Premium placement - Main display",
+    },
+    {
+      orderId: orders[0].id,
+      productVariantId: allVariants.find(
+        (v) =>
+          v?.size === "50ml" &&
+          products.find((p) => p.id === v?.productId)?.name === "Nocturne"
+      )?.id,
+      quantity: 300,
+      unitPrice: "179.99",
+      notes: "High-volume SKU",
+    },
+    {
+      orderId: orders[0].id,
+      productVariantId: allVariants.find(
+        (v) =>
+          v?.size === "100ml" &&
+          products.find((p) => p.id === v?.productId)?.name === "Imperium"
+      )?.id,
+      quantity: 150,
+      unitPrice: "449.99",
+      notes: "Luxury collection feature",
+    },
+    {
+      orderId: orders[0].id,
+      productVariantId: allVariants.find(
+        (v) =>
+          v?.size === "50ml" &&
+          products.find((p) => p.id === v?.productId)?.name === "Imperium"
+      )?.id,
+      quantity: 200,
+      unitPrice: "249.99",
+    },
+    {
+      orderId: orders[0].id,
+      productVariantId: allVariants.find(
+        (v) =>
+          v?.size === "100ml" &&
+          products.find((p) => p.id === v?.productId)?.name === "Lumière"
+      )?.id,
+      quantity: 150,
+      unitPrice: "219.99",
+      notes: "Spring collection feature",
+    },
+    {
+      orderId: orders[0].id,
+      productVariantId: allVariants.find(
+        (v) =>
+          v?.size === "50ml" &&
+          products.find((p) => p.id === v?.productId)?.name === "Lumière"
+      )?.id,
+      quantity: 250,
+      unitPrice: "129.99",
+    },
+    {
+      orderId: orders[0].id,
+      productVariantId: allVariants.find(
+        (v) =>
+          v?.size === "100ml" &&
+          products.find((p) => p.id === v?.productId)?.name === "Horizon"
+      )?.id,
+      quantity: 100,
+      unitPrice: "249.99",
+      notes: "New launch special placement",
+    },
+    {
+      orderId: orders[0].id,
+      productVariantId: allVariants.find(
+        (v) =>
+          v?.size === "50ml" &&
+          products.find((p) => p.id === v?.productId)?.name === "Horizon"
+      )?.id,
+      quantity: 200,
+      unitPrice: "149.99",
+    },
+
+    // Le Printemps order - Focus on luxury sizes and premium offerings
+    {
+      orderId: orders[1].id,
+      productVariantId: allVariants.find(
+        (v) =>
+          v?.size === "100ml" &&
+          products.find((p) => p.id === v?.productId)?.name === "Nocturne"
+      )?.id,
+      quantity: 100,
+      unitPrice: "299.99",
+      notes: "Luxury boutique display",
+    },
+    {
+      orderId: orders[1].id,
+      productVariantId: allVariants.find(
+        (v) =>
+          v?.size === "75ml" &&
+          products.find((p) => p.id === v?.productId)?.name === "Nocturne"
+      )?.id,
+      quantity: 150,
+      unitPrice: "249.99",
+    },
+    {
+      orderId: orders[1].id,
+      productVariantId: allVariants.find(
+        (v) =>
+          v?.size === "100ml" &&
+          products.find((p) => p.id === v?.productId)?.name === "Imperium"
+      )?.id,
+      quantity: 120,
+      unitPrice: "449.99",
+      notes: "Premium collection centerpiece",
+    },
+    {
+      orderId: orders[1].id,
+      productVariantId: allVariants.find(
+        (v) =>
+          v?.size === "75ml" &&
+          products.find((p) => p.id === v?.productId)?.name === "Imperium"
+      )?.id,
+      quantity: 150,
+      unitPrice: "349.99",
+    },
+    {
+      orderId: orders[1].id,
+      productVariantId: allVariants.find(
+        (v) =>
+          v?.size === "100ml" &&
+          products.find((p) => p.id === v?.productId)?.name === "Lumière"
+      )?.id,
+      quantity: 80,
+      unitPrice: "219.99",
+      notes: "Spring feature display",
+    },
+    {
+      orderId: orders[1].id,
+      productVariantId: allVariants.find(
+        (v) =>
+          v?.size === "75ml" &&
+          products.find((p) => p.id === v?.productId)?.name === "Lumière"
+      )?.id,
+      quantity: 100,
+      unitPrice: "179.99",
+    },
+    {
+      orderId: orders[1].id,
+      productVariantId: allVariants.find(
+        (v) =>
+          v?.size === "100ml" &&
+          products.find((p) => p.id === v?.productId)?.name === "Horizon"
+      )?.id,
+      quantity: 60,
+      unitPrice: "249.99",
+      notes: "New launch exclusive",
+    },
+    {
+      orderId: orders[1].id,
+      productVariantId: allVariants.find(
+        (v) =>
+          v?.size === "75ml" &&
+          products.find((p) => p.id === v?.productId)?.name === "Horizon"
+      )?.id,
+      quantity: 80,
+      unitPrice: "199.99",
+    },
+  ].filter(
+    (item): item is typeof item & { productVariantId: number } =>
+      typeof item.productVariantId === "number"
+  );
+
+  if (orderItems.length > 0) {
+    await db.insert(orderItem).values(orderItems);
+  }
 }
 
 async function dropAllTables() {
