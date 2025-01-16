@@ -7,6 +7,7 @@ import { formatDate, formatCurrency } from "@/lib/utils";
 import Link from "next/link";
 import { Pencil } from "lucide-react";
 import { FC } from "react";
+import { QCValidation } from "@/app/(app)/orders/_components/qc-validation";
 
 interface Props {
   params: {
@@ -45,6 +46,10 @@ const OrderPage: FC<Props> = async ({ params }) => {
             <Pencil className="h-4 w-4" />
           </Link>
         </Button>
+      </div>
+
+      <div className="mb-6">
+        <QCValidation show={order.status === "IN_PRODUCTION"} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
