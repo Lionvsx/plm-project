@@ -330,20 +330,6 @@ async function seedDatabase() {
     .insert(product)
     .values([
       {
-        name: "Nocturne",
-        description:
-          "An opulent floral oriental fragrance featuring Bulgarian rose absolute, night-blooming jasmine, and Madagascar vanilla, creating an aura of timeless elegance",
-        category: "Eau de Parfum",
-        launchDate: new Date("2025-01-15"),
-      },
-      {
-        name: "Lumière",
-        description:
-          "A sparkling citrus blend of Calabrian bergamot, Sicilian orange blossom, and Mediterranean herbs, capturing the sun-drenched coastal breeze",
-        category: "Eau de Toilette",
-        launchDate: new Date("2025-02-01"),
-      },
-      {
         name: "Imperium",
         description:
           "A majestic oriental woody fragrance combining rare Indian oud, Australian sandalwood, and golden amber, enriched with exotic spices and precious resins",
@@ -364,12 +350,6 @@ async function seedDatabase() {
   const variantPromises = products.map((prod) => {
     let prices: string[];
     switch (prod.name) {
-      case "Nocturne":
-        prices = ["89.99", "129.99", "179.99", "249.99", "299.99"]; // Premium floral oriental
-        break;
-      case "Lumière":
-        prices = ["59.99", "89.99", "129.99", "179.99", "219.99"]; // Fresh citrus
-        break;
       case "Imperium":
         prices = ["129.99", "189.99", "249.99", "349.99", "449.99"]; // Premium oriental woody
         break;
@@ -511,18 +491,6 @@ async function seedDatabase() {
     let secondaryEssenceNote: string;
 
     switch (prod.name) {
-      case "Nocturne":
-        mainEssenceId = findIngredientByName("Rose Essential Oil");
-        secondaryEssenceId = findIngredientByName("Jasmine Absolute");
-        mainEssenceNote = "Main rose note";
-        secondaryEssenceNote = "Supporting jasmine note";
-        break;
-      case "Lumière":
-        mainEssenceId = findIngredientByName("Bergamot Oil");
-        secondaryEssenceId = findIngredientByName("Orange Essential Oil");
-        mainEssenceNote = "Main citrus note";
-        secondaryEssenceNote = "Fresh orange note";
-        break;
       case "Imperium":
         mainEssenceId = findIngredientByName("Oud Oil");
         secondaryEssenceId = findIngredientByName("Sandalwood Oil");
@@ -645,28 +613,6 @@ async function seedDatabase() {
       productVariantId: allVariants.find(
         (v) =>
           v?.size === "100ml" &&
-          products.find((p) => p.id === v?.productId)?.name === "Nocturne"
-      )?.id,
-      quantity: 200,
-      unitPrice: "299.99",
-      notes: "Premium placement - Main display",
-    },
-    {
-      orderId: orders[0].id,
-      productVariantId: allVariants.find(
-        (v) =>
-          v?.size === "50ml" &&
-          products.find((p) => p.id === v?.productId)?.name === "Nocturne"
-      )?.id,
-      quantity: 300,
-      unitPrice: "179.99",
-      notes: "High-volume SKU",
-    },
-    {
-      orderId: orders[0].id,
-      productVariantId: allVariants.find(
-        (v) =>
-          v?.size === "100ml" &&
           products.find((p) => p.id === v?.productId)?.name === "Imperium"
       )?.id,
       quantity: 150,
@@ -682,27 +628,6 @@ async function seedDatabase() {
       )?.id,
       quantity: 200,
       unitPrice: "249.99",
-    },
-    {
-      orderId: orders[0].id,
-      productVariantId: allVariants.find(
-        (v) =>
-          v?.size === "100ml" &&
-          products.find((p) => p.id === v?.productId)?.name === "Lumière"
-      )?.id,
-      quantity: 150,
-      unitPrice: "219.99",
-      notes: "Spring collection feature",
-    },
-    {
-      orderId: orders[0].id,
-      productVariantId: allVariants.find(
-        (v) =>
-          v?.size === "50ml" &&
-          products.find((p) => p.id === v?.productId)?.name === "Lumière"
-      )?.id,
-      quantity: 250,
-      unitPrice: "129.99",
     },
     {
       orderId: orders[0].id,
@@ -732,27 +657,6 @@ async function seedDatabase() {
       productVariantId: allVariants.find(
         (v) =>
           v?.size === "100ml" &&
-          products.find((p) => p.id === v?.productId)?.name === "Nocturne"
-      )?.id,
-      quantity: 100,
-      unitPrice: "299.99",
-      notes: "Luxury boutique display",
-    },
-    {
-      orderId: orders[1].id,
-      productVariantId: allVariants.find(
-        (v) =>
-          v?.size === "75ml" &&
-          products.find((p) => p.id === v?.productId)?.name === "Nocturne"
-      )?.id,
-      quantity: 150,
-      unitPrice: "249.99",
-    },
-    {
-      orderId: orders[1].id,
-      productVariantId: allVariants.find(
-        (v) =>
-          v?.size === "100ml" &&
           products.find((p) => p.id === v?.productId)?.name === "Imperium"
       )?.id,
       quantity: 120,
@@ -768,27 +672,6 @@ async function seedDatabase() {
       )?.id,
       quantity: 150,
       unitPrice: "349.99",
-    },
-    {
-      orderId: orders[1].id,
-      productVariantId: allVariants.find(
-        (v) =>
-          v?.size === "100ml" &&
-          products.find((p) => p.id === v?.productId)?.name === "Lumière"
-      )?.id,
-      quantity: 80,
-      unitPrice: "219.99",
-      notes: "Spring feature display",
-    },
-    {
-      orderId: orders[1].id,
-      productVariantId: allVariants.find(
-        (v) =>
-          v?.size === "75ml" &&
-          products.find((p) => p.id === v?.productId)?.name === "Lumière"
-      )?.id,
-      quantity: 100,
-      unitPrice: "179.99",
     },
     {
       orderId: orders[1].id,
