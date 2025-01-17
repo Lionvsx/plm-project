@@ -92,8 +92,8 @@ export default async function NewFormulationIngredientPage({ params }: Props) {
         <Button
           asChild
         >
-          <Link href={`/products/${params.id}/variants/${params.variantId}/formulations/${params.formulationId}`}>
-            Back to Formulation
+          <Link href={`/products/${params.id}/variants/${params.variantId}`}>
+            Back to Variant
           </Link>
         </Button>
       </div>
